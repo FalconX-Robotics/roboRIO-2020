@@ -35,7 +35,7 @@ public class Drivetrain extends SubsystemBase {
         m_drivetrain.tankDrive(leftSpeed, rightSpeed);
     }
 
-    public void setOutput(double maxOutput) {
+    public void setMaxOutput(double maxOutput) {
         m_drivetrain.setMaxOutput(maxOutput);
     }
 }
