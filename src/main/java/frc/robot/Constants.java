@@ -29,8 +29,8 @@ public final class Constants {
         
         public static final int XBOX_CONTROLLER_PORT = 0;
 
-        public static final int LEFT_ENCODER_A = 0;
-        public static final int LEFT_ENCODER_B = 1;
+        public static final int LEFT_ENCODER_MOTOR = 0;
+        public static final int RIGHT_ENCODER_MOTOR = 1;
         public static final int RIGHT_ENCODER_A = 2;
         public static final int RIGHT_ENCODER_B = 3;
     }

@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
@@ -25,8 +27,9 @@ public class Drivetrain extends SubsystemBase {
     private final CANSparkMax m_rearLeftMotor = new CANSparkMax(Ports.REAR_LEFT_MOTOR_PORT, MotorType.kBrushless);
     private final CANSparkMax m_rearRightMotor = new CANSparkMax(Ports.REAR_RIGHT_MOTOR_PORT, MotorType.kBrushless);
 
-    private final WPI_TalonSRX m_leftEncoder = new WPI_TalonSRX(Ports.LEFT_ENCODER_A);
-    private final WPI_TalonSRX m_rightEncoder = new WPI_TalonSRX(Ports.RIGHT_ENCODER_A);
+    private final WPI_TalonSRX m_leftEncoder = new WPI_TalonSRX(Ports.LEFT_ENCODER_MOTOR);
+    private final WPI_TalonSRX m_rightEncoder = new WPI_TalonSRX(Ports.RIGHT_ENCODER_MOTOR);
+
     // private final WPI_TalonSRX m_rearLeftMotor = new WPI_TalonSRX(Ports.REAR_LEFT_MOTOR_PORT);
     // private final WPI_TalonSRX m_rearRightMotor = new WPI_TalonSRX(Ports.REAR_RIGHT_MOTOR_PORT);
 
@@ -34,6 +37,10 @@ public class Drivetrain extends SubsystemBase {
     private final SpeedControllerGroup m_rightSide = new SpeedControllerGroup(m_frontRightMotor, m_rearRightMotor);
     
     private final DifferentialDrive m_drivetrain = new DifferentialDrive(m_leftSide, m_rightSide);
+
+    // private final CANEncoder m_leftEncoder = m_frontLeftMotor.getEncoder(EncoderType.kQuadrature, 1024);
+    // private final CANEncoder m_rightEncoder = m_frontRightMotor.getEncoder(EncoderType.kQuadrature, 1024);
+
 
     // private final Encoder m_leftEncoder = new Encoder(Ports.LEFT_ENCODER_A, Ports.LEFT_ENCODER_B, false, EncodingType.k4X);
     // private final Encoder m_rightEncoder = new Encoder(Ports.RIGHT_ENCODER_A, Ports.RIGHT_ENCODER_B, false, EncodingType.k4X);
@@ -60,6 +67,10 @@ public class Drivetrain extends SubsystemBase {
         m_rightEncoder.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         m_leftEncoder.setSelectedSensorPosition(0);
         m_rightEncoder.setSelectedSensorPosition(0);
+
+        // m_leftEncoder.setPosition(0);
+        // m_rightEncoder.setPosition(0);
+
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed) {
@@ -69,6 +80,11 @@ public class Drivetrain extends SubsystemBase {
     public void setMaxOutput(double maxOutput) {
         m_drivetrain.setMaxOutput(maxOutput);
     }
+
+    // public void resetEncoders() {
+    //     m_leftEncoder.setPosition(0);
+    //     m_rightEncoder.setPosition(0);
+    // }
 
     public double getLeftEncoderDistance(double gearRatio) {
         // return m_leftEncoder.getDistance();
