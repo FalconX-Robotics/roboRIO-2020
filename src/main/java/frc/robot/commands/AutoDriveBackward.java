@@ -3,19 +3,19 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
-public class AutoDriveForward extends CommandBase {
+public class AutoDriveBackward extends CommandBase {
     private final Drivetrain m_drivetrain;
 
-    public AutoDriveForward(Drivetrain subsystem) {
+    public AutoDriveBackward(Drivetrain subsystem) {
         m_drivetrain = subsystem;
         addRequirements(m_drivetrain);
     }
     
     @Override
     public void initialize() {
-        //Drive forward 3 feet at 20% speed
+        //Drive backward 3 feet at 20% speed
         while(m_drivetrain.getEncoderDistance(1) < 36) {   //TODO: put gear ratio
-            m_drivetrain.tankDrive(0.2, 0.2);
+            m_drivetrain.tankDrive(-0.2, -0.2);
         } 
     }
     
