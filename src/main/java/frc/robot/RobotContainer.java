@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-
+import frc.robot.commands.AutoDriveForward;
 import frc.robot.subsystems.Drivetrain;
 
 import static frc.robot.Constants.Ports;
@@ -27,6 +27,7 @@ import static frc.robot.Constants.Ports;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain m_drivetrain = new Drivetrain();
+	private final AutoDriveForward m_autoDriveForward = new AutoDriveForward(m_drivetrain);
 	
 	/**
 	* The container for the robot. Contains subsystems, OI devices, and commands.
@@ -63,6 +64,6 @@ public class RobotContainer {
 	*/
 	public Command getAutonomousCommand() {
 		// An ExampleCommand will run in autonomous
-		return null;
+		return m_autoDriveForward;
 	}
 }
