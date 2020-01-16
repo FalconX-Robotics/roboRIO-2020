@@ -36,8 +36,8 @@ public final class Constants {
     }
 
     // in inches
-    public static final double WHEEL_CIRCUMFERENCE = 6d * Math.PI;
-    public static final double ENCODER_COUNTS_PER_REVOLUTION = 4096;
-    public static final double kEncoderDistancePerPulse = WHEEL_CIRCUMFERENCE / ENCODER_COUNTS_PER_REVOLUTION;
+    public static final double WHEEL_CIRCUMFERENCE = 6 * Math.PI;
+    public static final int NEO_ENCODER_CPR = 4096;
+    public static final int NEO_ENCODER_PPR = 4096 / 4;
+    public static final int SRX_ENCODER_PPR = 4096 / 4;
 }
-
