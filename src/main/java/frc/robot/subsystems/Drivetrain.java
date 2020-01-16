@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.EncoderType;
@@ -16,16 +17,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Ports;
 
-import static frc.robot.Constants.NEO_ENCODER_CPR;
-import static frc.robot.Constants.NEO_ENCODER_PPR;
-import static frc.robot.Constants.SRX_ENCODER_PPR;
-import static frc.robot.Constants.WHEEL_CIRCUMFERENCE;
-
 
 /**
  * Drivetrain
  */
 public class Drivetrain extends SubsystemBase {
+    // in inches
+    public static final double WHEEL_CIRCUMFERENCE = 6 * Math.PI;
+    public static final int NEO_ENCODER_CPR = 4096;
+    public static final int NEO_ENCODER_PPR = 4096 / 4;
+    public static final int SRX_ENCODER_PPR = 4096 / 4;
 
     private final CANSparkMax m_frontLeftMotor = new CANSparkMax(Ports.FRONT_LEFT_MOTOR_PORT, MotorType.kBrushless);
     private final CANSparkMax m_frontRightMotor = new CANSparkMax(Ports.FRONT_RIGHT_MOTOR_PORT, MotorType.kBrushless);
@@ -42,7 +43,6 @@ public class Drivetrain extends SubsystemBase {
 
     private final CANEncoder m_leftNeoEncoder = m_frontLeftMotor.getEncoder(EncoderType.kQuadrature, NEO_ENCODER_CPR);
     private final CANEncoder m_rightNeoEncoder = m_frontRightMotor.getEncoder(EncoderType.kQuadrature, NEO_ENCODER_CPR);
-
     private final double m_motor_deadband = 0.05;
 
     public Drivetrain(EncoderBrand encoderBrand) {
@@ -51,8 +51,8 @@ public class Drivetrain extends SubsystemBase {
         
         // set up encoders
         EncoderBrand.setCurrent(encoderBrand);
-        m_leftNeoEncoder.setPositionConversionFactor(Constants.WHEEL_CIRCUMFERENCE / m_leftNeoEncoder.getCountsPerRevolution());
-        m_rightNeoEncoder.setPositionConversionFactor(Constants.WHEEL_CIRCUMFERENCE / m_rightNeoEncoder.getCountsPerRevolution());
+        m_leftNeoEncoder.setPositionConversionFactor(WHEEL_CIRCUMFERENCE / m_leftNeoEncoder.getCountsPerRevolution());
+        m_rightNeoEncoder.setPositionConversionFactor(WHEEL_CIRCUMFERENCE / m_rightNeoEncoder.getCountsPerRevolution());
         m_leftSRXEncoderMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         m_rightSRXEncoderMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         resetEncoders();

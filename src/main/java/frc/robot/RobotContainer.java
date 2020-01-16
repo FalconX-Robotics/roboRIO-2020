@@ -34,8 +34,7 @@ public class RobotContainer {
 	public RobotContainer() {
 		m_drivetrain.setDefaultCommand(new FunctionalCommand(
 				() -> {},
-				//TODO remove
-				() -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft), driver.getY(Hand.kLeft)), 
+				() -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft), driver.getY(Hand.kRight)), 
 				(interrupted) -> m_drivetrain.tankDrive(0, 0),
 				() -> false,
 				m_drivetrain));

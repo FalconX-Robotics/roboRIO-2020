@@ -35,9 +35,5 @@ public final class Constants {
         public static final int RIGHT_ENCODER_B = 3;
     }
 
-    // in inches
-    public static final double WHEEL_CIRCUMFERENCE = 6 * Math.PI;
-    public static final int NEO_ENCODER_CPR = 4096;
-    public static final int NEO_ENCODER_PPR = 4096 / 4;
-    public static final int SRX_ENCODER_PPR = 4096 / 4;
+
 }
