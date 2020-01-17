@@ -5,9 +5,9 @@ import frc.robot.subsystems.Drivetrain;
 
 public class AutoDrive extends CommandBase {
     private final Drivetrain m_drivetrain;
-    private final int m_driveDistance;
+    private final double m_driveDistance;
 
-    public AutoDrive(Drivetrain drivetrain, int distance) { 
+    public AutoDrive(Drivetrain drivetrain, double distance) { 
         m_drivetrain = drivetrain;
         m_driveDistance = distance;
         addRequirements(m_drivetrain);
