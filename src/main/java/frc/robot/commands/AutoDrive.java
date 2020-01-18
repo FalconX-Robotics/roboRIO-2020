@@ -16,7 +16,7 @@ public class AutoDrive extends CommandBase {
     @Override
     public void execute() {
         if(m_driveDistance > 0) {
-            m_drivetrain.tankDrive(0.2, 0.2); //TODO: adjust speed after testing
+            m_drivetrain.tankDrive(0.2, 0.2); //TODO: adjust auto speed after testing
         }
         else {
             m_drivetrain.tankDrive(-0.2, -0.2); 
@@ -26,10 +26,10 @@ public class AutoDrive extends CommandBase {
     @Override
     public boolean isFinished() {
         if(m_driveDistance > 0) {
-            return m_drivetrain.getEncoderDistance() >= m_driveDistance;  //TODO: add buffer for stopping distance
+            return m_drivetrain.getLeftEncoderPos() >= m_driveDistance;  //TODO: add buffer for stopping distance
         }
         else {
-            return m_drivetrain.getEncoderDistance() <= m_driveDistance;
+            return m_drivetrain.getLeftEncoderPos() <= m_driveDistance;
         }
     }
     
