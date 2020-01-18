@@ -8,12 +8,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Drivetrain.EncoderBrand;
 
 import static frc.robot.Constants.Ports;
 
@@ -27,23 +31,41 @@ import static frc.robot.Constants.Ports;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain m_drivetrain = new Drivetrain(Drivetrain.EncoderBrand.NEO);
-	
+
 	/**
 	* The container for the robot. Contains subsystems, OI devices, and commands.
 	*/
 	public RobotContainer() {
 		m_drivetrain.setDefaultCommand(new FunctionalCommand(
 				() -> {},
-				() -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft), driver.getY(Hand.kRight)), 
-				(interrupted) -> m_drivetrain.tankDrive(0, 0),
+				// () -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft), driver.getY(Hand.kRight)), 
+				() -> {
+					m_drivetrain.arcadeDrive(m_joystickDriver.getY(), m_joystickDriver.getZ());
+					m_drivetrain.setMaxOutput(1-m_joystickDriver.getThrottle());
+				},
+				// (interrupted) -> m_drivetrain.tankDrive(0, 0),
+				(interrupted) -> m_drivetrain.stopMotor(),
 				() -> false,
 				m_drivetrain));
+
+		InstantCommand resetGyroCommand = new InstantCommand(m_drivetrain::resetGyro, m_drivetrain);
+		resetGyroCommand.setName("Reset gyro");
+		m_drivetrain.gyroLayout.add("Resets gyro yaw", resetGyroCommand);
+
+		InstantCommand resetEncoderCommand = new InstantCommand(
+			() -> {
+				m_drivetrain.resetEncoders(EncoderBrand.NEO);
+				m_drivetrain.resetEncoders(EncoderBrand.SRX);
+			}, m_drivetrain);
+		resetEncoderCommand.setName("Reset Encoder");
+		m_drivetrain.encoderLayout.add("Reset encoder", resetEncoderCommand);
 
 		// Configure the button bindings
 		configureButtonBindings();
 	}
 	
-	private final XboxController driver = new XboxController(Ports.XBOX_CONTROLLER_PORT);
+	private final XboxController m_driver = new XboxController(Ports.XBOX_CONTROLLER_PORT);
+	private final Joystick m_joystickDriver = new Joystick(Ports.XBOX_CONTROLLER_PORT);
 	
 	/**
 	* Use this method to define your button->command mappings. Buttons can be
@@ -52,7 +74,7 @@ public class RobotContainer {
 	* passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	*/
 	private void configureButtonBindings() {
-		
+		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
 	}
 	
 	/**
@@ -63,5 +85,14 @@ public class RobotContainer {
 	public Command getAutonomousCommand() {
 		// An ExampleCommand will run in autonomous
 		return null;
+	}
+
+	/**
+	 * Resets gyro yaw; neo and srx encoders.
+	 */
+	public void resetSensors() {
+		m_drivetrain.resetEncoders(EncoderBrand.NEO);
+		m_drivetrain.resetEncoders(EncoderBrand.SRX);
+		m_drivetrain.resetGyro();
 	}
 }
