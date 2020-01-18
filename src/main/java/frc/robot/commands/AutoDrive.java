@@ -16,10 +16,10 @@ public class AutoDrive extends CommandBase {
     @Override
     public void execute() {
         if(m_driveDistance > 0) {
-            m_drivetrain.tankDrive(0.2, 0.2); //TODO: adjust auto speed after testing
+            m_drivetrain.tankDrive(0.05, 0.05); //TODO: adjust auto speed after testing
         }
         else {
-            m_drivetrain.tankDrive(-0.2, -0.2); 
+            m_drivetrain.tankDrive(-0.05, -0.05); 
         }
     }
     
