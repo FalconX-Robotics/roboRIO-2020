@@ -29,15 +29,13 @@ public final class Constants {
         
         public static final int XBOX_CONTROLLER_PORT = 0;
 
-        public static final int LEFT_ENCODER_MOTOR = 0;
-        public static final int RIGHT_ENCODER_MOTOR = 1;
+        public static final int LEFT_ENCODER_MOTOR = 5;
+        public static final int RIGHT_ENCODER_MOTOR = 6;
         public static final int RIGHT_ENCODER_A = 2;
         public static final int RIGHT_ENCODER_B = 3;
+
+        public static final int GYRO_PORT = 7;
     }
 
-    // in inches
-    public static final double WHEEL_CIRCUMFERENCE = 6d * Math.PI;
-    public static final double ENCODER_COUNTS_PER_REVOLUTION = 4096;
-    public static final double kEncoderDistancePerPulse = WHEEL_CIRCUMFERENCE / ENCODER_COUNTS_PER_REVOLUTION;
-}
 
+}
