@@ -103,7 +103,7 @@ public class Drivetrain extends SubsystemBase {
         // for testing
         setMaxOutput(0.5);
     }
-
+    
     public enum EncoderBrand {
         NEO, SRX;
     }
