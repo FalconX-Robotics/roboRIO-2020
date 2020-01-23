@@ -31,7 +31,7 @@ import static frc.robot.Constants.Ports;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain m_drivetrain = new Drivetrain(Drivetrain.EncoderBrand.NEO);
-	private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 36);
+	private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 36, .35);
 
 	/**
 	* The container for the robot. Contains subsystems, OI devices, and commands.
@@ -41,7 +41,7 @@ public class RobotContainer {
 				() -> {},
 				// () -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft), driver.getY(Hand.kRight)), 
 				() -> {
-					m_drivetrain.arcadeDrive(m_joystickDriver.getY(), m_joystickDriver.getZ());
+					m_drivetrain.arcadeDrive(-m_joystickDriver.getY(), m_joystickDriver.getZ());
 					m_drivetrain.setMaxOutput(1-m_joystickDriver.getThrottle());
 				},
 				// (interrupted) -> m_drivetrain.tankDrive(0, 0),
