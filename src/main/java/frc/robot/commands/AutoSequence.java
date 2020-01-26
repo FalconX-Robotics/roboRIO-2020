@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class AutoSequence {
     /*  This is a list of the coordinates of all (guaranteed) balls and starting/ending
@@ -29,12 +29,22 @@ public class AutoSequence {
     public final double[] E1 = {94.5, -120};
     public final double[] E2 = {234, 146};
 
-    private AutoPath path;
-    private boolean dispense;
-
-    public AutoSequence(AutoPath path, boolean dispense) {
-        this.path = path;
-        this.dispense = dispense;
+    public AutoSequence() {
+    }
+    
+    public Command getCommand(AutoPath path, boolean dispense) {
+        switch (path) {
+            case QUICKSCORE:
+                break;
+            case TRENCHSCORE:
+                break;
+            case GENERATORSCORE:
+                break;
+            case YEET:
+                break;
+            case TRENCHSTEAL:
+        }
+        return null;
     }
 
     //Auto path options
