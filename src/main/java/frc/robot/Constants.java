@@ -35,6 +35,8 @@ public final class Constants {
         public static final int RIGHT_ENCODER_B = 3;
 
         public static final int GYRO_PORT = 7;
+
+        public static final int ELEVATOR_MOTOR_PORT = 999; //TODO: Put correct motor port
     }
 
 
