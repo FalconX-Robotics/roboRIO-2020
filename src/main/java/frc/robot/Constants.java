@@ -35,7 +35,7 @@ public final class Constants {
         public static final int RIGHT_ENCODER_B = 3;
 
         public static final int GYRO_PORT = 7;
+
+        public static final int TALON_TACH_PORT = 9;
     }
-
-
 }
