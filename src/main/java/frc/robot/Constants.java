@@ -37,7 +37,7 @@ public final class Constants {
         public static final int GYRO_PORT = 7;
 
         public static final int ELEVATOR_MOTOR_PORT = 999; //TODO: Put correct motor port
+
+        public static final int TALON_TACH_PORT = 9;
     }
-
-
 }
