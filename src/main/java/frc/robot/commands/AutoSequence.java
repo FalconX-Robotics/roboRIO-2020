@@ -32,6 +32,7 @@ public class AutoSequence {
     public AutoSequence() {
     }
     
+    // TODO: implement this method (use other helper methods to do so)
     public Command getCommand(AutoPath path, boolean dispense) {
         switch (path) {
             case QUICKSCORE:
