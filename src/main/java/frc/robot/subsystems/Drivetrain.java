@@ -89,6 +89,8 @@ public class Drivetrain extends SubsystemBase {
 
         m_leftNeoEncoder.setPositionConversionFactor(kNeoEncoderConversionFactor);
         m_rightNeoEncoder.setPositionConversionFactor(kNeoEncoderConversionFactor);
+        m_leftNeoEncoder.setVelocityConversionFactor(kNeoEncoderConversionFactor);
+        m_rightNeoEncoder.setVelocityConversionFactor(kNeoEncoderConversionFactor);
         // m_leftNeoEncoder.setInverted(false);
         // m_leftNeoEncoder.setInverted(false);
 
@@ -165,8 +167,50 @@ public class Drivetrain extends SubsystemBase {
         return getRightEncoderPos(getCurrentEncoderBrand());
     }
 
+    public double getAvgEncoderPos(final EncoderBrand encoderBrand) {
+        return (getLeftEncoderPos(encoderBrand) + getRightEncoderPos(encoderBrand)) / 2;
+    }
+
     public double getAvgEncoderPos() {
         return (getLeftEncoderPos() + getRightEncoderPos()) / 2;
+    }
+
+    public double getLeftEncoderSpeed(final EncoderBrand brand) {
+        switch (brand) {
+        case NEO:
+            return m_leftNeoEncoder.getVelocity();
+        case SRX:
+            return m_leftSRXEncoderMotor.getSelectedSensorVelocity(0);
+        default:
+            return 0;
+        }
+    }
+
+    public double getLeftEncoderSpeed() {
+        return getLeftEncoderSpeed(getCurrentEncoderBrand());
+    }
+
+    public double getRightEncoderSpeed(final EncoderBrand encoderBrand) {
+        switch (encoderBrand) {
+        case NEO:
+            return m_rightNeoEncoder.getVelocity();
+        case SRX:
+            return m_rightSRXEncoderMotor.getSelectedSensorVelocity(0);
+        default:
+            return 0;
+        }
+    }
+
+    public double getRightEncoderSpeed() {
+        return getRightEncoderSpeed(getCurrentEncoderBrand());
+    }
+
+    public double getAvgEncoderSpeed(final EncoderBrand encoderBrand) {
+        return (getLeftEncoderSpeed(encoderBrand) + getRightEncoderSpeed(encoderBrand)) / 2;
+    }
+
+    public double getAvgEncoderSpeed() {
+        return (getLeftEncoderSpeed() + getRightEncoderSpeed()) / 2;
     }
 
     public void resetGyro() {
