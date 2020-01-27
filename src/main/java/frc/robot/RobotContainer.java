@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* must be accompanied by  the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
@@ -10,16 +10,14 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-
+import frc.robot.Constants.Ports;
+import frc.robot.commands.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Drivetrain.EncoderBrand;
-
-import static frc.robot.Constants.Ports;
 
 /**
 * This class is where the bulk of the robot should be declared. Since
@@ -31,6 +29,7 @@ import static frc.robot.Constants.Ports;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain m_drivetrain = new Drivetrain(Drivetrain.EncoderBrand.NEO);
+	private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 12, .35);
 
 	/**
 	* The container for the robot. Contains subsystems, OI devices, and commands.
@@ -40,7 +39,7 @@ public class RobotContainer {
 				() -> {},
 				// () -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft), driver.getY(Hand.kRight)), 
 				() -> {
-					m_drivetrain.arcadeDrive(m_joystickDriver.getY(), m_joystickDriver.getZ());
+					m_drivetrain.arcadeDrive(-m_joystickDriver.getY(), m_joystickDriver.getZ());
 					m_drivetrain.setMaxOutput(1-m_joystickDriver.getThrottle());
 				},
 				// (interrupted) -> m_drivetrain.tankDrive(0, 0),
@@ -50,7 +49,7 @@ public class RobotContainer {
 
 		InstantCommand resetGyroCommand = new InstantCommand(m_drivetrain::resetGyro, m_drivetrain);
 		resetGyroCommand.setName("Reset gyro");
-		m_drivetrain.gyroLayout.add("Resets gyro yaw", resetGyroCommand);
+		Shuffleboard.getTab("Sensor Info").getLayout("Gyro").add("Resets gyro yaw", resetGyroCommand);
 
 		InstantCommand resetEncoderCommand = new InstantCommand(
 			() -> {
@@ -58,7 +57,7 @@ public class RobotContainer {
 				m_drivetrain.resetEncoders(EncoderBrand.SRX);
 			}, m_drivetrain);
 		resetEncoderCommand.setName("Reset Encoder");
-		m_drivetrain.encoderLayout.add("Reset encoder", resetEncoderCommand);
+		Shuffleboard.getTab("Sensor Info").getLayout("Encoder").add("Reset encoder", resetEncoderCommand);
 
 		// Configure the button bindings
 		configureButtonBindings();
@@ -83,8 +82,8 @@ public class RobotContainer {
 	* @return the command to run in autonomous
 	*/
 	public Command getAutonomousCommand() {
-		// An ExampleCommand will run in autonomous
-		return null;
+		
+		return m_autoDrive;
 	}
 
 	/**

@@ -1,8 +1,8 @@
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* Open Soure Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
+/* the project.                                                              */
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
@@ -35,7 +35,7 @@ public final class Constants {
         public static final int RIGHT_ENCODER_B = 3;
 
         public static final int GYRO_PORT = 7;
+
+        public static final int TALON_TACH_PORT = 9;
     }
-
-
 }
