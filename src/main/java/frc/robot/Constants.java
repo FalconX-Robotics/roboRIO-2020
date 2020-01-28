@@ -36,7 +36,7 @@ public final class Constants {
 
         public static final int TALON_TACH_PORT = 9;
         
-        public static final int ELEVATOR_MOTOR_FRONT_PORT = 00; //TODO: Put correct motor port
+        public static final int ELEVATOR_MOTOR_FRONT_PORT = 00; //TODO: Put correct motor ports
         public static final int ELEVATOR_MOTOR_BACK_PORT = 00; 
         
         public static final int XBOX_CONTROLLER_PORT = 0;
