@@ -35,7 +35,11 @@ public final class Constants {
         public static final int RIGHT_ENCODER_B = 3;
 
         public static final int GYRO_PORT = 7;
-    }
+
+        public static final int ROLLER_MOTOR_PORT = 11; //randomly chosen sorry
+        public static final int INTAKE_MECHANISM_MOTOR_PORT = 12; //^^
 
 
 }
+
+    }   
