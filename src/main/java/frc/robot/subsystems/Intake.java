@@ -13,7 +13,6 @@ public class Intake extends SubsystemBase {
     private final CANSparkMax m_intakeMechanismMotor = new CANSparkMax(Ports.INTAKE_MECHANISM_MOTOR_PORT, MotorType.kBrushless); //^^f
 
     public void moveUp(final int degrees) { 
-
     }
 
     public void moveDown(final int degrees) {
