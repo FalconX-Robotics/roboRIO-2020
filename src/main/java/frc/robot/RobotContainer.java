@@ -55,7 +55,7 @@ public class RobotContainer {
 			() -> {
 				m_climber.moveGondola(m_driver.getTriggerAxis(Hand.kRight)-m_driver.getTriggerAxis(Hand.kLeft));
 			},
-			(interrupted) -> m_climber.moveGondola(0),
+			(interrupted) -> m_climber.stopGondola(),
 			() -> false,
 			m_climber));
 
