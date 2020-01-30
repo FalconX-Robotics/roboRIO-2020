@@ -10,16 +10,16 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
+import frc.robot.Constants.Ports;
+import frc.robot.commands.AutoChooser;
+import frc.robot.commands.AutoChooser.AutoPath;
 import frc.robot.commands.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Drivetrain.EncoderBrand;
-
-import static frc.robot.Constants.Ports;
 
 /**
 * This class is where the bulk of the robot should be declared. Since
@@ -31,7 +31,7 @@ import static frc.robot.Constants.Ports;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain m_drivetrain = new Drivetrain(Drivetrain.EncoderBrand.NEO);
-	private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 36, .35);
+	private final AutoChooser m_autoChooser = new AutoChooser(m_drivetrain);
 
 	/**
 	* The container for the robot. Contains subsystems, OI devices, and commands.
@@ -51,7 +51,7 @@ public class RobotContainer {
 
 		InstantCommand resetGyroCommand = new InstantCommand(m_drivetrain::resetGyro, m_drivetrain);
 		resetGyroCommand.setName("Reset gyro");
-		m_drivetrain.gyroLayout.add("Resets gyro yaw", resetGyroCommand);
+		Shuffleboard.getTab("Sensor Info").getLayout("Gyro").add("Resets gyro yaw", resetGyroCommand);
 
 		InstantCommand resetEncoderCommand = new InstantCommand(
 			() -> {
@@ -59,7 +59,7 @@ public class RobotContainer {
 				m_drivetrain.resetEncoders(EncoderBrand.SRX);
 			}, m_drivetrain);
 		resetEncoderCommand.setName("Reset Encoder");
-		m_drivetrain.encoderLayout.add("Reset encoder", resetEncoderCommand);
+		Shuffleboard.getTab("Sensor Info").getLayout("Encoder").add("Reset encoder", resetEncoderCommand);
 
 		// Configure the button bindings
 		configureButtonBindings();
@@ -84,8 +84,8 @@ public class RobotContainer {
 	* @return the command to run in autonomous
 	*/
 	public Command getAutonomousCommand() {
-		
-		return m_autoDrive;
+		//TODO add Networktable to change the auto command from shuffleboard
+		return m_autoChooser.getCommand(AutoPath.QUICKSCORE, false);
 	}
 
 	/**
