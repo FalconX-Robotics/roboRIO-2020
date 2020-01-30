@@ -1,15 +1,9 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Ports;
 
@@ -19,25 +13,39 @@ public class Elevator extends SubsystemBase {
     
     private final SpeedControllerGroup m_elevatorMotorGroup = new SpeedControllerGroup(m_elevatorMotorFront, m_elevatorMotorBack);
     
-    private final CANEncoder m_elevatorNeoEncoder = m_elevatorMotorFront.getEncoder();
+    private final DigitalInput m_limitSwitchLower = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_LOWER_PORT);
+    private final DigitalInput m_limitSwitchUpper = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_UPPER_PORT);
 
-    private final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
-    private final ShuffleboardLayout m_encoderLayout = m_sensorInfoTab.getLayout("Elevator", BuiltInLayouts.kList);
-    
     public Elevator() {
 
+    }
+
+    public enum ElevatorState {
+        HIGH, LOW;
+    }
+
+    public void setElevatorHigh() {
+        if(getUpperSwitchPressed() != true) {
+            setElevatorSpeed(.5);
+        }
+    }
+
+    public void setElevatorLow() {
+        if(getLowerSwitchPressed() != true) {
+            setElevatorSpeed(.5);
+        }
     }
 
     public void setElevatorSpeed(final double elevatorSpeed) {
         m_elevatorMotorGroup.set(elevatorSpeed);
     }
 
-    public double getEncoderPos() {
-        return m_elevatorNeoEncoder.getPosition();
+    public boolean getLowerSwitchPressed() {
+        return m_limitSwitchLower.get();
     }
 
-    public void resetEncoder() {
-        m_elevatorNeoEncoder.setPosition(0);
+    public boolean getUpperSwitchPressed() {
+        return m_limitSwitchUpper.get();
     }
 
     @Override
