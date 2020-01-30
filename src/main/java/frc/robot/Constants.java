@@ -39,7 +39,10 @@ public final class Constants {
         public static final int ROLLER_MOTOR_PORT = 11; //randomly chosen sorry
         public static final int INTAKE_MECHANISM_MOTOR_PORT = 12; //^^
 
+        public static final int TALON_TACH_PORT = 9;
 
+        public static final int GONDALA_MOTOR_PORT = 10; //TODO Use actual port
+    }
 }
 
     }   

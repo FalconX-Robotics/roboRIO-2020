@@ -1,3 +1,4 @@
+
 package frc.robot.subsystems;
 
 import java.util.Arrays;
@@ -10,13 +11,17 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.Ports;
 
 /**
@@ -25,14 +30,10 @@ import frc.robot.Constants.Ports;
 public class Drivetrain extends SubsystemBase {
     // in inches
     public final double WHEEL_CIRCUMFERENCE = 6. * Math.PI;
-    // public final int NEO_ENCODER_CPR = 42;
-    // public final double NEO_ENCODER_PPR = NEO_ENCODER_CPR / 4;
-    // public final int SRX_ENCODER_CPR = 1024;
-    // public final double SRX_ENCODER_PPR = SRX_ENCODER_CPR / 4.;
     public final double kSRXUnitsPerRevolution = 4096.;
-    
-    public final double kNeoEncoderConversionFactor = WHEEL_CIRCUMFERENCE * (12./50.) * (24./50.);
-    public final double kSRXEncoderConversionFactor = WHEEL_CIRCUMFERENCE / kSRXUnitsPerRevolution;
+
+    public final double kNeoEncoderConversionFactor = WHEEL_CIRCUMFERENCE * (12. / 50.) * (24. / 50.);
+    public final double kSRXEncoderConversionFactor = (WHEEL_CIRCUMFERENCE / kSRXUnitsPerRevolution) * (50. / 24.);
 
     private final CANSparkMax m_frontLeftMotor = new CANSparkMax(Ports.FRONT_LEFT_MOTOR_PORT, MotorType.kBrushless);
     private final CANSparkMax m_frontRightMotor = new CANSparkMax(Ports.FRONT_RIGHT_MOTOR_PORT, MotorType.kBrushless);
@@ -54,36 +55,34 @@ public class Drivetrain extends SubsystemBase {
     private final double m_motor_deadband = 0.1;
 
     private final PigeonIMU m_gyro = new PigeonIMU(Ports.GYRO_PORT);
-    
-    private final ShuffleboardTab sensorInfoTab = Shuffleboard.getTab("Sensor Info");
-    public final ShuffleboardLayout encoderLayout = sensorInfoTab.getLayout("Encoder", BuiltInLayouts.kList);
-    public final ShuffleboardLayout gyroLayout = sensorInfoTab.getLayout("Gyro", BuiltInLayouts.kList);
 
-    private final NetworkTableEntry rawLeftSrxPosWidget = encoderLayout
-            .add("RAW left SRX pos", m_leftSRXEncoderMotor.getSelectedSensorPosition()).getEntry();
-    private final NetworkTableEntry rawLeftNeoPosWidget = encoderLayout
+    private final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
+    private final ShuffleboardLayout m_encoderLayout = m_sensorInfoTab.getLayout("Encoder", BuiltInLayouts.kList);
+    private final ShuffleboardLayout m_gyroLayout = m_sensorInfoTab.getLayout("Gyro", BuiltInLayouts.kList);
+
+    private final NetworkTableEntry m_rawLeftNeoPosWidget = m_encoderLayout
             .add("RAW left NEO pos", m_leftSRXEncoderMotor.getSelectedSensorPosition()).getEntry();
-    private final NetworkTableEntry leftNeoPosWidget = encoderLayout
+    private final NetworkTableEntry m_leftNeoPosWidget = m_encoderLayout
             .add("left NEO pos", getLeftEncoderPos(EncoderBrand.NEO)).getEntry();
-    private final NetworkTableEntry leftSrxPosWidget = encoderLayout
+    private final NetworkTableEntry rawLeftSrxPosWidget = m_encoderLayout
+            .add("RAW left SRX pos", m_leftSRXEncoderMotor.getSelectedSensorPosition()).getEntry();
+    private final NetworkTableEntry m_leftSrxPosWidget = m_encoderLayout
             .add("left SRX pos", getLeftEncoderPos(EncoderBrand.SRX)).getEntry();
-    private final NetworkTableEntry avgNeoSpeedWidget = encoderLayout
-            .add("average NEO speed", getAvgEncoderSpeed()).getEntry();
-    private final NetworkTableEntry rawGyroWidget = gyroLayout.add("raw gyro vals", Arrays.toString(getYawPitchRoll()))
-            .getEntry();
+    private final NetworkTableEntry m_rawGyroWidget = m_gyroLayout
+            .add("raw gyro vals", Arrays.toString(getYawPitchRoll())).getEntry();
+    private final NetworkTableEntry m_talonTachWidget = m_sensorInfoTab.add("Talon Tach", false).getEntry();
+
+    private final DigitalInput m_talonTach = new DigitalInput(Constants.Ports.TALON_TACH_PORT);
 
     public Drivetrain(final EncoderBrand encoderBrand) {
         // config motors
         m_drivetrain.setDeadband(m_motor_deadband);
         m_drivetrain.setSafetyEnabled(true);
-        
+
         m_frontLeftMotor.restoreFactoryDefaults();
         m_frontRightMotor.restoreFactoryDefaults();
         m_leftSRXEncoderMotor.configFactoryDefault();
         m_rightSRXEncoderMotor.configFactoryDefault();
-
-        // m_leftSide.(true);
-        // m_rightSide.setInverted(true);
 
         // config encoders
         setCurrentEncoderBrand(encoderBrand);
@@ -94,20 +93,19 @@ public class Drivetrain extends SubsystemBase {
         m_rightNeoEncoder.setVelocityConversionFactor(kNeoEncoderConversionFactor);
         // m_leftNeoEncoder.setInverted(false);
         // m_leftNeoEncoder.setInverted(false);
-        
+
         m_leftSRXEncoderMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         m_rightSRXEncoderMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        // m_leftSRXEncoderMotor.configSelectedFeedbackCoefficient(kSRXEncoderConversionFactor);
-        // m_rightSRXEncoderMotor.configSelectedFeedbackCoefficient(kSRXEncoderConversionFactor);
         m_leftSRXEncoderMotor.setSensorPhase(true);
         m_rightSRXEncoderMotor.setSensorPhase(true);
-        
+
         resetEncoders();
 
         // for testing
-        setMaxOutput(0.5);
+        // setMaxOutput(0.5);
+
     }
-    
+
     public enum EncoderBrand {
         NEO, SRX;
     }
@@ -144,7 +142,7 @@ public class Drivetrain extends SubsystemBase {
         case NEO:
             return m_leftNeoEncoder.getPosition();
         case SRX:
-            return m_leftSRXEncoderMotor.getSelectedSensorPosition(0);
+            return ((double) m_leftSRXEncoderMotor.getSelectedSensorPosition(0)) * kSRXEncoderConversionFactor;
         default:
             return 0;
         }
@@ -159,7 +157,7 @@ public class Drivetrain extends SubsystemBase {
         case NEO:
             return m_rightNeoEncoder.getPosition();
         case SRX:
-            return m_rightSRXEncoderMotor.getSelectedSensorPosition(0);
+            return m_rightSRXEncoderMotor.getSelectedSensorPosition(0) * kSRXEncoderConversionFactor;
         default:
             return 0;
         }
@@ -253,21 +251,20 @@ public class Drivetrain extends SubsystemBase {
         m_drivetrain.stopMotor();
     }
 
-    public void setInvertedMotors(boolean isInverted) {
-        m_leftSide.setInverted(isInverted);
-        m_rightSide.setInverted(isInverted);
+    public boolean getTalonTachPressed() {
+        return m_talonTach.get();
     }
 
     @Override
     public void periodic() {
-        rawLeftSrxPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.SRX));
-        leftSrxPosWidget.setDouble(((double) getLeftEncoderPos(EncoderBrand.SRX)) * kSRXEncoderConversionFactor);
+        m_rawLeftNeoPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.NEO) / kNeoEncoderConversionFactor);
+        m_leftNeoPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.NEO));
 
-        rawLeftNeoPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.NEO) / kNeoEncoderConversionFactor);
-        leftNeoPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.NEO));
-        
-        avgNeoSpeedWidget.setDouble(getAvgEncoderSpeed(EncoderBrand.NEO));
+        rawLeftSrxPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.SRX) / kSRXEncoderConversionFactor);
+        m_leftSrxPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.SRX));
 
-        rawGyroWidget.setString(Arrays.toString(getYawPitchRoll()));
+        m_rawGyroWidget.setString(Arrays.toString(getYawPitchRoll()));
+
+        m_talonTachWidget.setBoolean(getTalonTachPressed());
     }
 }
