@@ -7,11 +7,22 @@ import frc.robot.subsystems.Intake.IntakePosition;
 
 public class MoveIntake extends CommandBase {
     
-    private final IntakePosition m_position;
-    private final IntakePosition m_currentIntakePostion = Intake.getCurrentIntakePosition();
+    private Intake m_intake;
+    private IntakePosition m_position;
+    private IntakePosition m_currentIntakePostion = m_intake.getCurrentIntakePosition();
 
-    public MoveIntake(IntakePosition position) { 
+    public MoveIntake(Intake intake, IntakePosition position) { 
+        m_intake = intake;
         m_position = position;
+    }
+
+    @Override
+    public void initialize() {
+        
+    }
+
+    @Override
+    public void execute() {
         switch (m_position) {
             case GROUND:
                 if(m_currentIntakePostion == IntakePosition.STORE) {
@@ -33,18 +44,8 @@ public class MoveIntake extends CommandBase {
                 } 
                 else if(m_currentIntakePostion == IntakePosition.GROUND){
                     //go from dispense to dispense
-                }        
+                }      
         }
-    }
-
-    @Override
-    public void initialize() {
-
-    }
-
-    @Override
-    public void execute() {
-
     }
      
     @Override
@@ -56,6 +57,6 @@ public class MoveIntake extends CommandBase {
     
     @Override
     public void end(boolean interrupted) {
-        Intake.setCurrentIntakePosition(m_position);
+        m_intake.setCurrentIntakePosition(m_position);
     }
 }

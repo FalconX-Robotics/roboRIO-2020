@@ -12,18 +12,18 @@ public class Intake extends SubsystemBase {
     private final CANSparkMax m_intakeMotor = new CANSparkMax(Ports.INTAKE_MECHANISM_MOTOR_PORT, MotorType.kBrushed); // ^^
     private double intakeMotorSpeed = 0.5; 
     private double rollerMotorSpeed = 0.5;
-    public static IntakePosition currentIntakePosition = IntakePosition.GROUND;
+    public IntakePosition currentIntakePosition = IntakePosition.GROUND;
 
 
     public enum IntakePosition {
         GROUND, STORE, DISPENSE;
     }
 
-    public static IntakePosition getCurrentIntakePosition() {
+    public IntakePosition getCurrentIntakePosition() {
         return currentIntakePosition;
     }
 
-    public static void setCurrentIntakePosition(final IntakePosition position) {
+    public void setCurrentIntakePosition(final IntakePosition position) {
         if (position == null || position == currentIntakePosition)
             return;
             currentIntakePosition = position;

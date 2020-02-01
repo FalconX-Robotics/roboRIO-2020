@@ -44,5 +44,3 @@ public final class Constants {
         public static final int GONDALA_MOTOR_PORT = 10; //TODO Use actual port
     }
 }
-
-    }   
