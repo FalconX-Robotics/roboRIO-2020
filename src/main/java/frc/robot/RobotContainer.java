@@ -14,9 +14,12 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Ports;
 import frc.robot.commands.AutoDrive;
+import frc.robot.commands.ToggleElevator;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Drivetrain.EncoderBrand;
 
 /**
@@ -74,6 +77,9 @@ public class RobotContainer {
 	*/
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
+		
+		//Toggles elevator pos on press of "a" button on Xbox controller
+		new JoystickButton(m_driver, XboxController.Button.kA.value).whenPressed(new ToggleElevator(new Elevator()));
 	}
 	
 	/**

@@ -24,9 +24,33 @@ public class ToggleElevator extends CommandBase{
         else if(m_elevator.getUpperSwitchPressed()) {
             m_elevatorState = ElevatorState.HIGH;
         }
-        else {
-            m_elevator.setElevatorLow();
-        }
     }
 
+    @Override
+    public void execute() { 
+        switch(m_elevatorState) {
+            case LOW:
+                m_elevator.setElevatorHigh();
+                break;
+            case HIGH:
+                m_elevator.setElevatorLow();
+                break;
+            default:
+                m_elevator.setElevatorHigh();
+                break;
+        }
+    }
+        
+
+    @Override
+    public boolean isFinished() {
+        switch(m_elevatorState) {
+            case LOW:
+                return m_elevator.getUpperSwitchPressed();
+            case HIGH:
+                return m_elevator.getLowerSwitchPressed();
+            default:
+                return m_elevator.getUpperSwitchPressed();
+        }
+    }
 }
