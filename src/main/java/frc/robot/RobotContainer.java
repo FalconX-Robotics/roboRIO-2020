@@ -89,7 +89,6 @@ public class RobotContainer {
 	*/
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
-		
 		//Toggles elevator pos on press of "a" button on Xbox controller
 		new JoystickButton(m_driver, XboxController.Button.kA.value).whenPressed(new ToggleElevator(new Elevator()));
 	}
