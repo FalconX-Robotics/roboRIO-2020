@@ -25,9 +25,9 @@ public class Climber extends SubsystemBase {
         m_gondalaMotor.set(speed);
     }
     /**
-     * Sets the gondola motor speed to 0
+     * Stops the gondola 
      */
     public void stopGondola() {
-        m_gondalaMotor.set(0);
+        m_gondalaMotor.stopMotor();
     }
 }
