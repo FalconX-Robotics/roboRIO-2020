@@ -26,8 +26,6 @@ public final class Constants {
         // public static final int FRONT_RIGHT_MOTOR_PORT = 5;
         // public static final int REAR_LEFT_MOTOR_PORT = 2;
         // public static final int REAR_RIGHT_MOTOR_PORT = 4;
-        
-        public static final int XBOX_CONTROLLER_PORT = 0;
 
         public static final int LEFT_ENCODER_MOTOR = 5;
         public static final int RIGHT_ENCODER_MOTOR = 6;
@@ -37,7 +35,14 @@ public final class Constants {
         public static final int GYRO_PORT = 7;
 
         public static final int TALON_TACH_PORT = 9;
-
+        
+        public static final int ELEVATOR_LIMIT_SWITCH_LOWER_PORT = 00;
+        public static final int ELEVATOR_LIMIT_SWITCH_UPPER_PORT = 00;
+        public static final int ELEVATOR_MOTOR_FRONT_PORT = 00; //TODO: Put correct motor ports
+        public static final int ELEVATOR_MOTOR_BACK_PORT = 00; 
+        
+        public static final int XBOX_CONTROLLER_PORT = 0;
+      
         public static final int GONDALA_MOTOR_PORT = 10; //TODO Use actual port
     }
 }
