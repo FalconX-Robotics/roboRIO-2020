@@ -42,5 +42,7 @@ public final class Constants {
         public static final int ELEVATOR_MOTOR_BACK_PORT = 00; 
         
         public static final int XBOX_CONTROLLER_PORT = 0;
+      
+        public static final int GONDALA_MOTOR_PORT = 10; //TODO Use actual port
     }
 }
