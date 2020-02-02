@@ -2,10 +2,11 @@ package frc.robot.commands;
 
 import java.lang.Math;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.commands.autopaths.*;
 
-public class AutoChooser {
+public class AutoPath {
     /*  This is a list of the coordinates of all (guaranteed) balls and starting/ending
         postions on our side of the field, where the origion is placed on the left-most
         point of our initiation line. The points are listed from left-right on the field. */
@@ -37,30 +38,33 @@ public class AutoChooser {
 
     private double yaw;
 
-    public AutoChooser(Drivetrain m_drivetrain) {
+    public AutoPath(Drivetrain m_drivetrain) {
         this.autoDriver = new AutoDrive(m_drivetrain, 0, 0);
         yaw = m_drivetrain.getYaw();
     }
     
     //Returns the command associated with an enumerator
-    public CommandBase getCommand(AutoPath path, boolean dispense) {
-        switch (path) {
+    public SequentialCommandGroup getPath(AutoPaths paths, boolean dispense) {
+        switch (paths) {
             case QUICKSCORE:
-                return new QuickScore(m_drivetrain, dispense);
+                return quickScore(m_drivetrain, dispense);
             case TRENCHSCORE:
-                return new TrenchScore(m_drivetrain, dispense);
+                // return trenchScore(m_drivetrain, dispense);
+                break;
             case GENERATORSCORE:
-                return new GeneratorScore(m_drivetrain, dispense);
+                // return generatorScore(m_drivetrain, dispense);
+                break;
             case YEET:
-                return new Yeet(m_drivetrain, dispense);
+                // return yeet(m_drivetrain, dispense);
+                break;
             case TRENCHSTEAL:
-                return new TrenchSteal(m_drivetrain, dispense);
+                // return trenchSteal(m_drivetrain, dispense);
         }
         return null;
     }
 
     //Auto path options
-    public enum AutoPath {
+    public enum AutoPaths {
         //Go straight to the lower port and dispense preloaded power cells
         //Points: 11
         QUICKSCORE,
@@ -89,10 +93,10 @@ public class AutoChooser {
 
         double angle;
         if(delY > 0) {
-            angle = 90 - Math.atan(delY/delX) - currentAngle;
+            angle = 90 - Math.atan(delY/delX)*180/3.14159265358979 - currentAngle;
         }
         else {
-            angle = 0-90 - Math.atan(delY/delX) - currentAngle;
+            angle = 0-90 - Math.atan(delY/delX)*180/3.14159265358979 - currentAngle;
         }
         if(angle > 180) {
             return angle - 360;
@@ -106,6 +110,29 @@ public class AutoChooser {
         double delX = pointB[0]-pointA[0];
         double delY = pointB[1]-pointA[1];
 
-        return Math.sqrt(Math.pow(delX, 2) + Math.pow(delY, 2));
+        return Math.sqrt(delX * delX + delY * delY);
     }
+    // private SequentialCommandGroup turnAndMove(Drivet rain drivetrain, boolean ferry, double angle, double distance, double speed) {
+    //     return new SequentialCommandGroup(new AutoTurn(m_drivetrain, getAngle(m_drivetrain.getYaw(), E1), .35), new AutoDrive(m_drivetrain, getDistance(S0, E1), .35));
+    // }
+
+    private SequentialCommandGroup quickScore(Drivetrain drivetrain, boolean ferry) {
+        return new SequentialCommandGroup(new AutoDrive(m_drivetrain, getDistance(S0, E1), .35));        
+    }
+
+    // private SequentialCommandGroup trenchScore(Drivetrain drivetrain, boolean ferry) {
+    //     return new SequentialCommandGroup();
+    // }
+
+    // private SequentialCommandGroup generatorScore(Drivetrain drivetrain, boolean ferry) {
+    //     return new SequentialCommandGroup();
+    // }
+
+    // private SequentialCommandGroup yeet(Drivetrain drivetrain, boolean ferry) {
+    //     return new SequentialCommandGroup();
+    // }
+    
+    // private SequentialCommandGroup trenchSteal(Drivetrain drivetrain, boolean ferry) {
+    //     return new SequentialCommandGroup();
+    // }
 }

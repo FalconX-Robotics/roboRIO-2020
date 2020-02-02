@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Ports;
-import frc.robot.commands.AutoChooser;
-import frc.robot.commands.AutoChooser.AutoPath;
+import frc.robot.commands.AutoPath;
+import frc.robot.commands.AutoPath.AutoPaths;
 import frc.robot.commands.AutoDrive;
 import frc.robot.commands.ToggleElevator;
 import frc.robot.subsystems.Climber;
@@ -36,7 +36,7 @@ import frc.robot.subsystems.Drivetrain.EncoderBrand;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain m_drivetrain = new Drivetrain(Drivetrain.EncoderBrand.NEO);
-	private final AutoChooser m_autoChooser = new AutoChooser(m_drivetrain);
+	private final AutoPath m_autoPaths = new AutoPath(m_drivetrain);
 	private final Climber m_climber = new Climber();
 
 	/**
@@ -102,7 +102,7 @@ public class RobotContainer {
 	*/
 	public Command getAutonomousCommand() {
 		//TODO add Networktable to change the auto command from shuffleboard
-		return m_autoChooser.getCommand(AutoPath.QUICKSCORE, false);
+		return m_autoPaths.getPath(AutoPaths.QUICKSCORE, false);
 	}
 
 	/**
