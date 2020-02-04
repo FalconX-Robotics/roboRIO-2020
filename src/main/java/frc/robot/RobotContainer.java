@@ -37,7 +37,8 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain m_drivetrain = new Drivetrain(Drivetrain.EncoderBrand.NEO);
 	private final AutoPath m_autoPaths = new AutoPath(m_drivetrain);
-	private final Climber m_climber = new Climber();
+	// private final Climber m_climber = new Climber();
+	private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 12.0, 0.35);
 
 	/**
 	* The container for the robot. Contains subsystems, OI devices, and commands.
@@ -55,14 +56,14 @@ public class RobotContainer {
 				() -> false,
 				m_drivetrain));
 
-		m_climber.setDefaultCommand(new FunctionalCommand(
-			() -> {},
-			() -> {
-				m_climber.moveGondola(m_driver.getTriggerAxis(Hand.kRight)-m_driver.getTriggerAxis(Hand.kLeft));
-			},
-			(interrupted) -> m_climber.stopGondola(),
-			() -> false,
-			m_climber));
+		// m_climber.setDefaultCommand(new FunctionalCommand(
+		// 	() -> {},
+		// 	() -> {
+		// 		m_climber.moveGondola(m_driver.getTriggerAxis(Hand.kRight)-m_driver.getTriggerAxis(Hand.kLeft));
+		// 	},
+		// 	(interrupted) -> m_climber.stopGondola(),
+		// 	() -> false,
+		// 	m_climber));
 
 		InstantCommand resetGyroCommand = new InstantCommand(m_drivetrain::resetGyro, m_drivetrain);
 		resetGyroCommand.setName("Reset gyro");
@@ -92,7 +93,7 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
 		//Toggles elevator pos on press of "a" button on Xbox controller
-		new JoystickButton(m_driver, XboxController.Button.kA.value).whenPressed(new ToggleElevator(new Elevator()));
+		// new JoystickButton(m_driver, XboxController.Button.kA.value).whenPressed(new ToggleElevator(new Elevator()));
 	}
 	
 	/**
@@ -103,6 +104,7 @@ public class RobotContainer {
 	public Command getAutonomousCommand() {
 		//TODO add Networktable to change the auto command from shuffleboard
 		return m_autoPaths.getPath(AutoPaths.QUICKSCORE, false);
+		// return m_autoDrive;
 	}
 
 	/**
