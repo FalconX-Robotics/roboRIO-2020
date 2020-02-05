@@ -13,7 +13,7 @@ public class AutoDrive extends PIDCommand {
 
     public AutoDrive(Drivetrain drivetrain, double distance, double speed) { 
         super(
-            new PIDController(1, 1, 1),
+            new PIDController(0, 0, 0),
             drivetrain::getAvgEncoderPos,
             distance,
             output -> drivetrain.arcadeDrive(output, 0),

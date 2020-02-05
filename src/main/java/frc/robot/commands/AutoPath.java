@@ -33,13 +33,12 @@ public class AutoPath {
     public static final double[] E1 = {94.5, -120};
     public static final double[] E2 = {234, 146};
 
-    private AutoDrive autoDriver;
     private Drivetrain m_drivetrain;
 
     private double yaw;
 
-    public AutoPath(Drivetrain m_drivetrain) {
-        this.autoDriver = new AutoDrive(m_drivetrain, 0, 0);
+    public AutoPath(Drivetrain drivetrain) {
+        m_drivetrain = drivetrain;
         yaw = m_drivetrain.getYaw();
     }
     
@@ -64,7 +63,7 @@ public class AutoPath {
     }
 
     //Auto path options
-    public enum AutoPaths {
+    public static enum AutoPaths {
         //Go straight to the lower port and dispense preloaded power cells
         //Points: 11
         QUICKSCORE,
