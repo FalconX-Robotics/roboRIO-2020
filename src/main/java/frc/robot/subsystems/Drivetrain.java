@@ -52,7 +52,7 @@ public class Drivetrain extends SubsystemBase {
     private final CANEncoder m_rightNeoEncoder = m_frontRightMotor.getEncoder();
     private EncoderBrand currentEncoderBrand = EncoderBrand.NEO;
 
-    private final double m_motor_deadband = 0.1;
+    private final double m_motor_deadband = 0;
 
     private final PigeonIMU m_gyro = new PigeonIMU(Ports.GYRO_PORT);
 
@@ -240,7 +240,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void arcadeDrive(final double forwardSpeed, final double rotationSpeed) {
-        m_drivetrain.arcadeDrive(forwardSpeed, rotationSpeed, true);
+        m_drivetrain.arcadeDrive(forwardSpeed, rotationSpeed);
     }
 
     public void setMaxOutput(final double maxOutput) {
