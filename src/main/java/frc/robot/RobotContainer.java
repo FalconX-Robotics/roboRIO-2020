@@ -37,7 +37,7 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain m_drivetrain = new Drivetrain(Drivetrain.EncoderBrand.NEO);
 	private final AutoPath m_autoPaths = new AutoPath(m_drivetrain);
-	// private final Climber m_climber = new Climber();
+	private final Climber m_climber = new Climber();
 	private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 12.0, 0.35);
 
 	/**
@@ -92,8 +92,26 @@ public class RobotContainer {
 	*/
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
-		//Toggles elevator pos on press of "a" button on Xbox controller
-		// new JoystickButton(m_driver, XboxController.Button.kA.value).whenPressed(new ToggleElevator(new Elevator()));
+		// Toggles elevator pos on press of "a" button on Xbox controller
+		// new JoystickButton(m_driver, XboxController.Button.kA.value).whenPressed(new
+		// ToggleElevator(new Elevator()));
+		new JoystickButton(m_joystickDriver, 1).whenHeld(new FunctionalCommand(
+			() -> {},
+			() -> {
+			m_climber.moveGondola(.75);
+			},
+			(interrupted) -> m_climber.stopGondola(),
+			() -> false,
+			m_climber));
+
+		new JoystickButton(m_joystickDriver, 2).whenHeld(new FunctionalCommand(
+			() -> {},
+			() -> {
+			m_climber.moveGondola(-.75);
+			},
+			(interrupted) -> m_climber.stopGondola(),
+			() -> false,
+			m_climber));
 	}
 	
 	/**
