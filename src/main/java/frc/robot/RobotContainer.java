@@ -21,6 +21,7 @@ import frc.robot.commands.AutoPath;
 import frc.robot.commands.AutoPath.AutoPaths;
 import frc.robot.commands.AutoDrive;
 import frc.robot.commands.ToggleElevator;
+import frc.robot.commands.moveGondola;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -95,23 +96,9 @@ public class RobotContainer {
 		// Toggles elevator pos on press of "a" button on Xbox controller
 		// new JoystickButton(m_driver, XboxController.Button.kA.value).whenPressed(new
 		// ToggleElevator(new Elevator()));
-		new JoystickButton(m_joystickDriver, 1).whenHeld(new FunctionalCommand(
-			() -> {},
-			() -> {
-			m_climber.moveGondola(.75);
-			},
-			(interrupted) -> m_climber.stopGondola(),
-			() -> false,
-			m_climber));
+		new JoystickButton(m_joystickDriver, 1).whenHeld(new moveGondola(m_climber, .75));
 
-		new JoystickButton(m_joystickDriver, 2).whenHeld(new FunctionalCommand(
-			() -> {},
-			() -> {
-			m_climber.moveGondola(-.75);
-			},
-			(interrupted) -> m_climber.stopGondola(),
-			() -> false,
-			m_climber));
+		new JoystickButton(m_joystickDriver, 2).whenHeld(new moveGondola(m_climber, -.75));
 	}
 	
 	/**
