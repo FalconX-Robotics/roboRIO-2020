@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -76,7 +77,7 @@ public class Drivetrain extends SubsystemBase {
 
     public Drivetrain(final EncoderBrand encoderBrand) {
         // config motors
-        m_drivetrain.setDeadband(m_motor_deadband);
+        // m_drivetrain.setDeadband(m_motor_deadband);
         m_drivetrain.setSafetyEnabled(true);
 
         m_frontLeftMotor.restoreFactoryDefaults();
@@ -98,6 +99,17 @@ public class Drivetrain extends SubsystemBase {
         m_rightSRXEncoderMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         m_leftSRXEncoderMotor.setSensorPhase(true);
         m_rightSRXEncoderMotor.setSensorPhase(true);
+
+        // m_frontLeftMotor.setIdleMode(IdleMode.kBrake);
+        // m_frontRightMotor.setIdleMode(IdleMode.kBrake);
+        // m_rearLeftMotor.setIdleMode(IdleMode.kBrake);
+        // m_rearRightMotor.setIdleMode(IdleMode.kBrake);
+
+        m_frontLeftMotor.setIdleMode(IdleMode.kCoast);
+        m_frontRightMotor.setIdleMode(IdleMode.kCoast);
+        m_rearLeftMotor.setIdleMode(IdleMode.kCoast);
+        m_rearRightMotor.setIdleMode(IdleMode.kCoast
+        );
 
         resetEncoders();
 

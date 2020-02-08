@@ -11,14 +11,17 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.Ports;
 import frc.robot.commands.AutoDrive;
 import frc.robot.commands.AutoPath;
@@ -54,8 +57,9 @@ public class RobotContainer {
 				// () -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft),
 				// driver.getY(Hand.kRight)),
 				() -> {
-					m_drivetrain.arcadeDrive(-m_joystickDriver.getY(), m_joystickDriver.getZ());
-					m_drivetrain.setMaxOutput(1 - m_joystickDriver.getThrottle());
+					//m_drivetrain.arcadeDrive(-m_joystickDriver.getY(), m_joystickDriver.getZ());
+					m_drivetrain.arcadeDrive(m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight));
+					//m_drivetrain.setMaxOutput(1 - m_joystickDriver.getThrottle());
 				},
 				// (interrupted) -> m_drivetrain.tankDrive(0, 0),
 				(interrupted) -> m_drivetrain.stopMotor(), () -> false, m_drivetrain));
@@ -80,7 +84,7 @@ public class RobotContainer {
 		resetEncoderCommand.setName("Reset Encoder");
 		m_sensorInfoTab.getLayout("Encoder").add("Reset encoder", resetEncoderCommand);
 		System.out.println("hi");
-		InstantCommand autoDriveCommand = new InstantCommand(
+		RunCommand autoDriveCommand = new RunCommand(
 			() -> new AutoDrive(m_drivetrain, m_autoDriveDistance.getDouble(0.), m_autoDriveSpeed.getDouble(0.))
 					.schedule(),
 			m_drivetrain);
