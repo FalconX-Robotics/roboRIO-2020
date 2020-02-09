@@ -89,9 +89,7 @@ public class Drivetrain extends SubsystemBase {
         setCurrentEncoderBrand(encoderBrand);
 
         m_leftNeoEncoder.setPositionConversionFactor(kNeoEncoderConversionFactor);
-        m_rightNeoEncoder.setPositionConversionFactor(kNeoEncoderConversionFactor);
-        m_leftNeoEncoder.setVelocityConversionFactor(kNeoEncoderConversionFactor);
-        m_rightNeoEncoder.setVelocityConversionFactor(kNeoEncoderConversionFactor);
+        m_rightNeoEncoder.setPositionConversionFactor(-kNeoEncoderConversionFactor);
         // m_leftNeoEncoder.setInverted(false);
         // m_leftNeoEncoder.setInverted(false);
 
@@ -100,22 +98,27 @@ public class Drivetrain extends SubsystemBase {
         m_leftSRXEncoderMotor.setSensorPhase(true);
         m_rightSRXEncoderMotor.setSensorPhase(true);
 
-        // m_frontLeftMotor.setIdleMode(IdleMode.kBrake);
-        // m_frontRightMotor.setIdleMode(IdleMode.kBrake);
-        // m_rearLeftMotor.setIdleMode(IdleMode.kBrake);
-        // m_rearRightMotor.setIdleMode(IdleMode.kBrake);
-
-        m_frontLeftMotor.setIdleMode(IdleMode.kCoast);
-        m_frontRightMotor.setIdleMode(IdleMode.kCoast);
-        m_rearLeftMotor.setIdleMode(IdleMode.kCoast);
-        m_rearRightMotor.setIdleMode(IdleMode.kCoast
-        );
-
         resetEncoders();
 
         // for testing
         // setMaxOutput(0.5);
 
+        setIdleMode(IdleMode.kBrake);
+        setRamp();
+    }
+
+    public void setIdleMode(IdleMode idleMode) {
+        m_frontLeftMotor.setIdleMode(idleMode);
+        m_frontRightMotor.setIdleMode(idleMode);
+        m_rearLeftMotor.setIdleMode(idleMode);
+        m_rearRightMotor.setIdleMode(idleMode);
+    }
+
+    public void setRamp() {
+        m_frontLeftMotor.setOpenLoopRampRate(0.15);
+        m_frontRightMotor.setOpenLoopRampRate(0.15);
+        m_rearLeftMotor.setOpenLoopRampRate(0.15);
+        m_rearRightMotor.setOpenLoopRampRate(0.15);
     }
 
     public enum EncoderBrand {
@@ -184,7 +187,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getAvgEncoderPos() {
-        return (getLeftEncoderPos() + getRightEncoderPos()) / 2;
+        return getAvgEncoderPos(currentEncoderBrand);
     }
 
     public double getLeftEncoderSpeed(final EncoderBrand brand) {
@@ -247,12 +250,27 @@ public class Drivetrain extends SubsystemBase {
         return getYawPitchRoll()[2];
     }
 
-    public void tankDrive(final double leftSpeed, final double rightSpeed) {
-        m_drivetrain.tankDrive(leftSpeed, rightSpeed, true);
+    public void tankDrive(final double leftSpeed, final double rightSpeed, final boolean squareInput) {
+        m_drivetrain.tankDrive(leftSpeed, rightSpeed, squareInput);
     }
 
+    /**
+     * Tank drives without square input.
+     */
+    public void tankDrive(final double leftSpeed, final double rightSpeed) {
+        tankDrive(leftSpeed, rightSpeed, false);
+    }
+
+
+    public void arcadeDrive(final double forwardSpeed, final double rotationSpeed, final boolean squareInput) {
+        m_drivetrain.arcadeDrive(forwardSpeed, rotationSpeed, squareInput);
+    }
+
+    /**
+     * Arcade drives without square input.
+     */
     public void arcadeDrive(final double forwardSpeed, final double rotationSpeed) {
-        m_drivetrain.arcadeDrive(forwardSpeed, rotationSpeed);
+        arcadeDrive(forwardSpeed, rotationSpeed, false);
     }
 
     public void setMaxOutput(final double maxOutput) {
@@ -278,5 +296,8 @@ public class Drivetrain extends SubsystemBase {
         m_rawGyroWidget.setString(Arrays.toString(getYawPitchRoll()));
 
         m_talonTachWidget.setBoolean(getTalonTachPressed());
+
+        System.out.println("left enc: " + getLeftEncoderPos());
+        System.out.println("right enc: " + getRightEncoderPos());
     }
 }

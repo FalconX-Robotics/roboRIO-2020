@@ -41,10 +41,10 @@ public class RobotContainer {
 	private final Drivetrain m_drivetrain = new Drivetrain(Drivetrain.EncoderBrand.NEO);
 	private final AutoPath m_autoPaths = new AutoPath(m_drivetrain);
 	// private final Climber m_climber = new Climber();
-	private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 12.0, 0.35);
+	// private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 12.0, 0.35);
 
 	private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
-	private static final ShuffleboardLayout m_autoDrivePID = m_sensorInfoTab.getLayout("Auto Drive PID", BuiltInLayouts.kList);
+	private static final ShuffleboardLayout m_autoDrivePID = Shuffleboard.getTab("Auto Drive").getLayout("Auto Drive PID", BuiltInLayouts.kList);
 	private static final NetworkTableEntry m_autoDriveDistance = m_autoDrivePID.add("distance", 0.).getEntry();
 	private static final NetworkTableEntry m_autoDriveSpeed = m_autoDrivePID.add("speed", 0.).getEntry();
 
@@ -55,10 +55,10 @@ public class RobotContainer {
 		m_drivetrain.setDefaultCommand(new FunctionalCommand(() -> {
 		},
 				// () -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft),
-				// driver.getY(Hand.kRight)),
+				// driver.getY(Hand.kRight), true),
 				() -> {
 					//m_drivetrain.arcadeDrive(-m_joystickDriver.getY(), m_joystickDriver.getZ());
-					m_drivetrain.arcadeDrive(m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight));
+					m_drivetrain.arcadeDrive(m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight), true);
 					//m_drivetrain.setMaxOutput(1 - m_joystickDriver.getThrottle());
 				},
 				// (interrupted) -> m_drivetrain.tankDrive(0, 0),
@@ -90,7 +90,6 @@ public class RobotContainer {
 			m_drivetrain);
 		autoDriveCommand.setName("Auto Drive Command");
 		m_autoDrivePID.add("Auto drive", autoDriveCommand);
-		m_autoDrivePID.add("Test", new PrintCommand("hi"));
 
 		// Configure the button bindings
 		configureButtonBindings();
