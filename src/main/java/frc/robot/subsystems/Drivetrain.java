@@ -297,7 +297,7 @@ public class Drivetrain extends SubsystemBase {
 
         m_talonTachWidget.setBoolean(getTalonTachPressed());
 
-        System.out.println("left enc: " + getLeftEncoderPos());
-        System.out.println("right enc: " + getRightEncoderPos());
+        // System.out.println("left enc: " + getLeftEncoderPos());
+        // System.out.println("right enc: " + getRightEncoderPos());
     }
 }

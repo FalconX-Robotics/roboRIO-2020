@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.Constants.AutoDriveShuffleBoard;
 import frc.robot.Constants.Ports;
 import frc.robot.commands.AutoDrive;
 import frc.robot.commands.AutoPath;
@@ -44,14 +45,13 @@ public class RobotContainer {
 	// private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 12.0, 0.35);
 
 	private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
-	private static final ShuffleboardLayout m_autoDrivePID = Shuffleboard.getTab("Auto Drive").getLayout("Auto Drive PID", BuiltInLayouts.kList);
-	private static final NetworkTableEntry m_autoDriveDistance = m_autoDrivePID.add("distance", 0.).getEntry();
-	private static final NetworkTableEntry m_autoDriveSpeed = m_autoDrivePID.add("speed", 0.).getEntry();
-
+	
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
+		Constants.AutoDriveShuffleBoard.init();
+
 		m_drivetrain.setDefaultCommand(new FunctionalCommand(() -> {
 		},
 				// () -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft),
@@ -82,14 +82,14 @@ public class RobotContainer {
 			m_drivetrain.resetEncoders(EncoderBrand.SRX);
 		}, m_drivetrain);
 		resetEncoderCommand.setName("Reset Encoder");
+	
 		m_sensorInfoTab.getLayout("Encoder").add("Reset encoder", resetEncoderCommand);
-		System.out.println("hi");
 		RunCommand autoDriveCommand = new RunCommand(
-			() -> new AutoDrive(m_drivetrain, m_autoDriveDistance.getDouble(0.), m_autoDriveSpeed.getDouble(0.))
+			() -> new AutoDrive(m_drivetrain, AutoDriveShuffleBoard.distance.getDouble(0.), AutoDriveShuffleBoard.speed.getDouble(0.))
 					.schedule(),
 			m_drivetrain);
 		autoDriveCommand.setName("Auto Drive Command");
-		m_autoDrivePID.add("Auto drive", autoDriveCommand);
+		Shuffleboard.getTab("Auto Drive").add("Auto drive", autoDriveCommand).withPosition(2, 3).withSize(2, 1);
 
 		// Configure the button bindings
 		configureButtonBindings();

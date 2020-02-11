@@ -7,13 +7,24 @@
 
 package frc.robot;
 
+import java.util.Map;
+
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants.  This class should not be used for any other purpose.  All constants should be
- * declared globally (i.e. public static).  Do not put anything functional in this class.
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean constants. This class should not be used for any other
+ * purpose. All constants should be declared globally (i.e. public static). Do
+ * not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
     public final static class Ports {
@@ -47,5 +58,32 @@ public final class Constants {
         public static final int ELEVATOR_MOTOR_BACK_PORT = 00; 
       
         public static final int GONDALA_MOTOR_PORT = 10; //TODO Use actual port
+    }
+
+    public static class AutoDriveShuffleBoard {
+        public static void init() {} // don't delete, thx
+        public static final ShuffleboardTab tab = Shuffleboard.getTab("Auto Drive");
+        // public static final ShuffleboardLayout PIDLayout = tab.getLayout("PID", BuiltInLayouts.kList)
+                // .withProperties(Map.of("Label Position", "RIGHT")).withSize(2, 3).withPosition(0, 0);
+    
+        public static final NetworkTableEntry pEntry = tab.add("P", 0.).withSize(2, 1).withPosition(0, 0).getEntry();
+        public static final NetworkTableEntry iEntry = tab.add("I", 0.).withSize(2, 1).withPosition(0, 1).getEntry();
+        public static final NetworkTableEntry dEntry = tab.add("D", 0.).withSize(2, 1).withPosition(0, 2).getEntry();
+    
+        public static final NetworkTableEntry isFinished = tab
+                .add("Is finished", false)
+                .withSize(2, 2).withPosition(2, 0).getEntry();
+        public static final NetworkTableEntry targetDistance = tab.add("Target Distance", 0.)
+                .withSize(2, 1).withPosition(2, 2).getEntry();
+        public static final NetworkTableEntry currentDistance = tab.add("Current Distance", 0.)
+                .withWidget(BuiltInWidgets.kGraph)
+                .withSize(6, 4).withPosition(4, 0).getEntry();
+
+        public static final NetworkTableEntry distance = tab.add("Distance", 0.).withSize(2, 1).withPosition(0, 3).getEntry();
+        public static final NetworkTableEntry speed = tab.add("Speed", 0.).withSize(2, 1).withPosition(0, 4).getEntry();
+
+        static {
+            System.out.println("hi");
+        }
     }
 }
