@@ -23,9 +23,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.AutoDriveShuffleBoard;
+import frc.robot.Constants.AutoTurnShuffleBoard;
 import frc.robot.Constants.Ports;
 import frc.robot.commands.AutoDrive;
 import frc.robot.commands.AutoPath;
+import frc.robot.commands.AutoTurn;
 import frc.robot.commands.AutoPath.AutoPaths;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Drivetrain.EncoderBrand;
@@ -51,6 +53,7 @@ public class RobotContainer {
 	 */
 	public RobotContainer() {
 		Constants.AutoDriveShuffleBoard.init();
+		Constants.AutoTurnShuffleBoard.init();
 
 		m_drivetrain.setDefaultCommand(new FunctionalCommand(() -> {
 		},
@@ -84,12 +87,20 @@ public class RobotContainer {
 		resetEncoderCommand.setName("Reset Encoder");
 	
 		m_sensorInfoTab.getLayout("Encoder").add("Reset encoder", resetEncoderCommand);
+
 		RunCommand autoDriveCommand = new RunCommand(
 			() -> new AutoDrive(m_drivetrain, AutoDriveShuffleBoard.distance.getDouble(0.), AutoDriveShuffleBoard.speed.getDouble(0.))
 					.schedule(),
 			m_drivetrain);
 		autoDriveCommand.setName("Auto Drive Command");
 		Shuffleboard.getTab("Auto Drive").add("Auto drive", autoDriveCommand).withPosition(2, 3).withSize(2, 1);
+
+		RunCommand autoTurnCommand = new RunCommand(
+			() -> new AutoTurn(m_drivetrain, AutoTurnShuffleBoard.angle.getDouble(0.))
+					.schedule(),
+			m_drivetrain);
+		autoTurnCommand.setName("Auto Turn Command");
+		Shuffleboard.getTab("Auto Turn").add("Auto turn", autoTurnCommand).withPosition(2, 3).withSize(2, 1);
 
 		// Configure the button bindings
 		configureButtonBindings();

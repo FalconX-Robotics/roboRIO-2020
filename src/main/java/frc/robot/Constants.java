@@ -63,6 +63,7 @@ public final class Constants {
     public static class AutoDriveShuffleBoard {
         public static void init() {} // don't delete, thx
         public static final ShuffleboardTab tab = Shuffleboard.getTab("Auto Drive");
+        
         // public static final ShuffleboardLayout PIDLayout = tab.getLayout("PID", BuiltInLayouts.kList)
                 // .withProperties(Map.of("Label Position", "RIGHT")).withSize(2, 3).withPosition(0, 0);
     
@@ -78,12 +79,39 @@ public final class Constants {
         public static final NetworkTableEntry currentDistance = tab.add("Current Distance", 0.)
                 .withWidget(BuiltInWidgets.kGraph)
                 .withSize(6, 4).withPosition(4, 0).getEntry();
+        public static final NetworkTableEntry currentDistance2 = tab.add("Current distance", 0.)
+                .withSize(2, 1).withPosition(4, 4).getEntry();
 
         public static final NetworkTableEntry distance = tab.add("Distance", 0.).withSize(2, 1).withPosition(0, 3).getEntry();
         public static final NetworkTableEntry speed = tab.add("Speed", 0.).withSize(2, 1).withPosition(0, 4).getEntry();
-
         static {
             System.out.println("hi");
         }
+
+    }
+
+    public static class AutoTurnShuffleBoard {
+        public static void init() {} // don't delete, thx
+        public static final ShuffleboardTab tab = Shuffleboard.getTab("Auto Turn");
+        
+        // public static final ShuffleboardLayout PIDLayout = tab.getLayout("PID", BuiltInLayouts.kList)
+                // .withProperties(Map.of("Label Position", "RIGHT")).withSize(2, 3).withPosition(0, 0);
+    
+        public static final NetworkTableEntry pEntry = tab.add("P", 0.).withSize(2, 1).withPosition(0, 0).getEntry();
+        public static final NetworkTableEntry iEntry = tab.add("I", 0.).withSize(2, 1).withPosition(0, 1).getEntry();
+        public static final NetworkTableEntry dEntry = tab.add("D", 0.).withSize(2, 1).withPosition(0, 2).getEntry();
+    
+        public static final NetworkTableEntry isFinished = tab
+                .add("Is finished", false)
+                .withSize(2, 2).withPosition(2, 0).getEntry();
+        public static final NetworkTableEntry targetAngle = tab.add("Target Angle", 0.)
+                .withSize(2, 1).withPosition(2, 2).getEntry();
+        public static final NetworkTableEntry currentAngle = tab.add("Current Angle", 0.)
+                .withWidget(BuiltInWidgets.kGraph)
+                .withSize(6, 4).withPosition(4, 0).getEntry();
+        public static final NetworkTableEntry currentAngle2 = tab.add("Current angle", 0.)
+                .withSize(2, 1).withPosition(4, 4).getEntry();
+        
+        public static final NetworkTableEntry angle = tab.add("Angle", 0.).withSize(2, 1).withPosition(0, 3).getEntry();
     }
 }

@@ -44,7 +44,7 @@ public class AutoDrive extends PIDCommand {
     @Override
     public void initialize() {
         super.initialize();
-        m_drivetrain.setIdleMode(IdleMode.kCoast);
+        m_drivetrain.setIdleMode(IdleMode.kBrake);
         double m_initialMeasurement = m_drivetrain.getLeftEncoderPos();
         m_measurement = () -> Math.abs(-m_initialMeasurement + m_drivetrain.getLeftEncoderPos());
     }
@@ -53,6 +53,7 @@ public class AutoDrive extends PIDCommand {
     public void execute() {
         super.execute();
         AutoDriveShuffleBoard.currentDistance.setDouble(m_measurement.getAsDouble());
+        AutoDriveShuffleBoard.currentDistance2.setDouble(m_measurement.getAsDouble());
         AutoDriveShuffleBoard.targetDistance.setDouble(m_distance);
     }
 
