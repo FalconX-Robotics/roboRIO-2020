@@ -65,7 +65,7 @@ public class RobotContainer {
 				// driver.getY(Hand.kRight), true),
 				() -> {
 					//m_drivetrain.arcadeDrive(-m_joystickDriver.getY(), m_joystickDriver.getZ());
-					m_drivetrain.arcadeDrive(m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight), true);
+					m_drivetrain.arcadeDrive(-m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight), true);
 					//m_drivetrain.setMaxOutput(1 - m_joystickDriver.getThrottle());
 				},
 				// (interrupted) -> m_drivetrain.tankDrive(0, 0),
