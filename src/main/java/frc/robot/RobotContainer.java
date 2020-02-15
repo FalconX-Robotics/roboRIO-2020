@@ -30,7 +30,7 @@ import frc.robot.Constants.Ports;
 import frc.robot.commands.AutoDrive;
 import frc.robot.commands.AutoPath;
 import frc.robot.commands.AutoTurn;
-import frc.robot.commands.moveGondola;
+import frc.robot.commands.MoveGondola;
 import frc.robot.commands.AutoPath.AutoPaths;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
@@ -125,9 +125,9 @@ public class RobotContainer {
 		// new JoystickButton(m_driver, XboxController.Button.kA.value).whenPressed(new
 		// ToggleElevator(new Elevator()));
 
-		new JoystickButton(m_driver, Button.kA.value).whenHeld(new moveGondola(m_climber, .75));
+		new JoystickButton(m_driver, Button.kA.value).whenHeld(new MoveGondola(m_climber, .75));
 
-		new JoystickButton(m_driver, Button.kB.value).whenHeld(new moveGondola(m_climber, -.75));
+		new JoystickButton(m_driver, Button.kB.value).whenHeld(new MoveGondola(m_climber, -.75));
 	}
 
 	/**
