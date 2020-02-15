@@ -24,25 +24,25 @@ public class MoveIntake extends CommandBase {
     @Override
     public void execute() {
         switch (m_position) {
-            case GROUND:
-                if(m_currentIntakePostion == IntakePosition.STORE) {
+            case BOTTOM:
+                if(m_currentIntakePostion == IntakePosition.MIDDLE) {
                     //go from store to ground
                 } 
-                else if(m_currentIntakePostion == IntakePosition.DISPENSE){
+                else if(m_currentIntakePostion == IntakePosition.TOP){
                     //go from dispense to ground
                 }
-            case STORE:
-                if(m_currentIntakePostion == IntakePosition.GROUND) {
+            case MIDDLE:
+                if(m_currentIntakePostion == IntakePosition.BOTTOM) {
                     //go from ground to store
                 } 
-                else if(m_currentIntakePostion == IntakePosition.DISPENSE){
+                else if(m_currentIntakePostion == IntakePosition.TOP){
                     //go from dispense to store
                 }
-            case DISPENSE:
-                if(m_currentIntakePostion == IntakePosition.STORE) {
+            case TOP:
+                if(m_currentIntakePostion == IntakePosition.MIDDLE) {
                     //go from store to dispense
                 } 
-                else if(m_currentIntakePostion == IntakePosition.GROUND){
+                else if(m_currentIntakePostion == IntakePosition.BOTTOM){
                     //go from dispense to dispense
                 }      
         }

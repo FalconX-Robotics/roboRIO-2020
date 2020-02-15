@@ -31,10 +31,13 @@ import frc.robot.commands.AutoDrive;
 import frc.robot.commands.AutoPath;
 import frc.robot.commands.AutoTurn;
 import frc.robot.commands.MoveGondola;
+import frc.robot.commands.MoveIntake;
 import frc.robot.commands.AutoPath.AutoPaths;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Drivetrain.EncoderBrand;
+import frc.robot.subsystems.Intake.IntakePosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -48,6 +51,7 @@ public class RobotContainer {
 	private final Drivetrain m_drivetrain = new Drivetrain(Drivetrain.EncoderBrand.NEO);
 	private final AutoPath m_autoPaths = new AutoPath(m_drivetrain);
 	private final Climber m_climber = new Climber();
+	private final Intake m_intake = new Intake();
 	private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 12.0, 0.35);
 
 	private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
@@ -116,8 +120,8 @@ public class RobotContainer {
 	/**
 	 * Use this method to define your button->command mappings. Buttons can be
 	 * created by instantiating a {@link GenericHID} or one of its subclasses
-	 * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
-	 * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+	 * ({@link edu.wpi.first.wpilibj.Joystick Joystick} or {@link XboxController}), and then
+	 * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton JoystickButton}.
 	 */
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
@@ -126,8 +130,10 @@ public class RobotContainer {
 		// ToggleElevator(new Elevator()));
 
 		new JoystickButton(m_driver, Button.kA.value).whenHeld(new MoveGondola(m_climber, .75));
-
 		new JoystickButton(m_driver, Button.kB.value).whenHeld(new MoveGondola(m_climber, -.75));
+
+		new JoystickButton(m_driver, Button.kX.value).whenPressed(new MoveIntake(m_intake, IntakePosition.BOTTOM));
+		new JoystickButton(m_driver, Button.kX.value).whenPressed(new MoveIntake(m_intake, IntakePosition.TOP));
 	}
 
 	/**
