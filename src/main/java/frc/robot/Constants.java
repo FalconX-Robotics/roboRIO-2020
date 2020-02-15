@@ -51,6 +51,9 @@ public final class Constants {
         public static final int INTAKE_MECHANISM_MOTOR_PORT = 12; //^^
 
         public static final int TALON_TACH_PORT = 9;
+
+        public static final int TOP_TACH_PORT = 0;
+        public static final int BOTTOM_TACH_PORT = 1;
         
         public static final int ELEVATOR_LIMIT_SWITCH_LOWER_PORT = 00;
         public static final int ELEVATOR_LIMIT_SWITCH_UPPER_PORT = 00;
