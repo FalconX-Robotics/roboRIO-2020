@@ -15,7 +15,6 @@ public class Climber extends SubsystemBase {
 
     }
 
-
     /**
      * @param speed The speed of the motor. -1 is left (maybe) and +1 is right (maybe)
      */
