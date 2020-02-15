@@ -6,8 +6,8 @@ import frc.robot.subsystems.Intake.RollerState;
 
 public class SetRollers extends CommandBase {
 
-    private final double intakeSpeed = 0.2;     //TODO: test for appropriate speed
-    private final double outtakeSpeed = 0.5;
+    private final double m_intakeSpeed = 0.2;     //TODO: test for appropriate speed
+    private final double m_outtakeSpeed = 0.2;
     
     private final Intake m_intake;
     private RollerState m_rollerState;
@@ -19,8 +19,19 @@ public class SetRollers extends CommandBase {
     }
 
     @Override
-    public void execute(
+    public void execute() {
+        switch(m_rollerState) {                               
+            case INTAKE:
+                m_intake.setRollerMotorForward(m_intakeSpeed);         //TODO: confirm intake/outtake direction
+                break;
+            case OUTTAKE:
+                m_intake.setRollerMotorReverse(m_outtakeSpeed);
+                break;
+        }
+    }
 
-    )
+    public void end() {
+        m_intake.stopRollerMotor();
+    }
     
 }

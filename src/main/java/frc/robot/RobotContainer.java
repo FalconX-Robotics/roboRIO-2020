@@ -32,12 +32,16 @@ import frc.robot.commands.AutoPath;
 import frc.robot.commands.AutoTurn;
 import frc.robot.commands.MoveGondola;
 import frc.robot.commands.MoveIntake;
+import frc.robot.commands.SetRollers;
+import frc.robot.commands.ToggleElevator;
 import frc.robot.commands.AutoPath.AutoPaths;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Drivetrain.EncoderBrand;
 import frc.robot.subsystems.Intake.IntakePosition;
+import frc.robot.subsystems.Intake.RollerState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -125,15 +129,17 @@ public class RobotContainer {
 	 */
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
-		// Toggles elevator pos on press of "a" button on Xbox controller
-		// new JoystickButton(m_driver, XboxController.Button.kA.value).whenPressed(new
-		// ToggleElevator(new Elevator()));
+		
+		//new JoystickButton(m_driver, Button.kA.value).whenPressed(new ToggleElevator(new Elevator()));
 
 		new JoystickButton(m_driver, Button.kA.value).whenHeld(new MoveGondola(m_climber, .75));
 		new JoystickButton(m_driver, Button.kB.value).whenHeld(new MoveGondola(m_climber, -.75));
 
 		new JoystickButton(m_driver, Button.kX.value).whenPressed(new MoveIntake(m_intake, IntakePosition.BOTTOM));
 		new JoystickButton(m_driver, Button.kX.value).whenPressed(new MoveIntake(m_intake, IntakePosition.TOP));
+		
+		new JoystickButton(m_driver, Button.kBumperLeft.value).whenHeld(new SetRollers(m_intake, RollerState.INTAKE), false);
+		new JoystickButton(m_driver, Button.kBumperRight.value).whenHeld(new SetRollers(m_intake, RollerState.OUTTAKE), false);
 	}
 
 	/**

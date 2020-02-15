@@ -13,12 +13,15 @@ public class Intake extends SubsystemBase {
 
     private final WPI_TalonSRX m_rollerMotor = new WPI_TalonSRX(Ports.ROLLER_MOTOR_PORT);                                                                                                      // not sure                                                                                                          // rn
     private final WPI_TalonSRX m_intakeMotor = new WPI_TalonSRX(Ports.INTAKE_MECHANISM_MOTOR_PORT);
-    private double m_intakeMotorSpeed = 0.5; 
-    private double m_rollerMotorSpeed = 0.5;
+    private double m_intakeMotorSpeed = 0.5;
     private IntakePosition currentIntakePosition = IntakePosition.BOTTOM;
 
     public enum IntakePosition {
         BOTTOM, MIDDLE, TOP;
+    }
+
+    public enum RollerState {
+        INTAKE, OUTTAKE;
     }
 
     public IntakePosition getCurrentIntakePosition() {
@@ -43,12 +46,12 @@ public class Intake extends SubsystemBase {
         m_intakeMotor.stopMotor();
     }
 
-    public void setRollerMotorForward() {
-        m_rollerMotor.set(m_rollerMotorSpeed);
+    public void setRollerMotorForward(double speed) {
+        m_rollerMotor.set(speed);
     }
 
-    public void setRollerMotorReverse() {
-        m_rollerMotor.set(-m_rollerMotorSpeed);
+    public void setRollerMotorReverse(double speed) {
+        m_rollerMotor.set(-speed);
     }
 
     public void stopRollerMotor() {
