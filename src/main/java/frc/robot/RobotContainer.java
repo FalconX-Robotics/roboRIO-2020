@@ -66,6 +66,7 @@ public class RobotContainer {
 	public RobotContainer() {
 		Constants.AutoDriveShuffleBoard.init();
 		Constants.AutoTurnShuffleBoard.init();
+		Constants.AutoIntakeShuffleBoard.init();
 
 		m_drivetrain.setDefaultCommand(new FunctionalCommand(() -> {
 		},
@@ -136,7 +137,7 @@ public class RobotContainer {
 		new JoystickButton(m_driver, Button.kB.value).whenHeld(new MoveGondola(m_climber, -.75));
 
 		new JoystickButton(m_driver, Button.kX.value).whenPressed(new MoveIntake(m_intake, IntakePosition.BOTTOM));
-		new JoystickButton(m_driver, Button.kX.value).whenPressed(new MoveIntake(m_intake, IntakePosition.TOP));
+		new JoystickButton(m_driver, Button.kY.value).whenPressed(new MoveIntake(m_intake, IntakePosition.TOP));
 		
 		new JoystickButton(m_driver, Button.kBumperLeft.value).whenHeld(new SetRollers(m_intake, RollerState.INTAKE), false);
 		new JoystickButton(m_driver, Button.kBumperRight.value).whenHeld(new SetRollers(m_intake, RollerState.OUTTAKE), false);

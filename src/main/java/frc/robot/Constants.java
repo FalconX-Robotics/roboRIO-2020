@@ -46,6 +46,7 @@ public final class Constants {
         public static final int RIGHT_ENCODER_B = 3;
 
         public static final int GYRO_PORT = 7;
+        public static final int INTAKE_GYRO_PORT = 48390;
 
         public static final int ROLLER_MOTOR_PORT = 11; //randomly chosen sorry
         public static final int INTAKE_MECHANISM_MOTOR_PORT = 12; //^^
@@ -96,6 +97,31 @@ public final class Constants {
     public static class AutoTurnShuffleBoard {
         public static void init() {} // don't delete, thx
         public static final ShuffleboardTab tab = Shuffleboard.getTab("Auto Turn");
+        
+        // public static final ShuffleboardLayout PIDLayout = tab.getLayout("PID", BuiltInLayouts.kList)
+                // .withProperties(Map.of("Label Position", "RIGHT")).withSize(2, 3).withPosition(0, 0);
+    
+        public static final NetworkTableEntry pEntry = tab.add("P", 0.).withSize(2, 1).withPosition(0, 0).getEntry();
+        public static final NetworkTableEntry iEntry = tab.add("I", 0.).withSize(2, 1).withPosition(0, 1).getEntry();
+        public static final NetworkTableEntry dEntry = tab.add("D", 0.).withSize(2, 1).withPosition(0, 2).getEntry();
+    
+        public static final NetworkTableEntry isFinished = tab
+                .add("Is finished", false)
+                .withSize(2, 2).withPosition(2, 0).getEntry();
+        public static final NetworkTableEntry targetAngle = tab.add("Target Angle", 0.)
+                .withSize(2, 1).withPosition(2, 2).getEntry();
+        public static final NetworkTableEntry currentAngle = tab.add("Current Angle", 0.)
+                .withWidget(BuiltInWidgets.kGraph)
+                .withSize(6, 4).withPosition(4, 0).getEntry();
+        public static final NetworkTableEntry currentAngle2 = tab.add("Current angle", 0.)
+                .withSize(2, 1).withPosition(4, 4).getEntry();
+        
+        public static final NetworkTableEntry angle = tab.add("Angle", 0.).withSize(2, 1).withPosition(0, 3).getEntry();
+    }
+
+    public static class AutoIntakeShuffleBoard {
+        public static void init() {} // don't delete, thx
+        public static final ShuffleboardTab tab = Shuffleboard.getTab("Auto Intake");
         
         // public static final ShuffleboardLayout PIDLayout = tab.getLayout("PID", BuiltInLayouts.kList)
                 // .withProperties(Map.of("Label Position", "RIGHT")).withSize(2, 3).withPosition(0, 0);

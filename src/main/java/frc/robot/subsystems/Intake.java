@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,7 +14,11 @@ public class Intake extends SubsystemBase {
 
     private final WPI_TalonSRX m_rollerMotor = new WPI_TalonSRX(Ports.ROLLER_MOTOR_PORT);                                                                                                      // not sure                                                                                                          // rn
     private final WPI_TalonSRX m_intakeMotor = new WPI_TalonSRX(Ports.INTAKE_MECHANISM_MOTOR_PORT);
-    private double m_intakeMotorSpeed = 0.5;
+
+    private final PigeonIMU m_gyro = new PigeonIMU(Ports.INTAKE_GYRO_PORT);
+
+    private double m_intakeMotorSpeed = 0.5; 
+    private double m_rollerMotorSpeed = 0.5;
     private IntakePosition currentIntakePosition = IntakePosition.BOTTOM;
 
     public enum IntakePosition {
@@ -32,6 +37,10 @@ public class Intake extends SubsystemBase {
         if (position == null || position == currentIntakePosition)
             return;
         currentIntakePosition = position;
+    }
+
+    public void setIntakeMotor(double speed) {
+        m_intakeMotor.set(speed);
     }
 
     public void setIntakeMotorForward() {
@@ -62,7 +71,13 @@ public class Intake extends SubsystemBase {
         return topTalonTach.get();
     }
 
-    public boolean isBottomTaschPressed() {
+    public boolean isBottomTachPressed() {
         return bottomTalonTach.get();
+    }
+
+    public double getPitch() {
+        final double data[] = new double[3];
+        m_gyro.getYawPitchRoll(data);
+        return data[0];
     }
 }
