@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -22,13 +23,16 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoDriveShuffleBoard;
 import frc.robot.Constants.AutoTurnShuffleBoard;
 import frc.robot.Constants.Ports;
 import frc.robot.commands.AutoDrive;
 import frc.robot.commands.AutoPath;
 import frc.robot.commands.AutoTurn;
+import frc.robot.commands.moveGondola;
 import frc.robot.commands.AutoPath.AutoPaths;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Drivetrain.EncoderBrand;
 
@@ -43,8 +47,8 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain m_drivetrain = new Drivetrain(Drivetrain.EncoderBrand.NEO);
 	private final AutoPath m_autoPaths = new AutoPath(m_drivetrain);
-	// private final Climber m_climber = new Climber();
-	// private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 12.0, 0.35);
+	private final Climber m_climber = new Climber();
+	private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 12.0, 0.35);
 
 	private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
 	
@@ -120,6 +124,10 @@ public class RobotContainer {
 		// Toggles elevator pos on press of "a" button on Xbox controller
 		// new JoystickButton(m_driver, XboxController.Button.kA.value).whenPressed(new
 		// ToggleElevator(new Elevator()));
+
+		new JoystickButton(m_driver, Button.kA.value).whenHeld(new moveGondola(m_climber, .75));
+
+		new JoystickButton(m_driver, Button.kB.value).whenHeld(new moveGondola(m_climber, -.75));
 	}
 
 	/**
