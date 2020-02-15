@@ -20,9 +20,21 @@ public class Intake extends SubsystemBase {
     private double m_intakeMotorSpeed = 0.5; 
     private double m_rollerMotorSpeed = 0.5;
     private IntakePosition currentIntakePosition = IntakePosition.BOTTOM;
+    
+    private double m_maxOutput = 1;
 
     public enum IntakePosition {
-        BOTTOM, MIDDLE, TOP;
+        BOTTOM(0), MIDDLE(10), TOP(90);
+
+        private double desiredAngle;
+
+        private IntakePosition(double desiredAngle) {
+            this.desiredAngle = desiredAngle;
+        }
+
+        public double getDesiredAngle() {
+            return desiredAngle;
+        }
     }
 
     public enum RollerState {
@@ -39,16 +51,22 @@ public class Intake extends SubsystemBase {
         currentIntakePosition = position;
     }
 
+    private double limit(double input, double max, double min) {
+        if (input > max) return max;
+        if (input < min) return min;
+        return input;
+    }
+
     public void setIntakeMotor(double speed) {
-        m_intakeMotor.set(speed);
+        m_intakeMotor.set(limit(speed, m_maxOutput, -m_maxOutput));
     }
 
     public void setIntakeMotorForward() {
-        m_intakeMotor.set(m_intakeMotorSpeed);
+        setIntakeMotor(m_intakeMotorSpeed);
     }
 
     public void setIntakeMotorReverse() {
-        m_intakeMotor.set(-m_intakeMotorSpeed);
+        setIntakeMotor(-m_intakeMotorSpeed);
     }
 
     public void stopIntakeMotor() {
@@ -79,5 +97,9 @@ public class Intake extends SubsystemBase {
         final double data[] = new double[3];
         m_gyro.getYawPitchRoll(data);
         return data[0];
+    }
+
+    public void setIntakeMotorMaxOutput(double maxOutput) {
+        this.m_maxOutput = maxOutput;
     }
 }
