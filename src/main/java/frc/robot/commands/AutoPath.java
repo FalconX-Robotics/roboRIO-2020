@@ -1,10 +1,25 @@
 package frc.robot.commands;
 
+import java.io.IOException;
 import java.lang.Math;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.commands.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.Constants;
+import frc.robot.Constants.RamseteConstants;
+
+import java.nio.file.Path;
+import java.nio.file.FileSystem;
+import edu.wpi.first.wpilibj.Filesystem;
+
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.controller.PIDController;
 
 public class AutoPath {
     /*  This is a list of the coordinates of all (guaranteed) balls and starting/ending
@@ -30,8 +45,11 @@ public class AutoPath {
     public static final double[] B9 = {304.7, 130.4};
 
     //Robot ending positions
-    public static final double[] E1 = {94.5, -120};
-    public static final double[] E2 = {234, 146};
+    public static final double[] E0 = {94.5, -120};
+    public static final double[] E1 = {234, 146};
+
+    //Pathweaver trajectories
+    public static final String S0B0 = "paths/S0B0.wpilib.json";
 
     private Drivetrain m_drivetrain;
 
@@ -43,27 +61,29 @@ public class AutoPath {
     }
     
     //Returns the command associated with an enumerator
-    public SequentialCommandGroup getPath(AutoPaths paths, boolean dispense) {
+    public SequentialCommandGroup getPath(AutoPaths paths, boolean ferry) {
         switch (paths) {
-            case QUICKSCORE:
-                return quickScore(m_drivetrain, dispense);
-            case TRENCHSCORE:
-                // return trenchScore(m_drivetrain, dispense);
+            case TEST:
+                // return testScore(m_drivetrain, ferry);
                 break;
+            case QUICKSCORE:
+                return quickScore(m_drivetrain, ferry);
+            case TRENCHSCORE:
+                return trenchScore(m_drivetrain, ferry);
             case GENERATORSCORE:
-                // return generatorScore(m_drivetrain, dispense);
+                // return generatorScore(m_drivetrain, ferry);
                 break;
             case YEET:
-                // return yeet(m_drivetrain, dispense);
-                break;
+                return yeet(m_drivetrain, ferry);
             case TRENCHSTEAL:
-                // return trenchSteal(m_drivetrain, dispense);
+                return trenchSteal(m_drivetrain, ferry);
         }
         return null;
     }
 
     //Auto path options
     public static enum AutoPaths {
+        TEST,
         //Go straight to the lower port and dispense preloaded power cells
         //Points: 11
         QUICKSCORE,
@@ -111,27 +131,75 @@ public class AutoPath {
 
         return Math.sqrt(delX * delX + delY * delY);
     }
-    // private SequentialCommandGroup turnAndMove(Drivet rain drivetrain, boolean ferry, double angle, double distance, double speed) {
-    //     return new SequentialCommandGroup(new AutoTurn(m_drivetrain, getAngle(m_drivetrain.getYaw(), E1), .35), new AutoDrive(m_drivetrain, getDistance(S0, E1), .35));
+    /*
+        This is WHACK
+        don't use it at scrims
+    */
+    // private SequentialCommandGroup testScore(Drivetrain drivetrain, boolean ferry) {
+    //     Trajectory trajectory = null;
+    //     try {
+    //         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(S0B0);
+    //         trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    //     } catch(IOException ex) {
+    //         DriverStation.reportError("Unable to open trajectory: " + S0B0, ex.getStackTrace());
+    //     }
+    //     //stuff
+
+    //     RamseteCommand ramseteCommand = new RamseteCommand(
+    //         trajectory,
+    //         m_drivetrain::getPose,
+    //         new RamseteController(RamseteConstants.kRamseteB, RamseteConstants.kRamseteZeta),
+    //         new SimpleMotorFeedforward(RamseteConstants.ksVolts,
+    //                                 RamseteConstants.kvVoltSecondsPerMeter,
+    //                                 RamseteConstants.kaVoltSecondsSquaredPerMeter),
+    //         RamseteConstants.kDriveKinematics,
+    //         m_drivetrain::getWheelSpeeds,
+    //         new PIDController(0.4, 0.5, 0),
+    //         new PIDController(0.4, 0.5, 0),
+    //         // RamseteCommand passes volts to the callback
+    //         m_drivetrain::tankDriveVolts,
+    //         m_drivetrain
+    //     );
+    //     return new SequentialCommandGroup(new AutoDrive(m_drivetrain, getDistance(S0, E1), .35));  
     // }
+
+    private SequentialCommandGroup turnAndMove(Drivetrain drivetrain, boolean ferry, double angle, double distance, double speed) {
+        return new SequentialCommandGroup(
+            new AutoTurn(m_drivetrain, getAngle(m_drivetrain.getYaw(), S0, E1)),
+            new AutoDrive(m_drivetrain, getDistance(S0, E1), .35)
+            );
+    }
 
     private SequentialCommandGroup quickScore(Drivetrain drivetrain, boolean ferry) {
         return new SequentialCommandGroup(new AutoDrive(m_drivetrain, getDistance(S0, E1), .35));        
     }
 
-    // private SequentialCommandGroup trenchScore(Drivetrain drivetrain, boolean ferry) {
-    //     return new SequentialCommandGroup();
-    // }
+    private SequentialCommandGroup trenchScore(Drivetrain drivetrain, boolean ferry) {
+        return new SequentialCommandGroup(
+            new AutoTurn(m_drivetrain, getAngle(m_drivetrain.getYaw(), S0, B0)),
+            new AutoDrive(m_drivetrain, getDistance(S0, B0), .35),
+            new AutoTurn(m_drivetrain, getAngle(m_drivetrain.getYaw(), B0, B1)),
+            new AutoDrive(m_drivetrain, getDistance(B0, B2), .35),
+            new AutoTurn(m_drivetrain, getAngle(m_drivetrain.getYaw(), B2, E0)),
+            new AutoDrive(m_drivetrain, getDistance(B2, E0)-12, .35)
+        );
+    }
 
-    // private SequentialCommandGroup generatorScore(Drivetrain drivetrain, boolean ferry) {
-    //     return new SequentialCommandGroup();
-    // }
+    private SequentialCommandGroup generatorScore(Drivetrain drivetrain, boolean ferry) {
+        return new SequentialCommandGroup();
+    }
 
-    // private SequentialCommandGroup yeet(Drivetrain drivetrain, boolean ferry) {
-    //     return new SequentialCommandGroup();
-    // }
+    private SequentialCommandGroup yeet(Drivetrain drivetrain, boolean ferry) {
+        return new SequentialCommandGroup(new AutoDrive(m_drivetrain, getDistance(S2, E1)-12, .35));
+    }
     
-    // private SequentialCommandGroup trenchSteal(Drivetrain drivetrain, boolean ferry) {
-    //     return new SequentialCommandGroup();
-    // }
+    private SequentialCommandGroup trenchSteal(Drivetrain drivetrain, boolean ferry) {
+        return new SequentialCommandGroup(
+            new AutoDrive(m_drivetrain, getDistance(S3, B9), .35),
+            new AutoTurn(m_drivetrain, getAngle(m_drivetrain.getYaw(), B9, B8)),
+            new AutoDrive(m_drivetrain, getDistance(B9, B8), .35),
+            new AutoTurn(m_drivetrain, getAngle(m_drivetrain.getYaw(), B8, E0)),
+            new AutoDrive(m_drivetrain, getDistance(B8, E0)-12, .35)
+        );
+    }
 }

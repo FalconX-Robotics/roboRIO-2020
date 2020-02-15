@@ -16,6 +16,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -56,6 +60,8 @@ public class Drivetrain extends SubsystemBase {
     private final double m_motor_deadband = 0;
 
     private final PigeonIMU m_gyro = new PigeonIMU(Ports.GYRO_PORT);
+
+    private final DifferentialDriveOdometry m_odometry;
 
     private final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
     private final ShuffleboardLayout m_encoderLayout = m_sensorInfoTab.getLayout("Encoder", BuiltInLayouts.kList);
@@ -99,6 +105,8 @@ public class Drivetrain extends SubsystemBase {
         m_rightSRXEncoderMotor.setSensorPhase(true);
 
         resetEncoders();
+
+        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
         // for testing
         // setMaxOutput(0.5);
@@ -228,6 +236,14 @@ public class Drivetrain extends SubsystemBase {
         return (getLeftEncoderSpeed() + getRightEncoderSpeed()) / 2;
     }
 
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(getLeftEncoderSpeed(), getRightEncoderSpeed());
+    }
+    
+    public void tankDriveVolts(Double a, Double b) {
+        
+    }
+
     public void resetGyro() {
         m_gyro.setYaw(0);
     }
@@ -248,6 +264,19 @@ public class Drivetrain extends SubsystemBase {
 
     public double getRoll() {
         return getYawPitchRoll()[2];
+    }
+
+    public double getHeading() {
+        return Math.IEEEremainder(getYaw(), 360);
+    }
+
+    public Pose2d getPose() {
+        return m_odometry.getPoseMeters();
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
     }
 
     public void tankDrive(final double leftSpeed, final double rightSpeed, final boolean squareInput) {
