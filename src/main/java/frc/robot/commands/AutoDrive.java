@@ -16,9 +16,8 @@ import frc.robot.subsystems.Drivetrain;
 public class AutoDrive extends PIDCommand {
     private final Drivetrain m_drivetrain;
     private final double m_distance;
-    private final double m_speed;
     
-    public AutoDrive(Drivetrain drivetrain, double distance, double speed) {
+    public AutoDrive(Drivetrain drivetrain, double distance) {
         super(
             new PIDController(AutoDriveShuffleBoard.pEntry.getDouble(0), AutoDriveShuffleBoard.iEntry.getDouble(0), AutoDriveShuffleBoard.dEntry.getDouble(0)),
             () -> 0, // will be overriden in initialize
@@ -30,7 +29,6 @@ public class AutoDrive extends PIDCommand {
 
         m_drivetrain = drivetrain;
         m_distance = distance;
-        m_speed = speed;
 
         AutoDriveShuffleBoard.currentDistance.setDouble(m_drivetrain.getLeftEncoderPos());
         AutoDriveShuffleBoard.targetDistance.setDouble(0);
