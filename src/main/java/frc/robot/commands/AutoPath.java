@@ -1,15 +1,32 @@
 package frc.robot.commands;
 
+import java.io.IOException;
 import java.lang.Math;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.commands.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.Constants;
+import frc.robot.Constants.RamseteConstants;
+
+import java.nio.file.Path;
+import java.nio.file.FileSystem;
+import edu.wpi.first.wpilibj.Filesystem;
+
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.controller.PIDController;
 
 public class AutoPath {
-    /*  This is a list of the coordinates of all (guaranteed) balls and starting/ending
-        postions on our side of the field, where the origion is placed on the left-most
-        point of our initiation line. The points are listed from left-right on the field. */
+    /**
+     * This is a list of the coordinates of all (guaranteed) balls and starting/ending
+     * postions on our side of the field, where the origion is placed on the left-most
+     * point of our initiation line. The points are listed from left-right on the field.
+     */
 
     //Robot starting positions
     public static final double[] S0 = {94.5, 0};
@@ -30,40 +47,23 @@ public class AutoPath {
     public static final double[] B9 = {304.7, 130.4};
 
     //Robot ending positions
-    public static final double[] E1 = {94.5, -120};
-    public static final double[] E2 = {234, 146};
+    public static final double[] preE0 = {94.5, -90};
+    public static final double[] E0 = {94.5, -120 + 32.31/2};
+    public static final double[] E1 = {234, 146};
+
+    //Pathweaver trajectories
+    public static final String S0B0 = "paths/S0B0.wpilib.json";
 
     private Drivetrain m_drivetrain;
 
-    private double yaw;
-
-    public AutoPath(Drivetrain drivetrain) {
-        m_drivetrain = drivetrain;
-        yaw = m_drivetrain.getYaw();
-    }
-    
-    //Returns the command associated with an enumerator
-    public SequentialCommandGroup getPath(AutoPaths paths, boolean dispense) {
-        switch (paths) {
-            case QUICKSCORE:
-                return quickScore(m_drivetrain, dispense);
-            case TRENCHSCORE:
-                // return trenchScore(m_drivetrain, dispense);
-                break;
-            case GENERATORSCORE:
-                // return generatorScore(m_drivetrain, dispense);
-                break;
-            case YEET:
-                // return yeet(m_drivetrain, dispense);
-                break;
-            case TRENCHSTEAL:
-                // return trenchSteal(m_drivetrain, dispense);
-        }
-        return null;
-    }
+    //TODO: Actually use this for something
+    private boolean ferry;
 
     //Auto path options
     public static enum AutoPaths {
+        //Basic routes for tuning, testing trajectories, etc.
+        TEST,
+
         //Go straight to the lower port and dispense preloaded power cells
         //Points: 11
         QUICKSCORE,
@@ -84,8 +84,50 @@ public class AutoPath {
         //Points: 15
         TRENCHSTEAL;
     }
+    /**
+     * Constructor.
+     */
+    public AutoPath(Drivetrain drivetrain) {
+        this.m_drivetrain = drivetrain;
+    }
+    
+    /**
+     * Uses the enumerator chosen in RobotContainer to decide which path is used
+     * during the autonomous phase.
+     * 
+     * @param path the route chosen for auto
+     * @param ferry whether or not to ferry power cells to another robot at lower port
+     * @return the SequentialCommandGroup that will follow the chosen route when executed
+     */
+    public SequentialCommandGroup getPath(AutoPaths path, boolean ferry) {
+        this.ferry = ferry;
+        switch (path) {
+            case TEST:
+                // return testScore(ferry);
+                break;
+            case QUICKSCORE:
+                return quickScore(ferry);
+            case TRENCHSCORE:
+                return trenchScore(ferry);
+            case GENERATORSCORE:
+                return generatorScore(ferry);
+            case YEET:
+                return yeet(ferry);
+            case TRENCHSTEAL:
+                return trenchSteal(ferry);
+        }
+        return null;
+    }
 
-    //basic math/trig functions
+    /**
+     * Static calculator method that finds the angle between two points on the field, relative 
+     * to the robot.
+     * 
+     * @param currentAngle the current angle of the robot on the field (m_drivetrain.getYaw())
+     * @param pointA the current position of the robot
+     * @param pointB where the robot will move to next
+     * @return the angle by which to turn the robot
+     */
     public static double getAngle(double currentAngle, double[] pointA, double[] pointB) {
         double delX = pointB[0]-pointA[0];
         double delY = pointB[1]-pointA[1];
@@ -105,33 +147,106 @@ public class AutoPath {
         }
         return angle;
     }
+
+    /**
+     * Another static calculator method to find the distance between two points on the field.
+     * 
+     * @param pointA the current position of the robot
+     * @param pointB where the robot will move to next
+     * @return the distance to move the robot forward
+     */
     public static double getDistance(double[] pointA, double[] pointB) {
         double delX = pointB[0]-pointA[0];
         double delY = pointB[1]-pointA[1];
 
         return Math.sqrt(delX * delX + delY * delY);
     }
-    // private SequentialCommandGroup turnAndMove(Drivet rain drivetrain, boolean ferry, double angle, double distance, double speed) {
-    //     return new SequentialCommandGroup(new AutoTurn(m_drivetrain, getAngle(m_drivetrain.getYaw(), E1), .35), new AutoDrive(m_drivetrain, getDistance(S0, E1), .35));
+
+    /**
+     * This is WHACK
+     * don't use it at scrims
+    */
+    // private SequentialCommandGroup testScore(Drivetrain drivetrain, boolean ferry) {
+    //     Trajectory trajectory = null;
+    //     try {
+    //         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(S0B0);
+    //         trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    //     } catch(IOException ex) {
+    //         DriverStation.reportError("Unable to open trajectory: " + S0B0, ex.getStackTrace());
+    //     }
+    //     //stuff
+
+    //     RamseteCommand ramseteCommand = new RamseteCommand(
+    //         trajectory,
+    //         m_drivetrain::getPose,
+    //         new RamseteController(RamseteConstants.kRamseteB, RamseteConstants.kRamseteZeta),
+    //         new SimpleMotorFeedforward(RamseteConstants.ksVolts,
+    //                                 RamseteConstants.kvVoltSecondsPerMeter,
+    //                                 RamseteConstants.kaVoltSecondsSquaredPerMeter),
+    //         RamseteConstants.kDriveKinematics,
+    //         m_drivetrain::getWheelSpeeds,
+    //         new PIDController(0.4, 0.5, 0),
+    //         new PIDController(0.4, 0.5, 0),
+    //         // RamseteCommand passes volts to the callback
+    //         m_drivetrain::tankDriveVolts,
+    //         m_drivetrain
+    //     );
+    //     return new SequentialCommandGroup(ramseteCommand);  
     // }
 
-    private SequentialCommandGroup quickScore(Drivetrain drivetrain, boolean ferry) {
-        return new SequentialCommandGroup(new AutoDrive(m_drivetrain, getDistance(S0, E1), .35));        
+    /**
+     * A consolidated method that makes it easier to change AutoPaths, only requiring
+     * two points. It will only add an AutoTurn command if needed.
+     */
+    private SequentialCommandGroup turnAndMove(double[] pointA, double[] pointB) {
+        if(Math.abs(getAngle(this.m_drivetrain.getYaw(), pointA, pointB)) < 0.05) {
+            return new SequentialCommandGroup(
+                new AutoDrive(this.m_drivetrain, getDistance(pointA, pointB))
+            );
+        }
+        else {
+            return new SequentialCommandGroup(
+                new AutoTurn(this.m_drivetrain, getAngle(this.m_drivetrain.getYaw(), pointA, pointB)),
+                new AutoDrive(this.m_drivetrain, getDistance(pointA, pointB))
+            );
+        }
     }
 
-    // private SequentialCommandGroup trenchScore(Drivetrain drivetrain, boolean ferry) {
-    //     return new SequentialCommandGroup();
-    // }
-
-    // private SequentialCommandGroup generatorScore(Drivetrain drivetrain, boolean ferry) {
-    //     return new SequentialCommandGroup();
-    // }
-
-    // private SequentialCommandGroup yeet(Drivetrain drivetrain, boolean ferry) {
-    //     return new SequentialCommandGroup();
-    // }
-    
-    // private SequentialCommandGroup trenchSteal(Drivetrain drivetrain, boolean ferry) {
-    //     return new SequentialCommandGroup();
-    // }
+    /**
+     * Assembles all of the commands together into the desired path sequence
+     */
+    private SequentialCommandGroup quickScore(boolean ferry) {
+        return new SequentialCommandGroup(
+            turnAndMove(S0, E0)
+        );        
+    }
+    private SequentialCommandGroup trenchScore(boolean ferry) {
+        return new SequentialCommandGroup(
+            turnAndMove(S0, B0),
+            turnAndMove(B0, B2),
+            turnAndMove(B2, preE0),
+            turnAndMove(preE0, E0)
+        );
+    }
+    private SequentialCommandGroup generatorScore(boolean ferry) {
+        return new SequentialCommandGroup(
+            turnAndMove(S1, B6),
+            turnAndMove(B6, B5),
+            turnAndMove(B5, preE0),
+            turnAndMove(preE0, E0)
+        );
+    }
+    private SequentialCommandGroup yeet(boolean ferry) {
+        return new SequentialCommandGroup(
+            turnAndMove(S2, E1)
+        );
+    }
+    private SequentialCommandGroup trenchSteal(boolean ferry) {
+        return new SequentialCommandGroup(
+            turnAndMove(S3, B9),
+            turnAndMove(B9, B8),
+            turnAndMove(B8, preE0),
+            turnAndMove(preE0, E0)
+        );
+    }
 }

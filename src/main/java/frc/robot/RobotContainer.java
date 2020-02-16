@@ -56,7 +56,6 @@ public class RobotContainer {
 	private final AutoPath m_autoPaths = new AutoPath(m_drivetrain);
 	private final Climber m_climber = new Climber();
 	private final Intake m_intake = new Intake();
-	private final AutoDrive m_autoDrive = new AutoDrive(m_drivetrain, 12.0, 0.35);
 
 	private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
 	
@@ -102,7 +101,7 @@ public class RobotContainer {
 		m_sensorInfoTab.getLayout("Encoder").add("Reset encoder", resetEncoderCommand);
 
 		RunCommand autoDriveCommand = new RunCommand(
-			() -> new AutoDrive(m_drivetrain, AutoDriveShuffleBoard.distance.getDouble(0.), AutoDriveShuffleBoard.speed.getDouble(0.))
+			() -> new AutoDrive(m_drivetrain, AutoDriveShuffleBoard.distance.getDouble(0.))
 					.schedule(),
 			m_drivetrain);
 		autoDriveCommand.setName("Auto Drive Command");
