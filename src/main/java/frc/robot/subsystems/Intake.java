@@ -102,4 +102,10 @@ public class Intake extends SubsystemBase {
     public void setIntakeMotorMaxOutput(double maxOutput) {
         this.m_maxOutput = maxOutput;
     }
+
+    @Override
+    public void periodic() {
+        System.out.println("Top Limit switch: " + isTopTachPressed());
+        System.out.println("Bottom Limit switch: " + isBottomTachPressed());
+    }
 }
