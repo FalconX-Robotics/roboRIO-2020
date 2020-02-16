@@ -10,6 +10,7 @@ package frc.robot;
 import java.util.Map;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -62,6 +63,15 @@ public final class Constants {
         public static final int ELEVATOR_MOTOR_BACK_PORT = 00; 
       
         public static final int GONDALA_MOTOR_PORT = 10; //TODO Use actual port
+    }
+
+    public static class RamseteConstants {
+        public static final double kRamseteB = 78.74; //reccomended by wpilibs
+        public static final double kRamseteZeta = 27.56; // ^
+        public static final double ksVolts = 0;
+        public static final double kvVoltSecondsPerMeter = 0;
+        public static final double kaVoltSecondsSquaredPerMeter = 0;
+        public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0);
     }
 
     public static class AutoDriveShuffleBoard {
