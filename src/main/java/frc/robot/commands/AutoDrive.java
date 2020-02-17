@@ -2,13 +2,7 @@ package frc.robot.commands;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants.AutoDriveShuffleBoard;
 import frc.robot.subsystems.Drivetrain;
@@ -16,7 +10,6 @@ import frc.robot.subsystems.Drivetrain;
 public class AutoDrive extends PIDCommand {
     private final Drivetrain m_drivetrain;
     private final double m_distance;
-    private final double m_speed;
     
     public AutoDrive(Drivetrain drivetrain, double distance, double speed) {
         super(
@@ -30,7 +23,6 @@ public class AutoDrive extends PIDCommand {
 
         m_drivetrain = drivetrain;
         m_distance = distance;
-        m_speed = speed;
 
         AutoDriveShuffleBoard.currentDistance.setDouble(m_drivetrain.getLeftEncoderPos());
         AutoDriveShuffleBoard.targetDistance.setDouble(0);
