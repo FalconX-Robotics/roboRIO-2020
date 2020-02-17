@@ -11,7 +11,7 @@ public class AutoDrive extends PIDCommand {
     private final Drivetrain m_drivetrain;
     private final double m_distance;
     
-    public AutoDrive(Drivetrain drivetrain, double distance, double speed) {
+    public AutoDrive(Drivetrain drivetrain, double distance) {
         super(
             new PIDController(AutoDriveShuffleBoard.pEntry.getDouble(0), AutoDriveShuffleBoard.iEntry.getDouble(0), AutoDriveShuffleBoard.dEntry.getDouble(0)),
             () -> 0, // will be overriden in initialize
