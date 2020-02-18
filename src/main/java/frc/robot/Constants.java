@@ -25,11 +25,14 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /**
+     * Constants used to determine the order of components in the CAN bus, computer ports, etc.
+     */
     public final static class Ports {
         public static final int FRONT_LEFT_MOTOR_PORT = 4;
         public static final int FRONT_RIGHT_MOTOR_PORT = 1;
-        public static final int REAR_LEFT_MOTOR_PORT = 3;
-        public static final int REAR_RIGHT_MOTOR_PORT = 2;
+        public static final int REAR_LEFT_MOTOR_PORT = 2; //used to be 3
+        public static final int REAR_RIGHT_MOTOR_PORT = 3; //used to be 2
 
         // public static final int FRONT_LEFT_MOTOR_PORT = 3;
         // public static final int FRONT_RIGHT_MOTOR_PORT = 5;
@@ -62,13 +65,42 @@ public final class Constants {
         public static final int GONDALA_MOTOR_PORT = 10; //TODO Use actual port
     }
 
-    public static class RamseteConstants {
-        public static final double kRamseteB = 78.74; //reccomended by wpilibs
-        public static final double kRamseteZeta = 27.56; // ^
+    /**
+     * Constants used by the drivetrain and it's motor controllers
+     */
+    public static class DriveConstants {
+        public static final double ROTATION_SPEED_FACTOR = 0.5;
+        public static final double RAMP = 0.15;
         public static final double ksVolts = 0;
         public static final double kvVoltSecondsPerMeter = 0;
         public static final double kaVoltSecondsSquaredPerMeter = 0;
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0);
+    }
+
+    /**
+     * Constants used during autonomous
+     */
+    public static class AutoConstants {
+        //default AutoDrive PID values (brought to you by Danny's infinate wisdom)
+        public static final double DRIVE_kP = 0.4;
+        public static final double DRIVE_kI = 0.5;
+        public static final double DRIVE_kD = 0.0;
+
+        //default AutoTurn PID values
+        public static final double TURN_kP = 0.4;
+        public static final double TURN_kI = 0.5;
+        public static final double TURN_kD = 0.0;
+
+        //Ramsete PID values
+        public static final double L_RAM_kP = 0.4;
+        public static final double L_RAM_kI = 0.5;
+        public static final double L_RAM_kD = 0.0;
+        public static final double R_RAM_kP = 0.4;
+        public static final double R_RAM_kI = 0.5;
+        public static final double R_RAM_kD = 0.0;
+
+        public static final double kRamseteB = 78.74; //reccomended by wpilibs
+        public static final double kRamseteZeta = 27.56; // ^
     }
 
     public static class AutoDriveShuffleBoard {

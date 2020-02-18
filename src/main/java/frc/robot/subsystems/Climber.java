@@ -7,11 +7,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Ports;
 
 public class Climber extends SubsystemBase {
-
     CANSparkMax m_gondalaMotor = new CANSparkMax(Ports.GONDALA_MOTOR_PORT, MotorType.kBrushless);
 
+    /**
+     * Creates a climber instance that can be moved forwards or backwards
+     * along the switch.
+     */
     public Climber() {
-
     }
 
     /**
