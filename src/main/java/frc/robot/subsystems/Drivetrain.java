@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Ports;
+import frc.robot.Constants.DriveConstants;
 
 /**
  * Drivetrain
@@ -79,6 +80,13 @@ public class Drivetrain extends SubsystemBase {
 
     private final DigitalInput m_talonTach = new DigitalInput(Constants.Ports.TALON_TACH_PORT);
 
+    /**
+     * Creates a drivetrain instance which can be controlled to move the robot. This also
+     * contains and outputs all drivetrain measurements (position, speed, angle, etc.) used
+     * by other commands and subsystems during autonomous.
+     * 
+     * @param encoderBrand the brand of encoder being used to record drivetrain measurements
+     */
     public Drivetrain(final EncoderBrand encoderBrand) {
         // config motors
         // m_drivetrain.setDeadband(m_motor_deadband);
@@ -110,9 +118,12 @@ public class Drivetrain extends SubsystemBase {
         // setMaxOutput(0.5);
 
         setIdleMode(IdleMode.kBrake);
-        setRamp();
+        setRamp(DriveConstants.RAMP);
     }
 
+    /**
+     * Sets what the drivetrain does when it is not moving (either braking or coasting).
+     */
     public void setIdleMode(IdleMode idleMode) {
         m_frontLeftMotor.setIdleMode(idleMode);
         m_frontRightMotor.setIdleMode(idleMode);
@@ -120,27 +131,36 @@ public class Drivetrain extends SubsystemBase {
         m_rearRightMotor.setIdleMode(idleMode);
     }
 
-    public void setRamp() {
-        m_frontLeftMotor.setOpenLoopRampRate(0.15);
-        m_frontRightMotor.setOpenLoopRampRate(0.15);
-        m_rearLeftMotor.setOpenLoopRampRate(0.15);
-        m_rearRightMotor.setOpenLoopRampRate(0.15);
+    /**
+     * Sets the ramp (acceleration rate) of the drivetrain motors.
+     * 
+     * @param ramp the number of seconds to accelerate from 0 to full throttle
+     */
+    public void setRamp(double ramp) {
+        m_frontLeftMotor.setOpenLoopRampRate(ramp);
+        m_frontRightMotor.setOpenLoopRampRate(ramp);
+        m_rearLeftMotor.setOpenLoopRampRate(ramp);
+        m_rearRightMotor.setOpenLoopRampRate(ramp);
     }
 
+    //enum for the brand of encoder being used to measure with the drivetrain
     public enum EncoderBrand {
         NEO, SRX;
     }
 
+    //returns the brand of encoder being used
     public EncoderBrand getCurrentEncoderBrand() {
         return currentEncoderBrand;
     }
 
+    //changes the brand of encoder being used
     public void setCurrentEncoderBrand(final EncoderBrand brand) {
         if (brand == null || brand == currentEncoderBrand)
             return;
         currentEncoderBrand = brand;
     }
 
+    //sets the encoder positions back to 0
     public void resetEncoders(EncoderBrand brand) {
         switch (brand) {
         case NEO:
@@ -153,11 +173,11 @@ public class Drivetrain extends SubsystemBase {
             break;
         }
     }
-
     public void resetEncoders() {
         resetEncoders(getCurrentEncoderBrand());
     }
 
+    //returns the current position of the left encoder
     public double getLeftEncoderPos(final EncoderBrand brand) {
         switch (brand) {
         case NEO:
@@ -168,11 +188,11 @@ public class Drivetrain extends SubsystemBase {
             return 0;
         }
     }
-
     public double getLeftEncoderPos() {
         return getLeftEncoderPos(getCurrentEncoderBrand());
     }
 
+    //returns the current position of the right encoder
     public double getRightEncoderPos(final EncoderBrand encoderBrand) {
         switch (encoderBrand) {
         case NEO:
@@ -183,19 +203,19 @@ public class Drivetrain extends SubsystemBase {
             return 0;
         }
     }
-
     public double getRightEncoderPos() {
         return getRightEncoderPos(getCurrentEncoderBrand());
     }
 
+    //returns the average position of the left and right encoders
     public double getAvgEncoderPos(final EncoderBrand encoderBrand) {
         return (getLeftEncoderPos(encoderBrand) + getRightEncoderPos(encoderBrand)) / 2;
     }
-
     public double getAvgEncoderPos() {
         return getAvgEncoderPos(currentEncoderBrand);
     }
 
+    //returns the current speed of the left encoder
     public double getLeftEncoderSpeed(final EncoderBrand brand) {
         switch (brand) {
         case NEO:
@@ -206,11 +226,11 @@ public class Drivetrain extends SubsystemBase {
             return 0;
         }
     }
-
     public double getLeftEncoderSpeed() {
         return getLeftEncoderSpeed(getCurrentEncoderBrand());
     }
 
+    //returns the current speed of the right encoder
     public double getRightEncoderSpeed(final EncoderBrand encoderBrand) {
         switch (encoderBrand) {
         case NEO:
@@ -221,93 +241,122 @@ public class Drivetrain extends SubsystemBase {
             return 0;
         }
     }
-
     public double getRightEncoderSpeed() {
         return getRightEncoderSpeed(getCurrentEncoderBrand());
     }
 
+    //returns the average speed of the left and right encoders
     public double getAvgEncoderSpeed(final EncoderBrand encoderBrand) {
         return (getLeftEncoderSpeed(encoderBrand) + getRightEncoderSpeed(encoderBrand)) / 2;
     }
-
     public double getAvgEncoderSpeed() {
         return (getLeftEncoderSpeed() + getRightEncoderSpeed()) / 2;
     }
 
+    //returns the speed of both the left and right encoders (convenient for ramsete)
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(getLeftEncoderSpeed(), getRightEncoderSpeed());
     }
-    
-    public void tankDriveVolts(Double a, Double b) {
-        
-    }
 
+    //sets the gyroscope yaw (rotation) back to 0
     public void resetGyro() {
         m_gyro.setYaw(0);
     }
 
+    //returns all 3 gyro measurements as a double[]
     public double[] getYawPitchRoll() {
         final double data[] = new double[3];
         m_gyro.getYawPitchRoll(data);
         return data;
     }
 
+    //returns the gyro yaw
     public double getYaw() {
         return getYawPitchRoll()[0];
     }
 
+    //reutrns the gyro pitch
     public double getPitch() {
         return getYawPitchRoll()[1];
     }
 
+    //returns the gyro roll
     public double getRoll() {
         return getYawPitchRoll()[2];
     }
 
+    //returns the yaw as a direction between 0 and 360
     public double getHeading() {
         return Math.IEEEremainder(getYaw(), 360);
     }
 
+    //returns position as a vector of translation and rotation (convenient for ramsete)
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
     }
 
+    /**
+     * Shifts the origin translation and rotation of the drivetrain.
+     * 
+     * @param pose the pose to set as the new origin (0)
+     */
     public void resetOdometry(Pose2d pose) {
         resetEncoders();
         m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
     }
 
+    /**
+     * Moves the drivetrain with tank drive using the given speeds.
+     * 
+     * @param leftSpeed the speed of the left side of the drivetrain
+     * @param rightSpeed the speed of the right side of the drivetrain
+     * @param squareInput whether or not to drive using squared inputs
+     */
     public void tankDrive(final double leftSpeed, final double rightSpeed, final boolean squareInput) {
         m_drivetrain.tankDrive(leftSpeed, rightSpeed, squareInput);
     }
-
-    /**
-     * Tank drives without square input.
-     */
     public void tankDrive(final double leftSpeed, final double rightSpeed) {
         tankDrive(leftSpeed, rightSpeed, false);
     }
 
-
+    /**
+     * Moves the drivetrain with arcade drive using the given speeds.
+     * 
+     * @param forwardSpeed the speed in which to move the drivetrain forward or backward
+     * @param rotationSpeed the speed in which to turn the drivetrain left or right
+     * @param squareInput whether or not to drive using squared inputs
+     */
     public void arcadeDrive(final double forwardSpeed, final double rotationSpeed, final boolean squareInput) {
         m_drivetrain.arcadeDrive(forwardSpeed, rotationSpeed, squareInput);
     }
-
-    /**
-     * Arcade drives without square input.
-     */
     public void arcadeDrive(final double forwardSpeed, final double rotationSpeed) {
         arcadeDrive(forwardSpeed, rotationSpeed, false);
     }
 
+    /**
+     * Controls the left and right sides of the drive directly with voltages.
+     *
+     * @param vLeft  the commanded left output
+     * @param vRight the commanded right output
+     */
+    public void tankDriveVolts(Double vLeft, Double vRight) {
+        m_frontLeftMotor.setVoltage(vLeft);
+        m_frontRightMotor.setVoltage(vRight);
+        m_rearLeftMotor.setVoltage(vLeft);
+        m_rearRightMotor.setVoltage(vRight);
+    }
+
+    //sets the maximum output, whic is "multiplied with the output percentage computed by the drive functions"
     public void setMaxOutput(final double maxOutput) {
         m_drivetrain.setMaxOutput(maxOutput);
     }
 
+    //stops the left and right side of the drivetrain from moving
     public void stopMotor() {
         m_drivetrain.stopMotor();
     }
 
+    //returns whether or not the Talon Tach is being triggered or not
     public boolean getTalonTachPressed() {
         return m_talonTach.get();
     }

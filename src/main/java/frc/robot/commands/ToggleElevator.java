@@ -4,14 +4,16 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorState;
 
-/**
- * Toggles lift between maximum and minimum height
- */
 public class ToggleElevator extends CommandBase{
     private final Elevator m_elevator;
     
     private ElevatorState m_elevatorState;
 
+    /**
+     * Toggles lift between maximum and minimum height.
+     * 
+     * @param elevator the Elevator subsystem used by the command
+     */
     public ToggleElevator(Elevator elevator) {
         m_elevator = elevator;
         addRequirements(m_elevator);

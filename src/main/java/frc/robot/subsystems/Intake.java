@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Ports;
 
 public class Intake extends SubsystemBase {
-
     private final DigitalInput topTalonTach = new DigitalInput(Ports.TOP_TACH_PORT);
     private final DigitalInput bottomTalonTach = new DigitalInput(Ports.BOTTOM_TACH_PORT);
 

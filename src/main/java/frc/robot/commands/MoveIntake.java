@@ -9,11 +9,16 @@ import frc.robot.subsystems.Intake.IntakePosition;
 
 
 public class MoveIntake extends PIDCommand {
-    
     private Intake m_intake;
     private IntakePosition m_position;
     private IntakePosition m_currentIntakePostion = m_intake.getCurrentIntakePosition();
 
+    /**
+     * Moves the intake mechanism to a set position.
+     * 
+     * @param intake the intake subsystem used by the command
+     * @param position the position enum to move the mechanism towards
+     */
     public MoveIntake(Intake intake, IntakePosition position) {
         super(
             new PIDController(AutoIntakeShuffleBoard.pEntry.getDouble(0), AutoIntakeShuffleBoard.iEntry.getDouble(0), AutoIntakeShuffleBoard.dEntry.getDouble(0)),

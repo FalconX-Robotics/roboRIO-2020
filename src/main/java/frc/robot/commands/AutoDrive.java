@@ -6,15 +6,22 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants.AutoDriveShuffleBoard;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.Constants.AutoConstants;
 
 public class AutoDrive extends PIDCommand {
     private final Drivetrain m_drivetrain;
     private final double m_distance;
     
+    /**
+     * Constructor. Moves the robot forward a set distance.
+     * 
+     * @param distance The distance in which to move the drivetrain
+     */
     public AutoDrive(Drivetrain drivetrain, double distance) {
         super(
+            // new PIDController(AutoConstants.DRIVE_kP, AutoConstants.DRIVE_kI, AutoConstants.DRIVE_kD),
             new PIDController(AutoDriveShuffleBoard.pEntry.getDouble(0), AutoDriveShuffleBoard.iEntry.getDouble(0), AutoDriveShuffleBoard.dEntry.getDouble(0)),
-            () -> 0, // will be overriden in initialize
+            () -> 0, // will be overridden in initialize
             distance,
             output -> drivetrain.arcadeDrive(output, 0),
             drivetrain);
