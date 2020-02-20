@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
@@ -82,7 +83,9 @@ public class AutoPath {
 
         //Steal balls 8-9 from the opponents control panel and score to the lower port
         //Points: 15
-        TRENCHSTEAL;
+        TRENCHSTEAL,
+        
+        PATHWEAVE;
     }
     /**
      * Constructor.
@@ -115,6 +118,8 @@ public class AutoPath {
                 return yeet(ferry);
             case TRENCHSTEAL:
                 return trenchSteal(ferry);
+            case PATHWEAVE: 
+                return RamseteTrenchScore(ferry);
         }
         return null;
     }
@@ -200,13 +205,17 @@ public class AutoPath {
      */
     private SequentialCommandGroup turnAndMove(double[] pointA, double[] pointB) {
         if(Math.abs(getAngle(this.m_drivetrain.getYaw(), pointA, pointB)) < 0.05) {
+            System.out.println("yep this is totally working");
             return new SequentialCommandGroup(
                 new AutoDrive(this.m_drivetrain, getDistance(pointA, pointB))
             );
         }
         else {
+            System.out.println(getAngle(this.m_drivetrain.getYaw(), pointA, pointB));
+            System.out.println(getDistance(pointA, pointB));
             return new SequentialCommandGroup(
                 new AutoTurn(this.m_drivetrain, getAngle(this.m_drivetrain.getYaw(), pointA, pointB)),
+                new WaitCommand(1),
                 new AutoDrive(this.m_drivetrain, getDistance(pointA, pointB))
             );
         }
@@ -223,8 +232,11 @@ public class AutoPath {
     private SequentialCommandGroup trenchScore(boolean ferry) {
         return new SequentialCommandGroup(
             turnAndMove(S0, B0),
+            new WaitCommand(1),
             turnAndMove(B0, B2),
+            new WaitCommand(1),
             turnAndMove(B2, preE0),
+            new WaitCommand(1),
             turnAndMove(preE0, E0)
         );
     }

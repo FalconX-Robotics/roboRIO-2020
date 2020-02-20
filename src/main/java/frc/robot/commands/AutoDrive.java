@@ -4,9 +4,9 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.AutoDriveShuffleBoard;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.Constants.AutoConstants;
 
 public class AutoDrive extends PIDCommand {
     private final Drivetrain m_drivetrain;
@@ -19,8 +19,8 @@ public class AutoDrive extends PIDCommand {
      */
     public AutoDrive(Drivetrain drivetrain, double distance) {
         super(
-            // new PIDController(AutoConstants.DRIVE_kP, AutoConstants.DRIVE_kI, AutoConstants.DRIVE_kD),
-            new PIDController(AutoDriveShuffleBoard.pEntry.getDouble(0), AutoDriveShuffleBoard.iEntry.getDouble(0), AutoDriveShuffleBoard.dEntry.getDouble(0)),
+            new PIDController(AutoConstants.DRIVE_kP, AutoConstants.DRIVE_kI, AutoConstants.DRIVE_kD),
+            // new PIDController(AutoDriveShuffleBoard.pEntry.getDouble(0), AutoDriveShuffleBoard.iEntry.getDouble(0), AutoDriveShuffleBoard.dEntry.getDouble(0)),
             () -> 0, // will be overridden in initialize
             distance,
             output -> drivetrain.arcadeDrive(output, 0),
