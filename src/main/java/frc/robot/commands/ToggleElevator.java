@@ -38,7 +38,7 @@ public class ToggleElevator extends CommandBase{
                 m_elevator.setElevatorLow();
                 break;
             default:
-                m_elevator.setElevatorHigh();
+                m_elevator.setElevatorLow();
                 break;
         }
     }
@@ -52,7 +52,7 @@ public class ToggleElevator extends CommandBase{
             case HIGH:
                 return m_elevator.getLowerSwitchPressed();
             default:
-                return m_elevator.getUpperSwitchPressed();
+                return m_elevator.getLowerSwitchPressed();
         }
     }
 }
