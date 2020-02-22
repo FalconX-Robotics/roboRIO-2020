@@ -50,6 +50,7 @@ public class RobotContainer {
 	private final AutoPath m_autoPaths = new AutoPath(m_drivetrain);
 	private final Climber m_climber = new Climber();
 	private final Intake m_intake = new Intake();
+	private final Elevator m_elevator = new Elevator();
 
 	private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
 	
@@ -123,7 +124,7 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
 		
-		//new JoystickButton(m_driver, Button.kA.value).whenPressed(new ToggleElevator(new Elevator()));
+		new JoystickButton(m_driver, Button.kStart.value).whenPressed(new ToggleElevator(m_elevator));
 
 		new JoystickButton(m_driver, Button.kA.value).whenHeld(new MoveGondola(m_climber, .75));
 		new JoystickButton(m_driver, Button.kB.value).whenHeld(new MoveGondola(m_climber, -.75));
@@ -133,6 +134,7 @@ public class RobotContainer {
 		
 		new JoystickButton(m_driver, Button.kBumperLeft.value).whenHeld(new SetRollers(m_intake, RollerState.INTAKE), false);
 		new JoystickButton(m_driver, Button.kBumperRight.value).whenHeld(new SetRollers(m_intake, RollerState.OUTTAKE), false);
+
 	}
 
 	/**
