@@ -56,12 +56,12 @@ public final class Constants {
         public static final int TOP_TACH_PORT = 0;
         public static final int BOTTOM_TACH_PORT = 1;
         
-        public static final int ELEVATOR_LIMIT_SWITCH_LOWER_PORT = 00;
-        public static final int ELEVATOR_LIMIT_SWITCH_UPPER_PORT = 00;
+        public static final int ELEVATOR_LIMIT_SWITCH_LOWER_PORT = 2;
+        public static final int ELEVATOR_LIMIT_SWITCH_UPPER_PORT = 3;
         public static final int ELEVATOR_MOTOR_FRONT_PORT = 00; //TODO: Put correct motor ports
         public static final int ELEVATOR_MOTOR_BACK_PORT = 00; 
       
-        public static final int GONDALA_MOTOR_PORT = 10; //TODO Use actual port
+        public static final int GONDOLA_MOTOR_PORT = 10; //TODO Use actual port
     }
 
     /**

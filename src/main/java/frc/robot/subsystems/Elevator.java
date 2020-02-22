@@ -28,13 +28,13 @@ public class Elevator extends SubsystemBase {
 
     public void setElevatorHigh() {
         if(getUpperSwitchPressed() != true) {
-            setElevatorSpeed(.5);                      //TODO: confirm motor direction for elevator methods
+            setElevatorSpeed(.4);                      //TODO: confirm motor direction for elevator methods
         }
     }
 
     public void setElevatorLow() {
         if(getLowerSwitchPressed() != true) {
-            setElevatorSpeed(.5);
+            setElevatorSpeed(-.4);
         }
     }
 

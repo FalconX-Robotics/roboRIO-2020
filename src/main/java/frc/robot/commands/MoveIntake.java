@@ -21,7 +21,7 @@ public class MoveIntake extends PIDCommand {
      */
     public MoveIntake(Intake intake, IntakePosition position) {
         super(
-            new PIDController(AutoIntakeShuffleBoard.pEntry.getDouble(0), AutoIntakeShuffleBoard.iEntry.getDouble(0), AutoIntakeShuffleBoard.dEntry.getDouble(0)),
+            new PIDController(AutoIntakeShuffleBoard.pEntry.getDouble(0.04), AutoIntakeShuffleBoard.iEntry.getDouble(0), AutoIntakeShuffleBoard.dEntry.getDouble(0)),
             intake::getPitch,
             position.getDesiredAngle(),
             intake::setIntakeMotor,
@@ -39,7 +39,7 @@ public class MoveIntake extends PIDCommand {
         m_position = position;
 
         // TODO: Testing
-        m_intake.setIntakeMotorMaxOutput(.1);
+        m_intake.setIntakeMotorMaxOutput(.75);
     }
 
     @Override
