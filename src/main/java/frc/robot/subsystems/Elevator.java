@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -20,6 +21,12 @@ public class Elevator extends SubsystemBase {
      * Creates an elevator instance that can be moved up or down.
      */
     public Elevator() {
+        setIdleMode(IdleMode.kBrake);
+    }
+
+    public void setIdleMode(IdleMode idleMode) {
+        m_elevatorMotorBack.setIdleMode(idleMode);
+        m_elevatorMotorFront.setIdleMode(idleMode);
     }
 
     public enum ElevatorState {
@@ -28,13 +35,13 @@ public class Elevator extends SubsystemBase {
 
     public void setElevatorHigh() {
         if(getUpperSwitchPressed() != true) {
-            setElevatorSpeed(.5);                      //TODO: confirm motor direction for elevator methods
+            setElevatorSpeed(-.4);                      //TODO: confirm motor direction for elevator methods
         }
     }
 
     public void setElevatorLow() {
         if(getLowerSwitchPressed() != true) {
-            setElevatorSpeed(.5);
+            setElevatorSpeed(.4);
         }
     }
 

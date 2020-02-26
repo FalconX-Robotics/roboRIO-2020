@@ -17,16 +17,17 @@ public class ToggleElevator extends CommandBase{
     public ToggleElevator(Elevator elevator) {
         m_elevator = elevator;
         addRequirements(m_elevator);
+        m_elevatorState = ElevatorState.LOW;
     }
     
-    public void inititalize() {
-        if(m_elevator.getLowerSwitchPressed()) {
-            m_elevatorState = ElevatorState.LOW;
-        }
-        else if(m_elevator.getUpperSwitchPressed()) {
-            m_elevatorState = ElevatorState.HIGH;
-        }
-    }
+    // public void inititalize() {
+    //     if(m_elevator.getUpperSwitchPressed()) {
+    //         m_elevatorState = ElevatorState.HIGH;
+    //     }
+    //     else {
+    //         m_elevatorState = ElevatorState.LOW;
+    //     }
+    // }
 
     @Override
     public void execute() { 
