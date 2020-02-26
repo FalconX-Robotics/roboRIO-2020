@@ -104,6 +104,9 @@ public class Intake extends SubsystemBase {
         return data[1];
     }
 
+    public void getEncoder() {
+        
+    }
     public void setIntakeMotorMaxOutput(double maxOutput) {
         this.m_maxOutput = maxOutput;
     }
