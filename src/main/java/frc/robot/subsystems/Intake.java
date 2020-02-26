@@ -57,10 +57,6 @@ public class Intake extends SubsystemBase {
         return input;
     }
 
-    public void setIntakeMotor(double speed) {
-        m_intakeMotor.set(limit(speed, m_maxOutput, -m_maxOutput));
-    }
-
     public void setIntakeMotorForward() {
         setIntakeMotor(m_intakeMotorSpeed);
     }
@@ -69,18 +65,26 @@ public class Intake extends SubsystemBase {
         setIntakeMotor(-m_intakeMotorSpeed);
     }
 
+    public void setIntakeMotor(double speed) {
+        m_intakeMotor.set(limit(speed, m_maxOutput, -m_maxOutput));
+    }
+
     public void stopIntakeMotor() {
         m_intakeMotor.stopMotor();
     }
 
-    public void setRollerMotorForward(double speed) {
+    public void setRollerMotorForward() {
+        m_rollerMotor.set(m_rollerMotorSpeed);
+    }
+
+    public void setRollerMotorReverse() {
+        m_rollerMotor.set(-m_rollerMotorSpeed);
+    }
+
+    public void setRollerMotor(double speed) {
         m_rollerMotor.set(speed);
     }
-
-    public void setRollerMotorReverse(double speed) {
-        m_rollerMotor.set(-speed);
-    }
-
+    
     public void stopRollerMotor() {
         m_rollerMotor.stopMotor();
     }
@@ -107,5 +111,6 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         System.out.println("Top Limit switch: " + isTopTachPressed());
         System.out.println("Bottom Limit switch: " + isBottomTachPressed());
+        
     }
 }
