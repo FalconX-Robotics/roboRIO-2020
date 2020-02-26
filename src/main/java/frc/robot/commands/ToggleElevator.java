@@ -1,13 +1,15 @@
 package frc.robot.commands;
 
+import static frc.robot.subsystems.Elevator.ElevatorState.HIGH;
+import static frc.robot.subsystems.Elevator.ElevatorState.LOW;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorState;
 
-public class ToggleElevator extends CommandBase{
+public class ToggleElevator extends CommandBase {
     private final Elevator m_elevator;
-    
-    private ElevatorState m_elevatorState;
+    private ElevatorState m_elevatorState = LOW;
 
     /**
      * Toggles lift between maximum and minimum height.
@@ -18,13 +20,13 @@ public class ToggleElevator extends CommandBase{
         m_elevator = elevator;
         addRequirements(m_elevator);
     }
-    
-    public void inititalize() {
-        if(m_elevator.getLowerSwitchPressed()) {
-            m_elevatorState = ElevatorState.LOW;
-        }
-        else if(m_elevator.getUpperSwitchPressed()) {
-            m_elevatorState = ElevatorState.HIGH;
+
+    @Override
+    public void initialize() {
+        if (m_elevator.getLowerSwitchPressed()) {
+            m_elevatorState = LOW;
+        } else {
+            m_elevatorState = HIGH;
         }
     }
 
@@ -32,12 +34,10 @@ public class ToggleElevator extends CommandBase{
     public void execute() { 
         switch(m_elevatorState) {
             case LOW:
+                // System.out.println("set high");
                 m_elevator.setElevatorHigh();
                 break;
             case HIGH:
-                m_elevator.setElevatorLow();
-                break;
-            default:
                 m_elevator.setElevatorLow();
                 break;
         }
@@ -52,7 +52,13 @@ public class ToggleElevator extends CommandBase{
             case HIGH:
                 return m_elevator.getLowerSwitchPressed();
             default:
-                return m_elevator.getLowerSwitchPressed();
+                return true;
         }
+    }
+
+    @Override
+    public void end(boolean iterrupted) {
+        System.out.println("end");
+        m_elevator.stopElevator();
     }
 }
