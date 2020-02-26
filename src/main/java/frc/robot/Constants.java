@@ -127,7 +127,7 @@ public final class Constants {
         public static final NetworkTableEntry distance = tab.add("Distance", 0.).withSize(2, 1).withPosition(0, 3).getEntry();
         public static final NetworkTableEntry speed = tab.add("Speed", 0.).withSize(2, 1).withPosition(0, 4).getEntry();
         static {
-            System.out.println("hi");
+        //     System.out.println("hi");
         }
 
     }

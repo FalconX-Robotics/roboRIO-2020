@@ -116,9 +116,11 @@ public class Intake extends SubsystemBase {
         // System.out.println("Top Limit switch: " + isTopTachPressed());
         // System.out.println("Bottom Limit switch: " + isBottomTachPressed());
         // System.out.println(getPitch());
-        m_gyro.addYaw(15);
-        final double[] data = new double[3];
-        m_gyro.getYawPitchRoll(data);
-        System.out.println(Arrays.toString(data));
+        // m_gyro.addYaw(15);
+        // final double[] data = new double[3];
+        // m_gyro.getYawPitchRoll(data);
+        // System.out.println(Arrays.toString(data));
+
+        
     }
 }
