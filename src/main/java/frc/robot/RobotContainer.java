@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoDriveShuffleBoard;
 import frc.robot.Constants.AutoTurnShuffleBoard;
@@ -131,10 +132,10 @@ public class RobotContainer {
 
 		new JoystickButton(m_driver, Button.kX.value).whenPressed(new MoveIntake(m_intake, IntakePosition.BOTTOM));
 		new JoystickButton(m_driver, Button.kY.value).whenPressed(new MoveIntake(m_intake, IntakePosition.TOP));
+		new JoystickButton(m_driver, Button.kBack.value).whenPressed(new MoveIntake(m_intake, IntakePosition.MIDDLE));
 		
 		new JoystickButton(m_driver, Button.kBumperLeft.value).whenHeld(new SetRollers(m_intake, RollerState.INTAKE), false);
 		new JoystickButton(m_driver, Button.kBumperRight.value).whenHeld(new SetRollers(m_intake, RollerState.OUTTAKE), false);
-
 	}
 
 	/**

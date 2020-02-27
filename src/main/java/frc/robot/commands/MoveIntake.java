@@ -10,7 +10,7 @@ import frc.robot.subsystems.Intake.IntakePosition;
 public class MoveIntake extends PIDCommand {
     private Intake m_intake;
     private IntakePosition m_position;
-    private IntakePosition m_currentIntakePostion;
+    private IntakePosition m_currentIntakePostion = IntakePosition.BOTTOM;
 
     /**
      * Moves the intake mechanism to a set position.
@@ -21,36 +21,40 @@ public class MoveIntake extends PIDCommand {
     public MoveIntake(Intake intake, IntakePosition position) {
         super(
             new PIDController(AutoIntakeShuffleBoard.pEntry.getDouble(0.04), AutoIntakeShuffleBoard.iEntry.getDouble(0), AutoIntakeShuffleBoard.dEntry.getDouble(0)),
-            intake::getPitch,
+            intake::getIntakeAngleInPercentage,
             position.getDesiredAngle(),
             intake::setIntakeMotor,
             intake);
         getController().setSetpoint(position.getDesiredAngle());
-        getController().setTolerance(5.);
+        getController().setTolerance(.1);
 
-        m_currentIntakePostion =  intake.getCurrentIntakePosition();
+        m_currentIntakePostion = intake.getCurrentIntakePosition();
 
-        AutoIntakeShuffleBoard.currentAngle.setDouble(intake.getPitch());
+        AutoIntakeShuffleBoard.currentAngle.setDouble(intake.getIntakeAngleInPercentage());
         AutoIntakeShuffleBoard.targetAngle.setDouble(0);
         AutoIntakeShuffleBoard.isFinished.setBoolean(false);
 
         addRequirements(intake);
-
         m_intake = intake;
         m_position = position;
 
-        m_intake.setIntakeMotorMaxOutput(.1);
+        // TODO: Testing
+        m_intake.setIntakeMotorMaxOutput(.5);
     }
 
     @Override
     public void initialize() {
         super.initialize();
+        m_intake.resetEncoders();
+        System.out.println("init");
         if (m_position == m_currentIntakePostion) cancel();
     }
 
     @Override
     public void execute() {
         super.execute();
+        System.out.println("cur: " + m_measurement.getAsDouble());
+        System.out.println("de: " +  m_position.getDesiredAngle());
         AutoIntakeShuffleBoard.currentAngle.setDouble(m_measurement.getAsDouble());
         AutoIntakeShuffleBoard.targetAngle.setDouble(m_position.getDesiredAngle());
     }
@@ -72,6 +76,7 @@ public class MoveIntake extends PIDCommand {
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
+        System.out.println("finished");
         AutoIntakeShuffleBoard.isFinished.setBoolean(true);
         m_intake.setCurrentIntakePosition(m_position);
     }
