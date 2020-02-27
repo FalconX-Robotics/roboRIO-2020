@@ -26,9 +26,18 @@ public class Elevator extends SubsystemBase {
         m_elevatorMotorFront.setIdleMode(IdleMode.kBrake);
         m_elevatorMotorBack.setIdleMode(IdleMode.kBrake);
     }
-
+    /**
+     * Controls which position the lift will automatically move to
+     */
     public enum ElevatorState {
         HIGH, LOW;
+    }
+
+    /**
+     * Controls direction when manually adjusting elevator height
+     */
+    public enum ElevatorDirection {
+        UP, DOWN;
     }
 
     public void setElevatorHigh() {

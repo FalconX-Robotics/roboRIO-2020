@@ -24,6 +24,7 @@ import frc.robot.Constants.Ports;
 import frc.robot.commands.AutoDrive;
 import frc.robot.commands.AutoPath;
 import frc.robot.commands.AutoTurn;
+import frc.robot.commands.MoveElevator;
 import frc.robot.commands.MoveGondola;
 import frc.robot.commands.MoveIntake;
 import frc.robot.commands.SetRollers;
@@ -34,6 +35,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Drivetrain.EncoderBrand;
+import frc.robot.subsystems.Elevator.ElevatorDirection;
 import frc.robot.subsystems.Intake.IntakePosition;
 import frc.robot.subsystems.Intake.RollerState;
 
@@ -114,6 +116,7 @@ public class RobotContainer {
 	}
 
 	private final XboxController m_driver = new XboxController(Ports.XBOX_CONTROLLER_PORT);
+	private final XboxController m_driverTwo = new XboxController(Ports.XBOX_CONTROLLERTWO_PORT);
 
 	/**
 	 * Use this method to define your button->command mappings. Buttons can be
@@ -124,11 +127,16 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
 		
-		new JoystickButton(m_driver, Button.kStart.value).whenPressed(new ToggleElevator(m_elevator));
+		//Driver two controls climb
+		new JoystickButton(m_driverTwo, Button.kA.value).whenPressed(new ToggleElevator(m_elevator));
 
-		new JoystickButton(m_driver, Button.kA.value).whenHeld(new MoveGondola(m_climber, .75));
-		new JoystickButton(m_driver, Button.kB.value).whenHeld(new MoveGondola(m_climber, -.75));
+		new JoystickButton(m_driverTwo, Button.kX.value).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.DOWN), false);
+		new JoystickButton(m_driverTwo, Button.kY.value).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.UP), false);
 
+		new JoystickButton(m_driverTwo, Button.kBumperLeft.value).whenHeld(new MoveGondola(m_climber, .75));
+		new JoystickButton(m_driverTwo, Button.kBumperRight.value).whenHeld(new MoveGondola(m_climber, -.75));
+
+		//Driver one controls drivetrain and intake
 		new JoystickButton(m_driver, Button.kX.value).whenPressed(new MoveIntake(m_intake, IntakePosition.BOTTOM));
 		new JoystickButton(m_driver, Button.kY.value).whenPressed(new MoveIntake(m_intake, IntakePosition.TOP));
 		

@@ -39,6 +39,7 @@ public final class Constants {
         // public static final int REAR_RIGHT_MOTOR_PORT = 4;
       
         public static final int XBOX_CONTROLLER_PORT = 0;
+        public static final int XBOX_CONTROLLERTWO_PORT = 1;
 
         public static final int LEFT_ENCODER_MOTOR = 5;
         public static final int RIGHT_ENCODER_MOTOR = 6;
