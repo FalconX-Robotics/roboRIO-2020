@@ -16,8 +16,10 @@ public class Elevator extends SubsystemBase {
     private final DigitalInput m_limitSwitchLower = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_LOWER_PORT);
     private final DigitalInput m_limitSwitchUpper = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_UPPER_PORT);
 
+    /**
+     * Creates an elevator instance that can be moved up or down.
+     */
     public Elevator() {
-
     }
 
     public enum ElevatorState {
@@ -26,13 +28,13 @@ public class Elevator extends SubsystemBase {
 
     public void setElevatorHigh() {
         if(getUpperSwitchPressed() != true) {
-            setElevatorSpeed(.5);                      //TODO: confirm motor direction for elevator methods
+            setElevatorSpeed(.4);                      //TODO: confirm motor direction for elevator methods
         }
     }
 
     public void setElevatorLow() {
         if(getLowerSwitchPressed() != true) {
-            setElevatorSpeed(.5);
+            setElevatorSpeed(-.4);
         }
     }
 

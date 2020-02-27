@@ -7,21 +7,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoDriveShuffleBoard;
@@ -56,6 +50,7 @@ public class RobotContainer {
 	private final AutoPath m_autoPaths = new AutoPath(m_drivetrain);
 	private final Climber m_climber = new Climber();
 	private final Intake m_intake = new Intake();
+	private final Elevator m_elevator = new Elevator();
 
 	private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
 	
@@ -119,7 +114,6 @@ public class RobotContainer {
 	}
 
 	private final XboxController m_driver = new XboxController(Ports.XBOX_CONTROLLER_PORT);
-	private final Joystick m_joystickDriver = new Joystick(Ports.XBOX_CONTROLLER_PORT);
 
 	/**
 	 * Use this method to define your button->command mappings. Buttons can be
@@ -130,7 +124,7 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
 		
-		//new JoystickButton(m_driver, Button.kA.value).whenPressed(new ToggleElevator(new Elevator()));
+		new JoystickButton(m_driver, Button.kStart.value).whenPressed(new ToggleElevator(m_elevator));
 
 		new JoystickButton(m_driver, Button.kA.value).whenHeld(new MoveGondola(m_climber, .75));
 		new JoystickButton(m_driver, Button.kB.value).whenHeld(new MoveGondola(m_climber, -.75));
@@ -140,6 +134,7 @@ public class RobotContainer {
 		
 		new JoystickButton(m_driver, Button.kBumperLeft.value).whenHeld(new SetRollers(m_intake, RollerState.INTAKE), false);
 		new JoystickButton(m_driver, Button.kBumperRight.value).whenHeld(new SetRollers(m_intake, RollerState.OUTTAKE), false);
+
 	}
 
 	/**
@@ -149,7 +144,7 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// TODO add Networktable to change the auto command from shuffleboard
-		return m_autoPaths.getPath(AutoPaths.QUICKSCORE, false);
+		return m_autoPaths.getPath(AutoPaths.TRENCHSCORE, false);
 		// return m_autoDrive;
 	}
 

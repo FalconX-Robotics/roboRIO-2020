@@ -7,14 +7,10 @@
 
 package frc.robot;
 
-import java.util.Map;
-
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 /**
@@ -28,11 +24,14 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /**
+     * Constants used to determine the order of components in the CAN bus, computer ports, etc.
+     */
     public final static class Ports {
-        public static final int FRONT_LEFT_MOTOR_PORT = 4;
-        public static final int FRONT_RIGHT_MOTOR_PORT = 1;
-        public static final int REAR_LEFT_MOTOR_PORT = 3;
-        public static final int REAR_RIGHT_MOTOR_PORT = 2;
+        public static final int FRONT_LEFT_MOTOR_PORT = 5;
+        public static final int FRONT_RIGHT_MOTOR_PORT = 4;
+        public static final int REAR_LEFT_MOTOR_PORT = 6;
+        public static final int REAR_RIGHT_MOTOR_PORT = 1;
 
         // public static final int FRONT_LEFT_MOTOR_PORT = 3;
         // public static final int FRONT_RIGHT_MOTOR_PORT = 5;
@@ -46,32 +45,61 @@ public final class Constants {
         public static final int RIGHT_ENCODER_A = 2;
         public static final int RIGHT_ENCODER_B = 3;
 
-        public static final int GYRO_PORT = 7;
-        public static final int INTAKE_GYRO_PORT = 48390;
+        public static final int DRIVETRAIN_GYRO_PORT = 7;
+        public static final int INTAKE_GYRO_PORT = 8;
 
-        public static final int ROLLER_MOTOR_PORT = 11; //randomly chosen sorry
-        public static final int INTAKE_MECHANISM_MOTOR_PORT = 12; //^^
+        public static final int ROLLER_MOTOR_PORT = 9;
+        public static final int INTAKE_MECHANISM_MOTOR_PORT = 10;
 
         public static final int TALON_TACH_PORT = 9;
 
-        public static final int TOP_TACH_PORT = 0;
-        public static final int BOTTOM_TACH_PORT = 1;
+        public static final int TOP_TACH_PORT = 1;
+        public static final int BOTTOM_TACH_PORT = 0;
         
-        public static final int ELEVATOR_LIMIT_SWITCH_LOWER_PORT = 00;
-        public static final int ELEVATOR_LIMIT_SWITCH_UPPER_PORT = 00;
-        public static final int ELEVATOR_MOTOR_FRONT_PORT = 00; //TODO: Put correct motor ports
-        public static final int ELEVATOR_MOTOR_BACK_PORT = 00; 
+        public static final int ELEVATOR_LIMIT_SWITCH_LOWER_PORT = 2;
+        public static final int ELEVATOR_LIMIT_SWITCH_UPPER_PORT = 3;
+        public static final int ELEVATOR_MOTOR_FRONT_PORT = 3;
+        public static final int ELEVATOR_MOTOR_BACK_PORT = 2; 
       
-        public static final int GONDALA_MOTOR_PORT = 10; //TODO Use actual port
+        public static final int GONDOLA_MOTOR_PORT = 11;
     }
 
-    public static class RamseteConstants {
-        public static final double kRamseteB = 78.74; //reccomended by wpilibs
-        public static final double kRamseteZeta = 27.56; // ^
+    /**
+     * Constants used by the drivetrain and it's motor controllers
+     */
+    public static class DriveConstants {
+        public static final double ROTATION_SPEED_FACTOR = 0.5;
+        public static final double RAMP = 0.15;
         public static final double ksVolts = 0;
         public static final double kvVoltSecondsPerMeter = 0;
         public static final double kaVoltSecondsSquaredPerMeter = 0;
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0);
+    }
+
+    /**
+     * Constants used during autonomous
+     */
+    public static class AutoConstants {
+        //default AutoDrive PID values (brought to you by Danny's infinate wisdom)
+        public static final double DRIVE_kP = 0.4;
+        public static final double DRIVE_kI = 0.5;
+        public static final double DRIVE_kD = 0.0;
+
+        //default AutoTurn PID values
+        public static final double TURN_kP = 0.4;
+        public static final double TURN_kI = 0.5;
+        public static final double TURN_kD = 0.0;
+
+        //Ramsete PID values
+        public static final double L_RAM_kP = 0.4;
+        public static final double L_RAM_kI = 0.5;
+        public static final double L_RAM_kD = 0.0;
+        public static final double R_RAM_kP = 0.4;
+        public static final double R_RAM_kI = 0.5;
+        public static final double R_RAM_kD = 0.0;
+
+        public static final double kRamseteB = 78.74; //reccomended by wpilibs
+        public static final double kRamseteZeta = 27.56; // ^
     }
 
     public static class AutoDriveShuffleBoard {

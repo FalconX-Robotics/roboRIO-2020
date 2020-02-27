@@ -2,24 +2,24 @@ package frc.robot.commands;
 
 import java.io.IOException;
 import java.lang.Math;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj.DriverStation;
+import java.nio.file.Path;
+
 import frc.robot.commands.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.Constants;
-import frc.robot.Constants.RamseteConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.AutoConstants;
 
-import java.nio.file.Path;
-import java.nio.file.FileSystem;
 import edu.wpi.first.wpilibj.Filesystem;
-
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 
 public class AutoPath {
     /**
@@ -99,7 +99,7 @@ public class AutoPath {
      * @param ferry whether or not to ferry power cells to another robot at lower port
      * @return the SequentialCommandGroup that will follow the chosen route when executed
      */
-    public SequentialCommandGroup getPath(AutoPaths path, boolean ferry) {
+    public Command getPath(AutoPaths path, boolean ferry) {
         this.ferry = ferry;
         switch (path) {
             case TEST:
@@ -163,36 +163,36 @@ public class AutoPath {
     }
 
     /**
-     * This is WHACK
-     * don't use it at scrims
+     * Outputs a RamseteCommand that follows a given trajectory during autonomous.
     */
-    // private SequentialCommandGroup testScore(Drivetrain drivetrain, boolean ferry) {
-    //     Trajectory trajectory = null;
-    //     try {
-    //         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(S0B0);
-    //         trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-    //     } catch(IOException ex) {
-    //         DriverStation.reportError("Unable to open trajectory: " + S0B0, ex.getStackTrace());
-    //     }
-    //     //stuff
+    private RamseteCommand RamseteTrenchScore(boolean ferry) {
+        //converts a PathWeaver path json from deploy into a trajectory
+        Trajectory trajectory = null;
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(S0B0);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+        } catch(IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + S0B0, ex.getStackTrace());
+        }
 
-    //     RamseteCommand ramseteCommand = new RamseteCommand(
-    //         trajectory,
-    //         m_drivetrain::getPose,
-    //         new RamseteController(RamseteConstants.kRamseteB, RamseteConstants.kRamseteZeta),
-    //         new SimpleMotorFeedforward(RamseteConstants.ksVolts,
-    //                                 RamseteConstants.kvVoltSecondsPerMeter,
-    //                                 RamseteConstants.kaVoltSecondsSquaredPerMeter),
-    //         RamseteConstants.kDriveKinematics,
-    //         m_drivetrain::getWheelSpeeds,
-    //         new PIDController(0.4, 0.5, 0),
-    //         new PIDController(0.4, 0.5, 0),
-    //         // RamseteCommand passes volts to the callback
-    //         m_drivetrain::tankDriveVolts,
-    //         m_drivetrain
-    //     );
-    //     return new SequentialCommandGroup(ramseteCommand);  
-    // }
+        //Creates the RamseteCommand to follow this trajectory
+        RamseteCommand ramseteCommand = new RamseteCommand(
+            trajectory,
+            this.m_drivetrain::getPose,
+            new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+            new SimpleMotorFeedforward(DriveConstants.ksVolts,
+                                    DriveConstants.kvVoltSecondsPerMeter,
+                                    DriveConstants.kaVoltSecondsSquaredPerMeter),
+            DriveConstants.kDriveKinematics,
+            this.m_drivetrain::getWheelSpeeds,
+            new PIDController(AutoConstants.L_RAM_kP, AutoConstants.L_RAM_kI, AutoConstants.L_RAM_kD),
+            new PIDController(AutoConstants.R_RAM_kP, AutoConstants.R_RAM_kI, AutoConstants.R_RAM_kD),
+            // RamseteCommand passes volts to the callback
+            this.m_drivetrain::tankDriveVolts,
+            this.m_drivetrain
+        );
+        return ramseteCommand;  
+    }
 
     /**
      * A consolidated method that makes it easier to change AutoPaths, only requiring

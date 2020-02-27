@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Arrays;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
@@ -8,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Ports;
 
 public class Intake extends SubsystemBase {
-
     private final DigitalInput topTalonTach = new DigitalInput(Ports.TOP_TACH_PORT);
     private final DigitalInput bottomTalonTach = new DigitalInput(Ports.BOTTOM_TACH_PORT);
 
@@ -22,6 +23,10 @@ public class Intake extends SubsystemBase {
     private IntakePosition currentIntakePosition = IntakePosition.BOTTOM;
     
     private double m_maxOutput = 1;
+
+    public Intake() {
+        m_gyro.configFactoryDefault();
+    }
 
     public enum IntakePosition {
         BOTTOM(0), MIDDLE(10), TOP(90);
@@ -98,11 +103,14 @@ public class Intake extends SubsystemBase {
     }
 
     public double getPitch() {
-        final double data[] = new double[3];
+        final double[] data = new double[3];
         m_gyro.getYawPitchRoll(data);
-        return data[0];
+        return data[1];
     }
 
+    public void getEncoder() {
+        
+    }
     public void setIntakeMotorMaxOutput(double maxOutput) {
         this.m_maxOutput = maxOutput;
     }
@@ -110,7 +118,6 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         System.out.println("Top Limit switch: " + isTopTachPressed());
-        System.out.println("Bottom Limit switch: " + isBottomTachPressed());
-        
+        System.out.println("Bottom Limit switch: " + isBottomTachPressed()); 
     }
 }

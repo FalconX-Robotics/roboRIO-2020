@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.AutoTurnShuffleBoard;
 import frc.robot.subsystems.Drivetrain;
 
@@ -15,11 +16,12 @@ public class AutoTurn extends PIDCommand {
     /**
      * Turns the robot in place to a certain angle.
      * 
-     * @param angle The angle that the robot will rotate in degrees
      * @param drivetrain The drivetrain subsystem used by the command
+     * @param angle The angle that the robot will rotate in degrees
      */
     public AutoTurn(Drivetrain drivetrain, double angle) {
         super(
+            // new PIDController(AutoConstants.TURN_kP, AutoConstants.TURN_kI, AutoConstants.TURN_kD),
             new PIDController(AutoTurnShuffleBoard.pEntry.getDouble(0), AutoTurnShuffleBoard.iEntry.getDouble(0), AutoTurnShuffleBoard.dEntry.getDouble(0)),
             // P: 0.05 I: 0.5 D: 0.026
             () -> 0,
