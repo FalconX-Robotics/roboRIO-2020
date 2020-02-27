@@ -58,7 +58,7 @@ public class Drivetrain extends SubsystemBase {
 
     private final double m_motor_deadband = 0;
 
-    private final PigeonIMU m_gyro = new PigeonIMU(Ports.GYRO_PORT);
+    private final PigeonIMU m_gyro = new PigeonIMU(Ports.DRIVETRAIN_GYRO_PORT);
 
     private final DifferentialDriveOdometry m_odometry;
 

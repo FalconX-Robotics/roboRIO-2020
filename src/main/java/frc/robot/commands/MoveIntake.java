@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants.AutoIntakeShuffleBoard;
 import frc.robot.subsystems.Intake;
@@ -11,7 +10,7 @@ import frc.robot.subsystems.Intake.IntakePosition;
 public class MoveIntake extends PIDCommand {
     private Intake m_intake;
     private IntakePosition m_position;
-    private IntakePosition m_currentIntakePostion = m_intake.getCurrentIntakePosition();
+    private IntakePosition m_currentIntakePostion;
 
     /**
      * Moves the intake mechanism to a set position.
@@ -21,7 +20,7 @@ public class MoveIntake extends PIDCommand {
      */
     public MoveIntake(Intake intake, IntakePosition position) {
         super(
-            new PIDController(AutoIntakeShuffleBoard.pEntry.getDouble(0), AutoIntakeShuffleBoard.iEntry.getDouble(0), AutoIntakeShuffleBoard.dEntry.getDouble(0)),
+            new PIDController(AutoIntakeShuffleBoard.pEntry.getDouble(0.04), AutoIntakeShuffleBoard.iEntry.getDouble(0), AutoIntakeShuffleBoard.dEntry.getDouble(0)),
             intake::getPitch,
             position.getDesiredAngle(),
             intake::setIntakeMotor,
@@ -29,7 +28,9 @@ public class MoveIntake extends PIDCommand {
         getController().setSetpoint(position.getDesiredAngle());
         getController().setTolerance(5.);
 
-        AutoIntakeShuffleBoard.currentAngle.setDouble(m_intake.getPitch());
+        m_currentIntakePostion =  intake.getCurrentIntakePosition();
+
+        AutoIntakeShuffleBoard.currentAngle.setDouble(intake.getPitch());
         AutoIntakeShuffleBoard.targetAngle.setDouble(0);
         AutoIntakeShuffleBoard.isFinished.setBoolean(false);
 
@@ -38,7 +39,6 @@ public class MoveIntake extends PIDCommand {
         m_intake = intake;
         m_position = position;
 
-        // TODO: Testing
         m_intake.setIntakeMotorMaxOutput(.1);
     }
 

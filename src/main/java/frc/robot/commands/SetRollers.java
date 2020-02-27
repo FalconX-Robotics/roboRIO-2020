@@ -36,7 +36,8 @@ public class SetRollers extends CommandBase {
         }
     }
 
-    public void end() {
+    @Override
+    public void end(boolean interrupted) {
         m_intake.stopRollerMotor();
     }
     
