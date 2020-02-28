@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.Ports;
@@ -30,6 +33,7 @@ import frc.robot.commands.MoveIntake;
 import frc.robot.commands.SetRollers;
 import frc.robot.commands.ToggleElevator;
 import frc.robot.commands.ToggleIntake;
+import frc.robot.commands.ToggleSpeedDrive;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Drivetrain.EncoderBrand;
@@ -107,6 +111,8 @@ public class RobotContainer {
 		autoTurnCommand.setName("Auto Turn Command");
 		Shuffleboard.getTab("Auto Turn").add("Auto turn", autoTurnCommand).withPosition(2, 3).withSize(2, 1);
 
+		
+
 		// Configure the button bindings
 		configureButtonBindings();
 	}
@@ -134,6 +140,8 @@ public class RobotContainer {
 		new JoystickButton(m_driver, Button.kBumperRight.value).whenHeld(new SetRollers(m_intake, RollerState.INTAKE));
 		new TriggerButton(m_driver, Hand.kLeft, 0.5).whenHeld(new MoveGondola(m_climber, .75));
 		new TriggerButton(m_driver, Hand.kRight, 0.5).whenHeld(new MoveGondola(m_climber, -.75));
+
+		new JoystickButton(m_driver, Button.kB.value).whenPressed(new ToggleSpeedDrive(m_drivetrain, 0.2, 1.));
 	}
 
 	/**
