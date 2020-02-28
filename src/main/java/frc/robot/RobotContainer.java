@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.cscore.AxisCamera;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -32,6 +33,7 @@ import frc.robot.commands.MoveGondola;
 import frc.robot.commands.MoveIntake;
 import frc.robot.commands.SetRollers;
 import frc.robot.commands.ToggleElevator;
+import frc.robot.commands.ToggleIntake;
 import frc.robot.commands.AutoPath.AutoPaths;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
@@ -130,24 +132,20 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
 		
-		//Driver two controls climb
-		new JoystickButton(m_driverTwo, Button.kA.value).whenPressed(new ToggleElevator(m_elevator));
+		new JoystickButton(m_driver, Button.kA.value).whenPressed(new ToggleIntake(m_intake));
+		// new JoystickButton(m_driver, Button.kB.value).whenPressed(null);
+		new JoystickButton(m_driver, Button.kX.value).whenHeld(new MoveIntake(m_intake, IntakePosition.BOTTOM));
+		new JoystickButton(m_driver, Button.kY.value).whenHeld(new MoveIntake(m_intake, IntakePosition.TOP));
+		new JoystickButton(m_driver, Button.kStart.value).whenPressed(new ToggleElevator(m_elevator));
+		new POVButton(m_driver, 0).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.UP), true);
+		new POVButton(m_driver, 180).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.DOWN), true);
+		new JoystickButton(m_driver, Button.kBumperLeft.value).whenHeld(new SetRollers(m_intake, RollerState.OUTTAKE));
+		new JoystickButton(m_driver, Button.kBumperRight.value).whenHeld(new SetRollers(m_intake, RollerState.INTAKE));
+		new TriggerButton(m_driver, Hand.kLeft, 0.5).whenHeld(new MoveGondola(m_climber, .75));
+		new TriggerButton(m_driver, Hand.kRight, 0.5).whenHeld(new MoveGondola(m_climber, -.75));
 
-		new JoystickButton(m_driverTwo, Button.kX.value).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.DOWN), false);
-		new JoystickButton(m_driverTwo, Button.kY.value).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.UP), false);
-
-		new JoystickButton(m_driverTwo, Button.kBumperLeft.value).whenHeld(new MoveGondola(m_climber, .75));
-		new JoystickButton(m_driverTwo, Button.kBumperRight.value).whenHeld(new MoveGondola(m_climber, -.75));
-
-		//Driver one controls drivetrain and intake
-		new JoystickButton(m_driver, Button.kX.value).whenPressed(new MoveIntake(m_intake, IntakePosition.BOTTOM));
-		new JoystickButton(m_driver, Button.kY.value).whenPressed(new MoveIntake(m_intake, IntakePosition.TOP));
 		
-		new JoystickButton(m_driver, Button.kBumperLeft.value).whenHeld(new SetRollers(m_intake, RollerState.INTAKE), false);
-		new JoystickButton(m_driver, Button.kBumperRight.value).whenHeld(new SetRollers(m_intake, RollerState.OUTTAKE), false);
 
-		new POVButton(m_driver, 0).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.UP));
-		new POVButton(m_driver, 180).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.DOWN));
 	}
 
 	/**
