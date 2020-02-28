@@ -80,8 +80,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Intake.IntakePosition;
 import frc.robot.subsystems.Intake.IntakePosition;
 
 public class MoveIntake extends CommandBase {
@@ -104,7 +102,10 @@ public class MoveIntake extends CommandBase {
     public void execute() {
         switch(m_intakePosition) {
             case TOP:
-                m_intake.setIntakeMotorForward();;
+                m_intake.setIntakeMotorForward();
+                break;
+            case MIDDLE: 
+                m_intake.setIntakeMotorReverse();
                 break;
             case BOTTOM:
                 m_intake.setIntakeMotorReverse();

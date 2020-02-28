@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import static frc.robot.subsystems.Intake.IntakePosition.TOP;
-import static frc.robot.subsystems.Intake.IntakePosition.MIDDLE;
 import static frc.robot.subsystems.Intake.IntakePosition.BOTTOM;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -13,9 +12,9 @@ public class ToggleIntake extends CommandBase {
     private IntakePosition m_intakePosition = IntakePosition.BOTTOM;
 
     /**
-     * Toggles lift between maximum and minimum height.
+     * Toggles the arm position
      * 
-     * @param elevator the Elevator subsystem used by the command
+     * @param intake the Intake subsystem used by the command
      */
     public ToggleIntake(Intake intake) {
         m_intake = intake;
@@ -35,7 +34,6 @@ public class ToggleIntake extends CommandBase {
     public void execute() { 
         switch(m_intakePosition) {
             case BOTTOM:
-                // System.out.println("set high");
                 m_intake.setIntakeMotorForward();
                 break;
             case MIDDLE:

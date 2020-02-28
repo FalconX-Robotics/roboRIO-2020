@@ -143,9 +143,6 @@ public class RobotContainer {
 		new JoystickButton(m_driver, Button.kBumperRight.value).whenHeld(new SetRollers(m_intake, RollerState.INTAKE));
 		new TriggerButton(m_driver, Hand.kLeft, 0.5).whenHeld(new MoveGondola(m_climber, .75));
 		new TriggerButton(m_driver, Hand.kRight, 0.5).whenHeld(new MoveGondola(m_climber, -.75));
-
-		
-
 	}
 
 	/**
