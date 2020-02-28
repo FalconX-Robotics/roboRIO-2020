@@ -130,19 +130,16 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
 		
-		//Driver two controls climb
-		new JoystickButton(m_driverTwo, Button.kA.value).whenPressed(new ToggleElevator(m_elevator));
 
-		new JoystickButton(m_driverTwo, Button.kX.value).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.DOWN), false);
-		new JoystickButton(m_driverTwo, Button.kY.value).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.UP), false);
+		new JoystickButton(m_driver, Button.kStart.value).whenPressed(new ToggleElevator(m_elevator));
 
-		new JoystickButton(m_driverTwo, Button.kBumperLeft.value).whenHeld(new MoveGondola(m_climber, .75));
-		new JoystickButton(m_driverTwo, Button.kBumperRight.value).whenHeld(new MoveGondola(m_climber, -.75));
+		new JoystickButton(m_driver, Button.kA.value).whenHeld(new MoveGondola(m_climber, .75));
+		new JoystickButton(m_driver, Button.kB.value).whenHeld(new MoveGondola(m_climber, -.75));
 
-		//Driver one controls drivetrain and intake
 		new JoystickButton(m_driver, Button.kX.value).whenPressed(new MoveIntake(m_intake, IntakePosition.BOTTOM));
 		new JoystickButton(m_driver, Button.kY.value).whenPressed(new MoveIntake(m_intake, IntakePosition.TOP));
 		
+	
 		new JoystickButton(m_driver, Button.kBumperLeft.value).whenHeld(new SetRollers(m_intake, RollerState.INTAKE), false);
 		new JoystickButton(m_driver, Button.kBumperRight.value).whenHeld(new SetRollers(m_intake, RollerState.OUTTAKE), false);
 
