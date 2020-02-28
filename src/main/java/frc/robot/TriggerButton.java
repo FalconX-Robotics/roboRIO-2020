@@ -23,6 +23,7 @@ public class TriggerButton extends Button {
    */
   public TriggerButton(XboxController controller, Hand hand , double axisAmount) {
     requireNonNullParam(controller, "controller", "TriggerButton");
+    requireNonNullParam(hand, "hand", "TriggerButton");
 
     m_controller = controller;
     m_hand = hand;

@@ -118,5 +118,20 @@ public class MoveIntake extends CommandBase {
     public void end(boolean interrupted) {
         m_intake.stopIntakeMotor();
     }
+
+    @Override
+    public boolean isFinished() {
+        switch(m_intakePosition) {
+            case TOP:
+                return m_intake.isTopTachPressed();
+            case MIDDLE:
+                return m_intake.isBottomTachPressed();
+            case BOTTOM:
+                return m_intake.isBottomTachPressed();
+            default: 
+                return true;
+        }
+
+    }
     
 }
