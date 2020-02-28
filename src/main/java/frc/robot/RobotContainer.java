@@ -7,10 +7,9 @@
 
 package frc.robot;
 
-import edu.wpi.cscore.AxisCamera;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -18,15 +17,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.AutoDriveShuffleBoard;
-import frc.robot.Constants.AutoTurnShuffleBoard;
 import frc.robot.Constants.Ports;
 import frc.robot.commands.AutoDrive;
 import frc.robot.commands.AutoPath;
+import frc.robot.commands.AutoPath.AutoPaths;
 import frc.robot.commands.AutoTurn;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.MoveGondola;
@@ -34,13 +30,12 @@ import frc.robot.commands.MoveIntake;
 import frc.robot.commands.SetRollers;
 import frc.robot.commands.ToggleElevator;
 import frc.robot.commands.ToggleIntake;
-import frc.robot.commands.AutoPath.AutoPaths;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Drivetrain.EncoderBrand;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorDirection;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakePosition;
 import frc.robot.subsystems.Intake.RollerState;
 
@@ -65,10 +60,6 @@ public class RobotContainer {
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
-		Constants.AutoDriveShuffleBoard.init();
-		Constants.AutoTurnShuffleBoard.init();
-		Constants.AutoIntakeShuffleBoard.init();
-
 		m_drivetrain.setDefaultCommand(new FunctionalCommand(() -> {
 		},
 				// () -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft),
@@ -103,14 +94,14 @@ public class RobotContainer {
 		m_sensorInfoTab.getLayout("Encoder").add("Reset encoder", resetEncoderCommand);
 
 		RunCommand autoDriveCommand = new RunCommand(
-			() -> new AutoDrive(m_drivetrain, AutoDriveShuffleBoard.distance.getDouble(0.))
+			() -> new AutoDrive(m_drivetrain, 0)
 					.schedule(),
 			m_drivetrain);
 		autoDriveCommand.setName("Auto Drive Command");
 		Shuffleboard.getTab("Auto Drive").add("Auto drive", autoDriveCommand).withPosition(2, 3).withSize(2, 1);
 
 		RunCommand autoTurnCommand = new RunCommand(
-			() -> new AutoTurn(m_drivetrain, AutoTurnShuffleBoard.angle.getDouble(0.))
+			() -> new AutoTurn(m_drivetrain, 0)
 					.schedule(),
 			m_drivetrain);
 		autoTurnCommand.setName("Auto Turn Command");

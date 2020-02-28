@@ -32,12 +32,12 @@ public class ShuffleBoardPIDCommand extends PIDCommand {
 
     private final NetworkTableEntry m_targetInputEntry;
 
-    public ShuffleBoardPIDCommand(CharSequence tabName, PIDController controller, DoubleSupplier measurementSource,
-            DoubleSupplier setpoint, DoubleConsumer useOutput, Subsystem[] requirements) {
+    public ShuffleBoardPIDCommand(String tabName, PIDController controller, DoubleSupplier measurementSource,
+            DoubleSupplier setpoint, DoubleConsumer useOutput, Subsystem... requirements) {
         super(controller, measurementSource, setpoint, useOutput, requirements);
 
         requireNonNullParam(tabName, "tabName", "ShuffleBoardPIDCommand");
-        m_tabName = tabName.toString();
+        m_tabName = tabName;
 
         m_tab = Shuffleboard.getTab(m_tabName);
         m_pEntry = m_tab.add("P", 0.).withSize(2, 1).withPosition(0, 0).getEntry();
@@ -54,8 +54,8 @@ public class ShuffleBoardPIDCommand extends PIDCommand {
         m_measurementEntry = m_tab.add("Current Measurement", 0.).withSize(2, 1).withPosition(4, 4).getEntry();
     }
 
-    public ShuffleBoardPIDCommand(CharSequence tabName, PIDController controller, DoubleSupplier measurementSource,
-            double setpoint, DoubleConsumer useOutput, Subsystem[] requirements) {
+    public ShuffleBoardPIDCommand(String tabName, PIDController controller, DoubleSupplier measurementSource,
+            double setpoint, DoubleConsumer useOutput, Subsystem... requirements) {
         this(tabName, controller, measurementSource, () -> setpoint, useOutput, requirements);
     }
 
