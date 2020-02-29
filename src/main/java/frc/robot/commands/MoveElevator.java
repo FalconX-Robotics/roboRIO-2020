@@ -24,10 +24,10 @@ public class MoveElevator extends CommandBase {
     public void execute() {
         switch(m_elevatorDirection) {
             case UP:
-                m_elevator.setElevatorSpeed(.4);
+                m_elevator.setMotor(.4);
                 break;
             case DOWN:
-                m_elevator.setElevatorSpeed(-.4);
+                m_elevator.setMotor(-.4);
                 break;
         }
     }
@@ -44,7 +44,7 @@ public class MoveElevator extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        m_elevator.stopElevator();
+        m_elevator.stopMotor();
     }
     
 }

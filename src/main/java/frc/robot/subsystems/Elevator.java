@@ -9,22 +9,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Ports;
 
 public class Elevator extends SubsystemBase {
-    private final CANSparkMax m_elevatorMotorFront = new CANSparkMax(Ports.ELEVATOR_MOTOR_FRONT_PORT, MotorType.kBrushless);
-    private final CANSparkMax m_elevatorMotorBack = new CANSparkMax(Ports.ELEVATOR_MOTOR_BACK_PORT, MotorType.kBrushless);
+    private final CANSparkMax m_motorFront = new CANSparkMax(Ports.ELEVATOR_MOTOR_FRONT_PORT, MotorType.kBrushless);
+    private final CANSparkMax m_motorBack = new CANSparkMax(Ports.ELEVATOR_MOTOR_BACK_PORT, MotorType.kBrushless);
     
-    private final SpeedControllerGroup m_elevatorMotorGroup = new SpeedControllerGroup(m_elevatorMotorFront, m_elevatorMotorBack);
+    private final SpeedControllerGroup m_motorGroup = new SpeedControllerGroup(m_motorFront, m_motorBack);
     
-    private final DigitalInput m_limitSwitchLower = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_LOWER_PORT);
-    private final DigitalInput m_limitSwitchUpper = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_UPPER_PORT);
+    private final DigitalInput m_switchBottom = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_BOTTOM_PORT);
+    private final DigitalInput m_switchTop = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_TOP_PORT);
 
-    private final double elevatorSpeed = .9;
+    private final double defaultElevatorSpeed = .9;
 
     /**
      * Creates an elevator instance that can be moved up or down.
      */
     public Elevator() {
-        m_elevatorMotorFront.setIdleMode(IdleMode.kBrake);
-        m_elevatorMotorBack.setIdleMode(IdleMode.kBrake);
+        m_motorFront.setIdleMode(IdleMode.kBrake);
+        m_motorBack.setIdleMode(IdleMode.kBrake);
     }
     /**
      * Controls which position the lift will automatically move to
@@ -40,31 +40,31 @@ public class Elevator extends SubsystemBase {
         UP, DOWN;
     }
 
-    public void setElevatorHigh() {
+    public void setMotorForward() {
         if (getUpperSwitchPressed() != true) {
-            setElevatorSpeed(elevatorSpeed);
+            setMotor(defaultElevatorSpeed);
         }
     }
 
-    public void setElevatorLow() {
+    public void setMotorReverse() {
         if (getLowerSwitchPressed() != true) {
-            setElevatorSpeed(-elevatorSpeed);
+            setMotor(-defaultElevatorSpeed);
         }
     }
 
-    public void setElevatorSpeed(final double elevatorSpeed) {
-        m_elevatorMotorGroup.set(elevatorSpeed);
+    public void setMotor(final double elevatorSpeed) {
+        m_motorGroup.set(elevatorSpeed);
     }
 
-    public void stopElevator() {
-        m_elevatorMotorGroup.stopMotor();
+    public void stopMotor() {
+        m_motorGroup.stopMotor();
     }
 
     public boolean getLowerSwitchPressed() {
-        return m_limitSwitchLower.get();
+        return m_switchBottom.get();
     }
 
     public boolean getUpperSwitchPressed() {
-        return m_limitSwitchUpper.get();
+        return m_switchTop.get();
     }
 }

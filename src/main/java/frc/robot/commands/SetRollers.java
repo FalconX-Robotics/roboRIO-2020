@@ -5,9 +5,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.RollerState;
 
 public class SetRollers extends CommandBase {
-    private final double m_intakeSpeed = 0.2;     //TODO: test for appropriate speed
-    private final double m_outtakeSpeed = 0.2;
-    
     private final Intake m_intake;
     private RollerState m_rollerState;
 

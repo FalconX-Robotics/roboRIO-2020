@@ -35,14 +35,13 @@ public class ToggleElevator extends CommandBase {
         switch(m_elevatorState) {
             case LOW:
                 // System.out.println("set high");
-                m_elevator.setElevatorHigh();
+                m_elevator.setMotorForward();
                 break;
             case HIGH:
-                m_elevator.setElevatorLow();
+                m_elevator.setMotorReverse();
                 break;
         }
-    }
-        
+    }   
 
     @Override
     public boolean isFinished() {
@@ -59,6 +58,6 @@ public class ToggleElevator extends CommandBase {
     @Override
     public void end(boolean iterrupted) {
         System.out.println("end");
-        m_elevator.stopElevator();
+        m_elevator.stopMotor();
     }
 }

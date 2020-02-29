@@ -7,7 +7,7 @@ import frc.robot.subsystems.Drivetrain;
 
 public class AutoDrive extends ShuffleBoardPIDCommand {
     private final Drivetrain m_drivetrain;
-    private final double m_distance;
+    // private final double m_distance;
     
     /**
      * Constructor. Moves the robot forward a set distance.
@@ -26,7 +26,7 @@ public class AutoDrive extends ShuffleBoardPIDCommand {
         drivetrain.setMaxOutput(1);
 
         m_drivetrain = drivetrain;
-        m_distance = distance;
+        // m_distance = distance;
         getController().setTolerance(.5);
 
         addRequirements(m_drivetrain);

@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import java.util.Map;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
@@ -29,17 +27,17 @@ import frc.robot.commands.AutoPath.AutoPaths;
 import frc.robot.commands.AutoTurn;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.MoveGondola;
-import frc.robot.commands.MoveIntake;
+import frc.robot.commands.MoveIntakeArm;
 import frc.robot.commands.SetRollers;
 import frc.robot.commands.ToggleElevator;
-import frc.robot.commands.ToggleSpeedDrive;
+import frc.robot.commands.ToggleDrivetrainSpeed;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Drivetrain.EncoderBrand;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorDirection;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Intake.IntakePosition;
+import frc.robot.subsystems.Intake.ArmPosition;
 import frc.robot.subsystems.Intake.RollerState;
 
 /**
@@ -117,7 +115,7 @@ public class RobotContainer {
 	}
 
 	private final XboxController m_driver = new XboxController(Ports.XBOX_CONTROLLER_PORT);
-	private final XboxController m_driverTwo = new XboxController(Ports.XBOX_CONTROLLERTWO_PORT);
+	// private final XboxController m_driverTwo = new XboxController(Ports.XBOX_CONTROLLERTWO_PORT);
 
 	/**
 	 * Use this method to define your button->command mappings. Buttons can be
@@ -128,10 +126,16 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
 		
-		new JoystickButton(m_driver, Button.kA.value).whenPressed(new MoveIntake(m_intake, IntakePosition.BOTTOM));
-		new JoystickButton(m_driver, Button.kB.value).whenPressed(new ToggleSpeedDrive(m_drivetrain, 0.05, 1.));
-		new JoystickButton(m_driver, Button.kX.value).whenPressed(new MoveIntake(m_intake, IntakePosition.MIDDLE));
-		new JoystickButton(m_driver, Button.kY.value).whenPressed(new MoveIntake(m_intake, IntakePosition.TOP));
+		new JoystickButton(m_driver, Button.kA.value).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.BOTTOM));
+		new JoystickButton(m_driver, Button.kB.value).whenPressed(new ToggleDrivetrainSpeed(m_drivetrain, 0.05, 1.));
+		new JoystickButton(m_driver, Button.kX.value).whenPressed(new SelectCommand(() -> {
+			if (m_intake.getArmCurrentPosition() == Intake.ArmPosition.BOTTOM) {
+				return new MoveIntakeArm(m_intake, ArmPosition.TOP);
+			} else {
+				return new MoveIntakeArm(m_intake, ArmPosition.BOTTOM);
+			}
+		}));
+		new JoystickButton(m_driver, Button.kY.value).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.TOP));
 
 		new JoystickButton(m_driver, Button.kStart.value).whenPressed(new ToggleElevator(m_elevator));
 		new POVButton(m_driver, 0).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.UP), true);

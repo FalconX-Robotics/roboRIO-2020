@@ -184,7 +184,7 @@ public class AutoPath {
             new PIDController(AutoConstants.L_RAM_kP, AutoConstants.L_RAM_kI, AutoConstants.L_RAM_kD),
             new PIDController(AutoConstants.R_RAM_kP, AutoConstants.R_RAM_kI, AutoConstants.R_RAM_kD),
             // RamseteCommand passes volts to the callback
-            this.m_drivetrain::tankDriveVolts,
+            this.m_drivetrain::setTankDriveVolt,
             this.m_drivetrain
         );
         return ramseteCommand;  

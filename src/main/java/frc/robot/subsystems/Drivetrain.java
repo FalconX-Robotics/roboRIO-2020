@@ -56,8 +56,6 @@ public class Drivetrain extends SubsystemBase {
     private final CANEncoder m_rightNeoEncoder = m_frontRightMotor.getEncoder();
     private EncoderBrand currentEncoderBrand = EncoderBrand.NEO;
 
-    private final double m_motor_deadband = 0;
-
     private final PigeonIMU m_gyro = new PigeonIMU(Ports.DRIVETRAIN_GYRO_PORT);
 
     private final DifferentialDriveOdometry m_odometry;
@@ -241,6 +239,7 @@ public class Drivetrain extends SubsystemBase {
             return 0;
         }
     }
+
     public double getRightEncoderSpeed() {
         return getRightEncoderSpeed(getCurrentEncoderBrand());
     }
@@ -249,6 +248,7 @@ public class Drivetrain extends SubsystemBase {
     public double getAvgEncoderSpeed(final EncoderBrand encoderBrand) {
         return (getLeftEncoderSpeed(encoderBrand) + getRightEncoderSpeed(encoderBrand)) / 2;
     }
+
     public double getAvgEncoderSpeed() {
         return (getLeftEncoderSpeed() + getRightEncoderSpeed()) / 2;
     }
@@ -315,6 +315,7 @@ public class Drivetrain extends SubsystemBase {
     public void tankDrive(final double leftSpeed, final double rightSpeed, final boolean squareInput) {
         m_drivetrain.tankDrive(leftSpeed, rightSpeed, squareInput);
     }
+
     public void tankDrive(final double leftSpeed, final double rightSpeed) {
         tankDrive(leftSpeed, rightSpeed, false);
     }
@@ -329,6 +330,7 @@ public class Drivetrain extends SubsystemBase {
     public void arcadeDrive(final double forwardSpeed, final double rotationSpeed, final boolean squareInput) {
         m_drivetrain.arcadeDrive(forwardSpeed, rotationSpeed, squareInput);
     }
+
     public void arcadeDrive(final double forwardSpeed, final double rotationSpeed) {
         arcadeDrive(forwardSpeed, rotationSpeed, false);
     }
@@ -339,7 +341,7 @@ public class Drivetrain extends SubsystemBase {
      * @param vLeft  the commanded left output
      * @param vRight the commanded right output
      */
-    public void tankDriveVolts(Double vLeft, Double vRight) {
+    public void setTankDriveVolt(Double vLeft, Double vRight) {
         m_frontLeftMotor.setVoltage(vLeft);
         m_frontRightMotor.setVoltage(vRight);
         m_rearLeftMotor.setVoltage(vLeft);

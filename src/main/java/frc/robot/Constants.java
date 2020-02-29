@@ -46,15 +46,15 @@ public final class Constants {
         public static final int INTAKE_GYRO_PORT = 8;
 
         public static final int ROLLER_MOTOR_PORT = 9;
-        public static final int INTAKE_MECHANISM_MOTOR_PORT = 10;
+        public static final int ARM_MOTOR_PORT = 10;
 
         public static final int TALON_TACH_PORT = 9;
 
         public static final int TOP_TACH_PORT = 1;
         public static final int BOTTOM_TACH_PORT = 0;
         
-        public static final int ELEVATOR_LIMIT_SWITCH_LOWER_PORT = 2;
-        public static final int ELEVATOR_LIMIT_SWITCH_UPPER_PORT = 3;
+        public static final int ELEVATOR_LIMIT_SWITCH_BOTTOM_PORT = 2;
+        public static final int ELEVATOR_LIMIT_SWITCH_TOP_PORT = 3;
         public static final int ELEVATOR_MOTOR_FRONT_PORT = 3;
         public static final int ELEVATOR_MOTOR_BACK_PORT = 2; 
       

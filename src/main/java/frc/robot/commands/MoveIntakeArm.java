@@ -80,40 +80,50 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Intake.IntakePosition;
+import frc.robot.subsystems.Intake.ArmPosition;
 
-public class MoveIntake extends CommandBase {
+public class MoveIntakeArm extends CommandBase {
     private final Intake m_intake;
-    private final IntakePosition m_intakePosition;
+    private final ArmPosition m_targetPosition;
+
+    private final double m_minimumOutput = 0.3;
 
     /**
      * Manually adjusts intake position
      * 
      * @param intake         the Intake subsystem used by the command
-     * @param intakePosition the direction the intake will be moved
+     * @param targetPosition the direction the intake will be moved
      */
-    public MoveIntake(final Intake intake, final IntakePosition intakePosition) {
+    public MoveIntakeArm(final Intake intake, final ArmPosition targetPosition) {
         m_intake = intake;
-        m_intakePosition = intakePosition;
+        m_targetPosition = targetPosition;
         addRequirements(m_intake);
     }
 
     private void moveToMiddle() {
-        double to = m_intakePosition.getDesiredAngle();
-        // double speed = 
+        double to = m_targetPosition.getTargetAngle();
+        double speed = to - m_intake.getArmAngleInPercentage();
+        if (speed > 0 && speed < m_minimumOutput) {
+            speed = m_minimumOutput;
+        } else if (speed < -m_minimumOutput) {
+            speed = -m_minimumOutput;
+        }
+
+        m_intake.setArmMotor(speed);
     }
+
 
     @Override
     public void execute() {
-        switch (m_intakePosition) {
+        switch (m_targetPosition) {
         case TOP:
-            m_intake.setIntakeMotorForward();
+            m_intake.setArmMotorForward();
             break;
         case MIDDLE:
             moveToMiddle();
             break;
         case BOTTOM:
-            m_intake.setIntakeMotorReverse();
+            m_intake.setArmMotorReverse();
             break;
         }
 
@@ -121,20 +131,21 @@ public class MoveIntake extends CommandBase {
 
     @Override
     public void end(final boolean interrupted) {
-        m_intake.stopIntakeMotor();
-        m_intake.setCurrentIntakePosition(m_intakePosition);
+        m_intake.stopArmMotor();
+        m_intake.setArmCurrentPosition(m_targetPosition);
 
     }
 
     @Override
     public boolean isFinished() {
-        switch(m_intakePosition) {
+        switch(m_targetPosition) {
             case TOP:
-                return m_intake.isTopTachPressed();
+                return m_intake.getTopSwitchPressed();
             case MIDDLE:
-                return m_intake.isBottomTachPressed();
+                return false;
+                // return m_intake.getBottomSwitchPressed();
             case BOTTOM:
-                return m_intake.isBottomTachPressed();
+                return m_intake.getBottomSwitchPressed();
             default: 
                 return true;
         }
