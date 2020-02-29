@@ -3,8 +3,14 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Ports;
 
@@ -19,6 +25,15 @@ public class Elevator extends SubsystemBase {
 
     private final double defaultElevatorSpeed = .9;
 
+    private static final ShuffleboardTab robotStatustab = Shuffleboard.getTab("Robot Status");
+    private static final ShuffleboardLayout elevatorLayout = robotStatustab.getLayout("Elevator", BuiltInLayouts.kList);
+    private final NetworkTableEntry elevatorStateWidget = elevatorLayout
+        .add("Elevator state", this.getElevatorState()).getEntry();
+    private final NetworkTableEntry lowLimitSwitchWidget = elevatorLayout
+        .add("Lower limit switch", false).getEntry();
+    private final NetworkTableEntry highLimitSwitchWidget = elevatorLayout
+        .add("Upper limit switch", false).getEntry();
+
     /**
      * Creates an elevator instance that can be moved up or down.
      */
@@ -26,6 +41,7 @@ public class Elevator extends SubsystemBase {
         m_motorFront.setIdleMode(IdleMode.kBrake);
         m_motorBack.setIdleMode(IdleMode.kBrake);
     }
+    
     /**
      * Controls which position the lift will automatically move to
      */
@@ -67,4 +83,21 @@ public class Elevator extends SubsystemBase {
     public boolean getUpperSwitchPressed() {
         return m_switchTop.get();
     }
+
+    public String getElevatorState() {
+        if(getLowerSwitchPressed()) {
+            return "Low";
+        }
+        else {
+            return "High";
+        }
+    }
+
+    @Override
+    public void periodic() {
+        elevatorStateWidget.setString(getElevatorState());
+        lowLimitSwitchWidget.setBoolean(getLowerSwitchPressed());
+        highLimitSwitchWidget.setBoolean(getUpperSwitchPressed());
+    }
+
 }

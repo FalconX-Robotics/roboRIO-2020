@@ -5,7 +5,12 @@ import static com.ctre.phoenix.motorcontrol.FeedbackDevice.CTRE_MagEncoder_Relat
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Ports;
 
@@ -23,7 +28,17 @@ public class Intake extends SubsystemBase {
     private ArmPosition armCurrentPosition = ArmPosition.BOTTOM;
 
     private double m_armMaxOutput = 1;
+    
+    private static final ShuffleboardTab robotStatustab = Shuffleboard.getTab("Robot Status");
+    private static final ShuffleboardLayout intakeLayout = robotStatustab.getLayout("Intake", BuiltInLayouts.kList);
+    private final NetworkTableEntry intakePositionWidget = intakeLayout
+        .add("Intake Position", getIntakePos()).getEntry();
+    private final NetworkTableEntry lowSwitchWidget = intakeLayout
+        .add("Lower Limit Switch", getBottomSwitchPressed()).getEntry();
+    private final NetworkTableEntry toprSwitchWidget = intakeLayout
+        .add("Lower Limit Switch", getTopSwitchPressed()).getEntry();
 
+    
     public Intake() {
         m_armMotor.configFactoryDefault();
         m_armMotor.configSelectedFeedbackSensor(CTRE_MagEncoder_Relative);
@@ -136,6 +151,18 @@ public class Intake extends SubsystemBase {
         return bottomSwitch.get();
     }
 
+    public String getIntakePos() {
+        if(getBottomSwitchPressed()) {
+            return "Low";
+        }
+        else if(getTopSwitchPressed()) {
+            return "High";
+        }
+        else {
+            return "Middle";
+        }
+    }
+
     // public double getPitch() {
     //     final double[] data = new double[3];
     //     m_gyro.getYawPitchRoll(data);
@@ -147,5 +174,9 @@ public class Intake extends SubsystemBase {
         // System.out.println("Top Limit switch: " + isTopTachPressed());
         // System.out.println("Bottom Limit switch: " + isBottomTachPressed()); 
         System.out.println("ang: " + getArmAngleInPercentage());
+
+        intakePositionWidget.setString(getIntakePos());
+        lowSwitchWidget.setBoolean(getBottomSwitchPressed());
+        toprSwitchWidget.setBoolean(getTopSwitchPressed());
     }
 }

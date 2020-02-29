@@ -60,9 +60,9 @@ public class Drivetrain extends SubsystemBase {
 
     private final DifferentialDriveOdometry m_odometry;
 
-    private final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
-    private final ShuffleboardLayout m_encoderLayout = m_sensorInfoTab.getLayout("Encoder", BuiltInLayouts.kList);
-    private final ShuffleboardLayout m_gyroLayout = m_sensorInfoTab.getLayout("Gyro", BuiltInLayouts.kList);
+    private final ShuffleboardTab robotStatusTab = Shuffleboard.getTab("Robot Status");
+    private final ShuffleboardLayout m_encoderLayout = robotStatusTab.getLayout("Drivetrain Encoders", BuiltInLayouts.kList);
+    private final ShuffleboardLayout m_gyroLayout = robotStatusTab.getLayout("Drivetrain Gyro", BuiltInLayouts.kList);
 
     private final NetworkTableEntry m_rawLeftNeoPosWidget = m_encoderLayout
             .add("RAW left NEO pos", m_leftSRXEncoderMotor.getSelectedSensorPosition()).getEntry();
@@ -74,7 +74,7 @@ public class Drivetrain extends SubsystemBase {
             .add("left SRX pos", getLeftEncoderPos(EncoderBrand.SRX)).getEntry();
     private final NetworkTableEntry m_rawGyroWidget = m_gyroLayout
             .add("raw gyro vals", Arrays.toString(getYawPitchRoll())).getEntry();
-    private final NetworkTableEntry m_talonTachWidget = m_sensorInfoTab.add("Talon Tach", false).getEntry();
+    //private final NetworkTableEntry m_talonTachWidget = m_sensorInfoTab.add("Talon Tach", false).getEntry();
 
     private final DigitalInput m_talonTach = new DigitalInput(Constants.Ports.TALON_TACH_PORT);
 
@@ -373,7 +373,7 @@ public class Drivetrain extends SubsystemBase {
 
         m_rawGyroWidget.setString(Arrays.toString(getYawPitchRoll()));
 
-        m_talonTachWidget.setBoolean(getTalonTachPressed());
+        //m_talonTachWidget.setBoolean(getTalonTachPressed());
 
         // System.out.println("left enc: " + getLeftEncoderPos());
         // System.out.println("right enc: " + getRightEncoderPos());
