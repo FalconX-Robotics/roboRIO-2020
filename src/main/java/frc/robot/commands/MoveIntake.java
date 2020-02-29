@@ -84,39 +84,46 @@ import frc.robot.subsystems.Intake.IntakePosition;
 
 public class MoveIntake extends CommandBase {
     private final Intake m_intake;
-    private IntakePosition m_intakePosition;
-    
+    private final IntakePosition m_intakePosition;
+
     /**
      * Manually adjusts intake position
      * 
-     * @param intake the Intake subsystem used by the command
+     * @param intake         the Intake subsystem used by the command
      * @param intakePosition the direction the intake will be moved
      */
-    public MoveIntake(Intake intake, IntakePosition intakePosition) {
+    public MoveIntake(final Intake intake, final IntakePosition intakePosition) {
         m_intake = intake;
         m_intakePosition = intakePosition;
         addRequirements(m_intake);
     }
 
+    private void moveToMiddle() {
+        double to = m_intakePosition.getDesiredAngle();
+        // double speed = 
+    }
+
     @Override
     public void execute() {
-        switch(m_intakePosition) {
-            case TOP:
-                m_intake.setIntakeMotorForward();
-                break;
-            case MIDDLE: 
-                m_intake.setIntakeMotorReverse();
-                break;
-            case BOTTOM:
-                m_intake.setIntakeMotorReverse();
-                break;
+        switch (m_intakePosition) {
+        case TOP:
+            m_intake.setIntakeMotorForward();
+            break;
+        case MIDDLE:
+            moveToMiddle();
+            break;
+        case BOTTOM:
+            m_intake.setIntakeMotorReverse();
+            break;
         }
 
     }
 
     @Override
-    public void end(boolean interrupted) {
+    public void end(final boolean interrupted) {
         m_intake.stopIntakeMotor();
+        m_intake.setCurrentIntakePosition(m_intakePosition);
+
     }
 
     @Override
@@ -131,7 +138,6 @@ public class MoveIntake extends CommandBase {
             default: 
                 return true;
         }
-
     }
     
 }

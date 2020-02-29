@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.Arrays;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
@@ -26,10 +27,13 @@ public class Intake extends SubsystemBase {
 
     public Intake() {
         m_gyro.configFactoryDefault();
+        m_intakeMotor.setInverted(true);
+
+        m_intakeMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     public enum IntakePosition {
-        BOTTOM(0), MIDDLE(10), TOP(90);
+        BOTTOM(0), MIDDLE(.5), TOP(1);
 
         private double desiredAngle;
 
@@ -120,7 +124,5 @@ public class Intake extends SubsystemBase {
         // final double[] data = new double[3];
         // m_gyro.getYawPitchRoll(data);
         // System.out.println(Arrays.toString(data));
-
-        
     }
 }

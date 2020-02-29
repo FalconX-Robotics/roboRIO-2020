@@ -30,7 +30,16 @@ public class MoveElevator extends CommandBase {
                 m_elevator.setElevatorSpeed(-.4);
                 break;
         }
+    }
 
+    @Override
+    public boolean isFinished() {
+        switch (m_elevatorDirection) {
+            case DOWN:
+                return m_elevator.getLowerSwitchPressed();
+            default:
+                return false;
+        }
     }
 
     @Override
