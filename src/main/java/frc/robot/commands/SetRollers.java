@@ -28,10 +28,10 @@ public class SetRollers extends CommandBase {
     public void execute() {
         switch(m_rollerState) {                               
             case INTAKE:
-                m_intake.setRollerMotorForward(m_intakeSpeed);         //TODO: confirm intake/outtake direction
+                m_intake.setRollerMotorReverse();
                 break;
             case OUTTAKE:
-                m_intake.setRollerMotorReverse(m_outtakeSpeed);
+                m_intake.setRollerMotorForward();
                 break;
         }
     }

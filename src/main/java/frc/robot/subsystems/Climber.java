@@ -20,7 +20,6 @@ public class Climber extends SubsystemBase {
      * @param speed The speed of the motor. -1 is left (maybe) and +1 is right (maybe)
      */
     public void moveGondola(double speed) {
-        //TODO check if directions are correct
         m_gondolaMotor.set(speed);
     }
     /**
