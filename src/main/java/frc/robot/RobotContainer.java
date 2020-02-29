@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -56,7 +57,7 @@ public class RobotContainer {
 	private final Elevator m_elevator = new Elevator();
 
 	private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
-	
+
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
@@ -66,9 +67,9 @@ public class RobotContainer {
 				// () -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft),
 				// driver.getY(Hand.kRight), true),
 				() -> {
-					//m_drivetrain.arcadeDrive(-m_joystickDriver.getY(), m_joystickDriver.getZ());
+					// m_drivetrain.arcadeDrive(-m_joystickDriver.getY(), m_joystickDriver.getZ());
 					m_drivetrain.arcadeDrive(-m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight), true);
-					//m_drivetrain.setMaxOutput(1 - m_joystickDriver.getThrottle());
+					// m_drivetrain.setMaxOutput(1 - m_joystickDriver.getThrottle());
 				},
 				// (interrupted) -> m_drivetrain.tankDrive(0, 0),
 				(interrupted) -> m_drivetrain.stopMotor(), () -> false, m_drivetrain));
@@ -91,50 +92,40 @@ public class RobotContainer {
 			m_drivetrain.resetEncoders(EncoderBrand.SRX);
 		}, m_drivetrain);
 		resetEncoderCommand.setName("Reset Encoder");
-	
+
 		m_sensorInfoTab.getLayout("Encoder").add("Reset encoder", resetEncoderCommand);
 
-		RunCommand autoDriveCommand = new RunCommand(
-			() -> new AutoDrive(m_drivetrain, 0)
-					.schedule(),
-			m_drivetrain);
+		RunCommand autoDriveCommand = new RunCommand(() -> new AutoDrive(m_drivetrain, 0).schedule(), m_drivetrain);
 		autoDriveCommand.setName("Auto Drive Command");
 		Shuffleboard.getTab("Auto Drive").add("Auto drive", autoDriveCommand).withPosition(2, 3).withSize(2, 1);
 
-		RunCommand autoTurnCommand = new RunCommand(
-			() -> new AutoTurn(m_drivetrain, 0)
-					.schedule(),
-			m_drivetrain);
+		RunCommand autoTurnCommand = new RunCommand(() -> new AutoTurn(m_drivetrain, 0).schedule(), m_drivetrain);
 		autoTurnCommand.setName("Auto Turn Command");
 		Shuffleboard.getTab("Auto Turn").add("Auto turn", autoTurnCommand).withPosition(2, 3).withSize(2, 1);
-
-		
 
 		// Configure the button bindings
 		configureButtonBindings();
 	}
 
 	private final XboxController m_driver = new XboxController(Ports.XBOX_CONTROLLER_PORT);
-	// private final XboxController m_driverTwo = new XboxController(Ports.XBOX_CONTROLLERTWO_PORT);
+	// private final XboxController m_driverTwo = new
+	// XboxController(Ports.XBOX_CONTROLLERTWO_PORT);
 
 	/**
 	 * Use this method to define your button->command mappings. Buttons can be
 	 * created by instantiating a {@link GenericHID} or one of its subclasses
-	 * ({@link edu.wpi.first.wpilibj.Joystick Joystick} or {@link XboxController}), and then
-	 * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton JoystickButton}.
+	 * ({@link edu.wpi.first.wpilibj.Joystick Joystick} or {@link XboxController}),
+	 * and then passing it to a
+	 * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton JoystickButton}.
 	 */
 	private void configureButtonBindings() {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
-		
+
 		new JoystickButton(m_driver, Button.kA.value).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.BOTTOM));
 		new JoystickButton(m_driver, Button.kB.value).whenPressed(new ToggleDrivetrainSpeed(m_drivetrain, 0.05, 1.));
-		new JoystickButton(m_driver, Button.kX.value).whenPressed(new SelectCommand(() -> {
-			if (m_intake.getArmCurrentPosition() == Intake.ArmPosition.BOTTOM) {
-				return new MoveIntakeArm(m_intake, ArmPosition.TOP);
-			} else {
-				return new MoveIntakeArm(m_intake, ArmPosition.BOTTOM);
-			}
-		}));
+		new JoystickButton(m_driver, Button.kX.value).whenPressed(new ConditionalCommand(
+				new MoveIntakeArm(m_intake, ArmPosition.TOP), new MoveIntakeArm(m_intake, ArmPosition.BOTTOM),
+				() -> m_intake.getArmCurrentPosition() == Intake.ArmPosition.BOTTOM));
 		new JoystickButton(m_driver, Button.kY.value).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.TOP));
 
 		new JoystickButton(m_driver, Button.kStart.value).whenPressed(new ToggleElevator(m_elevator));
@@ -145,7 +136,6 @@ public class RobotContainer {
 		new TriggerButton(m_driver, Hand.kLeft, 0.5).whenHeld(new MoveGondola(m_climber, .75));
 		new TriggerButton(m_driver, Hand.kRight, 0.5).whenHeld(new MoveGondola(m_climber, -.75));
 
-		
 	}
 
 	/**
