@@ -78,6 +78,8 @@ public class Drivetrain extends SubsystemBase {
 
     private final DigitalInput m_talonTach = new DigitalInput(Constants.Ports.TALON_TACH_PORT);
 
+    private boolean m_quickTurn = false;
+
     /**
      * Creates a drivetrain instance which can be controlled to move the robot. This also
      * contains and outputs all drivetrain measurements (position, speed, angle, etc.) used
@@ -333,6 +335,24 @@ public class Drivetrain extends SubsystemBase {
 
     public void arcadeDrive(final double forwardSpeed, final double rotationSpeed) {
         arcadeDrive(forwardSpeed, rotationSpeed, false);
+    }
+
+    /**
+     * Moves the drivetrain with curvature drive using the given speeds.
+     * 
+     * @param forwardSpeed the speed in which to move the drivetrain forward or backward
+     * @param rotationSpeed the speed in which to turn the drivetrain left or right based on a curve
+     */
+    public void curvatureDrive(final double forwardSpeed, final double rotationSpeed) {
+        arcadeDrive(forwardSpeed, rotationSpeed, getQuickTurn());
+    }
+
+    public void setQuickTurn(boolean quickTurn) {
+        m_quickTurn = quickTurn;
+    }
+
+    public boolean getQuickTurn() {
+        return m_quickTurn;
     }
 
     /**

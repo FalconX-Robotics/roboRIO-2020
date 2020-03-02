@@ -31,6 +31,7 @@ import frc.robot.commands.MoveGondola;
 import frc.robot.commands.MoveIntakeArm;
 import frc.robot.commands.SetRollers;
 import frc.robot.commands.ToggleElevator;
+import frc.robot.commands.ToggleQuickTurn;
 import frc.robot.commands.ToggleDrivetrainSpeed;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
@@ -58,21 +59,33 @@ public class RobotContainer {
 
 	private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
 
+	private final DriveMode m_driveMode = DriveMode.ARCADE;
+
+	public enum DriveMode {
+		TANK, ARCADE, CURVE;
+	}
+	
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
 		m_drivetrain.setDefaultCommand(new FunctionalCommand(() -> {
 		},
-				// () -> m_drivetrain.tankDrive(driver.getY(Hand.kLeft),
-				// driver.getY(Hand.kRight), true),
 				() -> {
-					// m_drivetrain.arcadeDrive(-m_joystickDriver.getY(), m_joystickDriver.getZ());
-					m_drivetrain.arcadeDrive(-m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight), true);
-					// m_drivetrain.setMaxOutput(1 - m_joystickDriver.getThrottle());
+					switch (m_driveMode) {
+						case TANK: m_drivetrain.tankDrive(-m_driver.getY(Hand.kLeft), -m_driver.getY(Hand.kRight), true);
+						break;
+
+						case ARCADE: m_drivetrain.arcadeDrive(-m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight), true);
+						break;
+
+						case CURVE: m_drivetrain.curvatureDrive(-m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight));
+						break;
+					}
 				},
 				// (interrupted) -> m_drivetrain.tankDrive(0, 0),
 				(interrupted) -> m_drivetrain.stopMotor(), () -> false, m_drivetrain));
+		
 
 		// m_climber.setDefaultCommand(new FunctionalCommand(
 		// () -> {},
@@ -136,6 +149,9 @@ public class RobotContainer {
 		new TriggerButton(m_driver, Hand.kLeft, 0.5).whenHeld(new MoveGondola(m_climber, .75));
 		new TriggerButton(m_driver, Hand.kRight, 0.5).whenHeld(new MoveGondola(m_climber, -.75));
 
+		new JoystickButton(m_driver, Button.kBack.value).whenPressed(new ToggleQuickTurn(m_drivetrain));
+
+			
 	}
 
 	/**
