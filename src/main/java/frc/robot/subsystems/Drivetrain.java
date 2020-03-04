@@ -56,15 +56,13 @@ public class Drivetrain extends SubsystemBase {
     private final CANEncoder m_rightNeoEncoder = m_frontRightMotor.getEncoder();
     private EncoderBrand currentEncoderBrand = EncoderBrand.NEO;
 
-    private final double m_motor_deadband = 0;
-
-    private final PigeonIMU m_gyro = new PigeonIMU(Ports.GYRO_PORT);
+    private final PigeonIMU m_gyro = new PigeonIMU(Ports.DRIVETRAIN_GYRO_PORT);
 
     private final DifferentialDriveOdometry m_odometry;
 
-    private final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
-    private final ShuffleboardLayout m_encoderLayout = m_sensorInfoTab.getLayout("Encoder", BuiltInLayouts.kList);
-    private final ShuffleboardLayout m_gyroLayout = m_sensorInfoTab.getLayout("Gyro", BuiltInLayouts.kList);
+    private final ShuffleboardTab robotStatusTab = Shuffleboard.getTab("Robot Status");
+    private final ShuffleboardLayout m_encoderLayout = robotStatusTab.getLayout("Drivetrain Encoders", BuiltInLayouts.kList);
+    private final ShuffleboardLayout m_gyroLayout = robotStatusTab.getLayout("Drivetrain Gyro", BuiltInLayouts.kList);
 
     private final NetworkTableEntry m_rawLeftNeoPosWidget = m_encoderLayout
             .add("RAW left NEO pos", m_leftSRXEncoderMotor.getSelectedSensorPosition()).getEntry();
@@ -76,9 +74,11 @@ public class Drivetrain extends SubsystemBase {
             .add("left SRX pos", getLeftEncoderPos(EncoderBrand.SRX)).getEntry();
     private final NetworkTableEntry m_rawGyroWidget = m_gyroLayout
             .add("raw gyro vals", Arrays.toString(getYawPitchRoll())).getEntry();
-    private final NetworkTableEntry m_talonTachWidget = m_sensorInfoTab.add("Talon Tach", false).getEntry();
+    //private final NetworkTableEntry m_talonTachWidget = m_sensorInfoTab.add("Talon Tach", false).getEntry();
 
     private final DigitalInput m_talonTach = new DigitalInput(Constants.Ports.TALON_TACH_PORT);
+
+    private boolean m_quickTurn = false;
 
     /**
      * Creates a drivetrain instance which can be controlled to move the robot. This also
@@ -329,8 +329,27 @@ public class Drivetrain extends SubsystemBase {
     public void arcadeDrive(final double forwardSpeed, final double rotationSpeed, final boolean squareInput) {
         m_drivetrain.arcadeDrive(forwardSpeed, rotationSpeed, squareInput);
     }
+
     public void arcadeDrive(final double forwardSpeed, final double rotationSpeed) {
         arcadeDrive(forwardSpeed, rotationSpeed, false);
+    }
+
+    /**
+     * Moves the drivetrain with curvature drive using the given speeds.
+     * 
+     * @param forwardSpeed the speed in which to move the drivetrain forward or backward
+     * @param rotationSpeed the speed in which to turn the drivetrain left or right based on a curve
+     */
+    public void curvatureDrive(final double forwardSpeed, final double rotationSpeed) {
+        arcadeDrive(forwardSpeed, rotationSpeed, getQuickTurn());
+    }
+
+    public void setQuickTurn(boolean quickTurn) {
+        m_quickTurn = quickTurn;
+    }
+
+    public boolean getQuickTurn() {
+        return m_quickTurn;
     }
 
     /**
@@ -339,7 +358,7 @@ public class Drivetrain extends SubsystemBase {
      * @param vLeft  the commanded left output
      * @param vRight the commanded right output
      */
-    public void tankDriveVolts(Double vLeft, Double vRight) {
+    public void setTankDriveVolt(Double vLeft, Double vRight) {
         m_frontLeftMotor.setVoltage(vLeft);
         m_frontRightMotor.setVoltage(vRight);
         m_rearLeftMotor.setVoltage(vLeft);
@@ -371,7 +390,7 @@ public class Drivetrain extends SubsystemBase {
 
         m_rawGyroWidget.setString(Arrays.toString(getYawPitchRoll()));
 
-        m_talonTachWidget.setBoolean(getTalonTachPressed());
+        //m_talonTachWidget.setBoolean(getTalonTachPressed());
 
         // System.out.println("left enc: " + getLeftEncoderPos());
         // System.out.println("right enc: " + getRightEncoderPos());

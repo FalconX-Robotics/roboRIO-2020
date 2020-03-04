@@ -1,26 +1,21 @@
 package frc.robot.commands;
 
 import java.io.IOException;
-import java.lang.Math;
 import java.nio.file.Path;
 
-import frc.robot.commands.AutoDrive;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.AutoConstants;
-
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.Drivetrain;
 
 public class AutoPath {
     /**
@@ -193,7 +188,7 @@ public class AutoPath {
             new PIDController(AutoConstants.L_RAM_kP, AutoConstants.L_RAM_kI, AutoConstants.L_RAM_kD),
             new PIDController(AutoConstants.R_RAM_kP, AutoConstants.R_RAM_kI, AutoConstants.R_RAM_kD),
             // RamseteCommand passes volts to the callback
-            this.m_drivetrain::tankDriveVolts,
+            this.m_drivetrain::setTankDriveVolt,
             this.m_drivetrain
         );
         return ramseteCommand;  

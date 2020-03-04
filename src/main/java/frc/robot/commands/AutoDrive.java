@@ -3,14 +3,11 @@ package frc.robot.commands;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.AutoDriveShuffleBoard;
 import frc.robot.subsystems.Drivetrain;
 
-public class AutoDrive extends PIDCommand {
+public class AutoDrive extends ShuffleBoardPIDCommand {
     private final Drivetrain m_drivetrain;
-    private final double m_distance;
+    // private final double m_distance;
     
     /**
      * Constructor. Moves the robot forward a set distance.
@@ -19,8 +16,8 @@ public class AutoDrive extends PIDCommand {
      */
     public AutoDrive(Drivetrain drivetrain, double distance) {
         super(
-            new PIDController(AutoConstants.DRIVE_kP, AutoConstants.DRIVE_kI, AutoConstants.DRIVE_kD),
-            // new PIDController(AutoDriveShuffleBoard.pEntry.getDouble(0), AutoDriveShuffleBoard.iEntry.getDouble(0), AutoDriveShuffleBoard.dEntry.getDouble(0)),
+            "AutoDrive",
+            new PIDController(0, 0, 0),
             () -> 0, // will be overridden in initialize
             distance,
             output -> drivetrain.arcadeDrive(output, 0),
@@ -29,12 +26,7 @@ public class AutoDrive extends PIDCommand {
         drivetrain.setMaxOutput(1);
 
         m_drivetrain = drivetrain;
-        m_distance = distance;
-
-        AutoDriveShuffleBoard.currentDistance.setDouble(m_drivetrain.getLeftEncoderPos());
-        AutoDriveShuffleBoard.targetDistance.setDouble(0);
-        AutoDriveShuffleBoard.isFinished.setBoolean(false);
-
+        // m_distance = distance;
         getController().setTolerance(.5);
 
         addRequirements(m_drivetrain);
@@ -42,6 +34,8 @@ public class AutoDrive extends PIDCommand {
 
     @Override
     public void initialize() {
+        updatePIDFromShuffleBoard();
+        updateTargetInputFromShuffleBoard();
         super.initialize();
         m_drivetrain.setIdleMode(IdleMode.kBrake);
         double m_initialMeasurement = m_drivetrain.getLeftEncoderPos();
@@ -51,9 +45,6 @@ public class AutoDrive extends PIDCommand {
     @Override
     public void execute() {
         super.execute();
-        AutoDriveShuffleBoard.currentDistance.setDouble(m_measurement.getAsDouble());
-        AutoDriveShuffleBoard.currentDistance2.setDouble(m_measurement.getAsDouble());
-        AutoDriveShuffleBoard.targetDistance.setDouble(m_distance);
     }
 
     @Override
@@ -65,6 +56,5 @@ public class AutoDrive extends PIDCommand {
     public void end(boolean isInterrupted) {
         super.end(isInterrupted);
         m_drivetrain.setIdleMode(IdleMode.kBrake);
-        AutoDriveShuffleBoard.isFinished.setBoolean(true);
     }
 }
