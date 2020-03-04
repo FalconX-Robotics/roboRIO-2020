@@ -179,10 +179,4 @@ public class Intake extends SubsystemBase {
         lowSwitchWidget.setBoolean(getBottomSwitchPressed());
         toprSwitchWidget.setBoolean(getTopSwitchPressed());
     }
-
-    @Override
-    public void periodic() {
-        System.out.println("Top Limit switch: " + isTopTachPressed());
-        System.out.println("Bottom Limit switch: " + isBottomTachPressed());
-    }
 }
