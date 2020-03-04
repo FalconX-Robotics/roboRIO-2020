@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Drivetrain;
 
 public class ToggleQuickTurn extends InstantCommand {
-    private static boolean m_quickTurn = false;
     private final Drivetrain m_drivetrain;
     
 
@@ -15,6 +14,6 @@ public class ToggleQuickTurn extends InstantCommand {
 
     @Override
     public void initialize() {
-        m_drivetrain.setQuickTurn(!m_quickTurn);
+        m_drivetrain.toggleQuickTurn();
     }
 }
