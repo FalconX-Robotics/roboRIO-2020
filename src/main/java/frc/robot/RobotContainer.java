@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -60,30 +61,59 @@ public class RobotContainer {
 
 	private final DriveMode m_driveMode = DriveMode.ARCADE;
 
+	private final DriveController m_driveController = DriveController.XBOX;
+
 	public enum DriveMode {
 		TANK, ARCADE, CURVE;
 	}
+
+	public enum DriveController {
+		XBOX, DUALJOYSTICK;
+	}
+
+	private final XboxController m_driver = new XboxController(Ports.CONTROLLER_PORT);
+
+	private final Joystick m_joystickDriverLeft = new Joystick(Ports.CONTROLLER_PORT);
+	private final Joystick m_joystickDriverRight = new Joystick(Ports.CONTROLLERTWO_PORT);
 	
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
-		m_drivetrain.setDefaultCommand(new FunctionalCommand(() -> {
-		},
-				() -> {
-					switch (m_driveMode) {
-						case TANK: m_drivetrain.tankDrive(-m_driver.getY(Hand.kLeft), -m_driver.getY(Hand.kRight), true);
-						break;
+		switch (m_driveMode) {
+			case TANK: m_drivetrain.setDefaultCommand(new FunctionalCommand(() -> {
+			},
+					() -> {
+						if (m_driveController == DriveController.XBOX) {
+							m_drivetrain.tankDrive(-m_driver.getY(Hand.kLeft), -m_driver.getY(Hand.kRight), true);
+						} else {
+							m_drivetrain.tankDrive(-m_joystickDriverLeft.getY(Hand.kLeft), -m_joystickDriverRight.getY(Hand.kRight), true);
+						}
+						
+					},
+					// (interrupted) -> m_drivetrain.tankDrive(0, 0),
+					(interrupted) -> m_drivetrain.stopMotor(), () -> false, m_drivetrain));
+			break;
 
-						case ARCADE: m_drivetrain.arcadeDrive(-m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight), true);
-						break;
+			case ARCADE: m_drivetrain.setDefaultCommand(new FunctionalCommand(() -> {
+			},
+					() -> {
+						m_drivetrain.arcadeDrive(-m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight), true);
+					},
+					// (interrupted) -> m_drivetrain.tankDrive(0, 0),
+					(interrupted) -> m_drivetrain.stopMotor(), () -> false, m_drivetrain));
+			break;
 
-						case CURVE: m_drivetrain.curvatureDrive(-m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight));
-						break;
-					}
-				},
-				// (interrupted) -> m_drivetrain.tankDrive(0, 0),
-				(interrupted) -> m_drivetrain.stopMotor(), () -> false, m_drivetrain));
+			case CURVE: m_drivetrain.setDefaultCommand(new FunctionalCommand(() -> {
+			},
+					() -> {
+						m_drivetrain.curvatureDrive(-m_driver.getY(Hand.kLeft), m_driver.getX(Hand.kRight));
+					},
+					// (interrupted) -> m_drivetrain.tankDrive(0, 0),
+					(interrupted) -> m_drivetrain.stopMotor(), () -> false, m_drivetrain));
+			break;
+		}
+		
 		
 
 		// m_climber.setDefaultCommand(new FunctionalCommand(
@@ -119,7 +149,6 @@ public class RobotContainer {
 		configureButtonBindings();
 	}
 
-	private final XboxController m_driver = new XboxController(Ports.XBOX_CONTROLLER_PORT);
 	// private final XboxController m_driverTwo = new
 	// XboxController(Ports.XBOX_CONTROLLERTWO_PORT);
 
