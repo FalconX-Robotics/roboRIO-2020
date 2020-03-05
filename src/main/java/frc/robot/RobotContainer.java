@@ -52,9 +52,9 @@ import frc.robot.subsystems.Intake.RollerState;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain m_drivetrain = new Drivetrain(Drivetrain.EncoderBrand.NEO);
-	private final AutoPath m_autoPaths = new AutoPath(m_drivetrain);
-	private final Climber m_climber = new Climber();
 	private final Intake m_intake = new Intake();
+	private final AutoPath m_autoPaths = new AutoPath(m_drivetrain, m_intake);
+	private final Climber m_climber = new Climber();
 	private final Elevator m_elevator = new Elevator();
 
 	private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");

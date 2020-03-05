@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Ports;
@@ -363,6 +364,12 @@ public class Drivetrain extends SubsystemBase {
         m_frontRightMotor.setVoltage(vRight);
         m_rearLeftMotor.setVoltage(vLeft);
         m_rearRightMotor.setVoltage(vRight);
+        SmartDashboard.putNumber("Expected Left Voltage", vLeft);
+        SmartDashboard.putNumber("Expected Right Voltage", vRight);
+        SmartDashboard.putNumber("Observed Left Voltage", 
+            (m_frontLeftMotor.getBusVoltage() + m_rearLeftMotor.getBusVoltage())/2);
+        SmartDashboard.putNumber("Observed Left Voltage", 
+            (m_frontRightMotor.getBusVoltage() + m_rearRightMotor.getBusVoltage())/2);
     }
 
     //sets the maximum output, whic is "multiplied with the output percentage computed by the drive functions"

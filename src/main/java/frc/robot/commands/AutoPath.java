@@ -11,11 +11,15 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.RollerState;
 
 public class AutoPath {
     /**
@@ -31,7 +35,7 @@ public class AutoPath {
     public static final double[] S3 = {304.7, 0};
 
     //Ball positions
-    public static final double[] B0 = {27.6, 122.6};
+    public static final double[] B0 = {27.6, 122.6 - 32.31/2};//-32.31/2 makes us stop in front of ball
     public static final double[] B1 = {27.6, 158.6};
     public static final double[] B2 = {27.6, 194.6};
     public static final double[] B3 = {214.3, 130.3};
@@ -50,7 +54,8 @@ public class AutoPath {
     //Pathweaver trajectories
     public static final String S0B0 = "paths/S0B0.wpilib.json";
 
-    private Drivetrain m_drivetrain;
+    private final Drivetrain m_drivetrain;
+    private final Intake m_intake;
 
     //TODO: Actually use this for something
     private boolean ferry;
@@ -85,8 +90,9 @@ public class AutoPath {
     /**
      * Constructor.
      */
-    public AutoPath(Drivetrain drivetrain) {
+    public AutoPath(final Drivetrain drivetrain, final Intake intake) {
         this.m_drivetrain = drivetrain;
+        this.m_intake = intake;
     }
     
     /**
@@ -97,7 +103,7 @@ public class AutoPath {
      * @param ferry whether or not to ferry power cells to another robot at lower port
      * @return the SequentialCommandGroup that will follow the chosen route when executed
      */
-    public Command getPath(AutoPaths path, boolean ferry) {
+    public Command getPath(final AutoPaths path, final boolean ferry) {
         this.ferry = ferry;
         switch (path) {
             case TEST:
@@ -128,16 +134,16 @@ public class AutoPath {
      * @param pointB where the robot will move to next
      * @return the angle by which to turn the robot
      */
-    public static double getAngle(double currentAngle, double[] pointA, double[] pointB) {
-        double delX = pointB[0]-pointA[0];
-        double delY = pointB[1]-pointA[1];
+    public static double getAngle(final double currentAngle, final double[] pointA, final double[] pointB) {
+        final double delX = pointB[0]-pointA[0];
+        final double delY = pointB[1]-pointA[1];
 
         double angle;
         if(delY > 0) {
-            angle = 90 - Math.atan(delY/delX)*180/3.14159265358979 - currentAngle;
+            angle = 90 - Math.atan(delY/delX)*180/Math.PI - currentAngle;
         }
         else {
-            angle = 0-90 - Math.atan(delY/delX)*180/3.14159265358979 - currentAngle;
+            angle = 0-90 - Math.atan(delY/delX)*180/Math.PI - currentAngle;
         }
         if(angle > 180) {
             return angle - 360;
@@ -155,9 +161,9 @@ public class AutoPath {
      * @param pointB where the robot will move to next
      * @return the distance to move the robot forward
      */
-    public static double getDistance(double[] pointA, double[] pointB) {
-        double delX = pointB[0]-pointA[0];
-        double delY = pointB[1]-pointA[1];
+    public static double getDistance(final double[] pointA, final double[] pointB) {
+        final double delX = pointB[0]-pointA[0];
+        final double delY = pointB[1]-pointA[1];
 
         return Math.sqrt(delX * delX + delY * delY);
     }
@@ -165,18 +171,18 @@ public class AutoPath {
     /**
      * Outputs a RamseteCommand that follows a given trajectory during autonomous.
     */
-    private RamseteCommand RamseteTrenchScore(boolean ferry) {
+    private RamseteCommand RamseteTrenchScore(final boolean ferry) {
         //converts a PathWeaver path json from deploy into a trajectory
         Trajectory trajectory = null;
         try {
-            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(S0B0);
+            final Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(S0B0);
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-        } catch(IOException ex) {
+        } catch(final IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + S0B0, ex.getStackTrace());
         }
 
         //Creates the RamseteCommand to follow this trajectory
-        RamseteCommand ramseteCommand = new RamseteCommand(
+        final RamseteCommand ramseteCommand = new RamseteCommand(
             trajectory,
             this.m_drivetrain::getPose,
             new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
@@ -198,20 +204,19 @@ public class AutoPath {
      * A consolidated method that makes it easier to change AutoPaths, only requiring
      * two points. It will only add an AutoTurn command if needed.
      */
-    private SequentialCommandGroup turnAndMove(double[] pointA, double[] pointB) {
-        if(Math.abs(getAngle(this.m_drivetrain.getYaw(), pointA, pointB)) < 0.05) {
+    private SequentialCommandGroup turnAndMove(final double[] pointA, final double[] pointB) {
+        if(Math.abs(getAngle(m_drivetrain.getYaw(), pointA, pointB)) < 0.05) {
             System.out.println("yep this is totally working");
             return new SequentialCommandGroup(
-                new AutoDrive(this.m_drivetrain, getDistance(pointA, pointB))
+                new AutoDrive(m_drivetrain, getDistance(pointA, pointB))
             );
-        }
-        else {
-            System.out.println(getAngle(this.m_drivetrain.getYaw(), pointA, pointB));
+        } else {
+            System.out.println(getAngle(m_drivetrain.getYaw(), pointA, pointB));
             System.out.println(getDistance(pointA, pointB));
             return new SequentialCommandGroup(
-                new AutoTurn(this.m_drivetrain, getAngle(this.m_drivetrain.getYaw(), pointA, pointB)),
+                new AutoTurn(m_drivetrain, getAngle(m_drivetrain.getYaw(), pointA, pointB)),
                 new WaitCommand(1),
-                new AutoDrive(this.m_drivetrain, getDistance(pointA, pointB))
+                new AutoDrive(m_drivetrain, getDistance(pointA, pointB))
             );
         }
     }
@@ -219,23 +224,30 @@ public class AutoPath {
     /**
      * Assembles all of the commands together into the desired path sequence
      */
-    private SequentialCommandGroup quickScore(boolean ferry) {
+    private SequentialCommandGroup quickScore(final boolean ferry) {
         return new SequentialCommandGroup(
-            turnAndMove(S0, E0)
+            turnAndMove(S0, E0),
+            new SetRollers(m_intake, RollerState.AUTO_OUTTAKE),
+            new WaitCommand(5),
+            new SetRollers(m_intake, RollerState.STOP)
         );        
     }
-    private SequentialCommandGroup trenchScore(boolean ferry) {
+
+    private SequentialCommandGroup trenchScore(final boolean ferry) {
         return new SequentialCommandGroup(
             turnAndMove(S0, B0),
-            new WaitCommand(1),
-            turnAndMove(B0, B2),
-            new WaitCommand(1),
+            new ParallelDeadlineGroup(
+                turnAndMove(B0, B2),
+                new SetRollers(m_intake, RollerState.AUTO_INTAKE),
             turnAndMove(B2, preE0),
-            new WaitCommand(1),
-            turnAndMove(preE0, E0)
+            new SetRollers(m_intake, RollerState.AUTO_OUTTAKE),
+            new WaitCommand(5),
+            new SetRollers(m_intake, RollerState.STOP)
+            )
         );
     }
-    private SequentialCommandGroup generatorScore(boolean ferry) {
+
+    private SequentialCommandGroup generatorScore(final boolean ferry) {
         return new SequentialCommandGroup(
             turnAndMove(S1, B6),
             turnAndMove(B6, B5),
@@ -243,12 +255,14 @@ public class AutoPath {
             turnAndMove(preE0, E0)
         );
     }
-    private SequentialCommandGroup yeet(boolean ferry) {
+
+    private SequentialCommandGroup yeet(final boolean ferry) {
         return new SequentialCommandGroup(
             turnAndMove(S2, E1)
         );
     }
-    private SequentialCommandGroup trenchSteal(boolean ferry) {
+
+    private SequentialCommandGroup trenchSteal(final boolean ferry) {
         return new SequentialCommandGroup(
             turnAndMove(S3, B9),
             turnAndMove(B9, B8),

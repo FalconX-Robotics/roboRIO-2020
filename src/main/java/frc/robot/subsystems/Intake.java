@@ -81,7 +81,7 @@ public class Intake extends SubsystemBase {
     }
 
     public enum RollerState {
-        INTAKE, OUTTAKE;
+        INTAKE, OUTTAKE, AUTO_INTAKE, AUTO_OUTTAKE, STOP;
     }
 
     public ArmPosition getArmCurrentPosition() {
