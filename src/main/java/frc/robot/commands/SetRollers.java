@@ -26,10 +26,10 @@ public class SetRollers extends CommandBase {
         addRequirements(m_intake);
     }
 
-    private static final ShuffleboardTab robotStatustab = Shuffleboard.getTab("Robot Status");
-    private static final ShuffleboardLayout intakeLayout = robotStatustab.getLayout("Intake", BuiltInLayouts.kList);
-    private final NetworkTableEntry rollerStateWidget = intakeLayout
-        .add("Roller State", "Stopped").getEntry();
+    // private static final ShuffleboardTab robotStatustab = Shuffleboard.getTab("Robot Status");
+    // private static final ShuffleboardLayout intakeLayout = robotStatustab.getLayout("Intake", BuiltInLayouts.kList);
+    // private final NetworkTableEntry rollerStateWidget = intakeLayout
+        // .add("Roller State", "Stopped").getEntry();
 
 
     @Override
@@ -37,11 +37,11 @@ public class SetRollers extends CommandBase {
         switch(m_rollerState) {                               
             case INTAKE:
                 m_intake.setRollerMotorReverse();
-                rollerStateWidget.setString("Intaking");
+                // rollerStateWidget.setString("Intaking");
                 break;
             case OUTTAKE:
                 m_intake.setRollerMotorForward();
-                rollerStateWidget.setString("Outtakeing");
+                // rollerStateWidget.setString("Outtakeing");
                 break;
         }
     }
@@ -49,7 +49,7 @@ public class SetRollers extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         m_intake.stopRollerMotor();
-        rollerStateWidget.setString("Stopped");
+        // rollerStateWidget.setString("Stopped");
     }
     
 }

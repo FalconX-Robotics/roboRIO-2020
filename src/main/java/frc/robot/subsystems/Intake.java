@@ -29,14 +29,14 @@ public class Intake extends SubsystemBase {
 
     private double m_armMaxOutput = 1;
     
-    private static final ShuffleboardTab robotStatustab = Shuffleboard.getTab("Robot Status");
-    private static final ShuffleboardLayout intakeLayout = robotStatustab.getLayout("Intake", BuiltInLayouts.kList);
-    private final NetworkTableEntry intakePositionWidget = intakeLayout
-        .add("Intake Position", getIntakePos()).getEntry();
-    private final NetworkTableEntry lowSwitchWidget = intakeLayout
-        .add("Lower Limit Switch", getBottomSwitchPressed()).getEntry();
-    private final NetworkTableEntry toprSwitchWidget = intakeLayout
-        .add("Lower Limit Switch", getTopSwitchPressed()).getEntry();
+    // private static final ShuffleboardTab robotStatustab = Shuffleboard.getTab("Robot Status");
+    // private static final ShuffleboardLayout intakeLayout = robotStatustab.getLayout("Intake", BuiltInLayouts.kList);
+    // private final NetworkTableEntry intakePositionWidget = intakeLayout
+    //     .add("Intake Position", getIntakePos()).getEntry();
+    // private final NetworkTableEntry lowSwitchWidget = intakeLayout
+    //     .add("Lower Limit Switch", getBottomSwitchPressed()).getEntry();
+    // private final NetworkTableEntry toprSwitchWidget = intakeLayout
+    //     .add("Top Limit Switch", getTopSwitchPressed()).getEntry();
 
     
     public Intake() {
@@ -175,8 +175,8 @@ public class Intake extends SubsystemBase {
         // System.out.println("Bottom Limit switch: " + isBottomTachPressed()); 
         System.out.println("ang: " + getArmAngleInPercentage());
 
-        intakePositionWidget.setString(getIntakePos());
-        lowSwitchWidget.setBoolean(getBottomSwitchPressed());
-        toprSwitchWidget.setBoolean(getTopSwitchPressed());
+        // intakePositionWidget.setString(getIntakePos());
+        // lowSwitchWidget.setBoolean(getBottomSwitchPressed());
+        // toprSwitchWidget.setBoolean(getTopSwitchPressed());
     }
 }

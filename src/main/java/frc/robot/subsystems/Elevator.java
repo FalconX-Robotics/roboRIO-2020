@@ -25,14 +25,14 @@ public class Elevator extends SubsystemBase {
 
     private final double defaultElevatorSpeed = .9;
 
-    private static final ShuffleboardTab robotStatustab = Shuffleboard.getTab("Robot Status");
-    private static final ShuffleboardLayout elevatorLayout = robotStatustab.getLayout("Elevator", BuiltInLayouts.kList);
-    private final NetworkTableEntry elevatorStateWidget = elevatorLayout
-        .add("Elevator state", this.getElevatorState()).getEntry();
-    private final NetworkTableEntry lowLimitSwitchWidget = elevatorLayout
-        .add("Lower limit switch", false).getEntry();
-    private final NetworkTableEntry highLimitSwitchWidget = elevatorLayout
-        .add("Upper limit switch", false).getEntry();
+    // private static final ShuffleboardTab robotStatustab = Shuffleboard.getTab("Robot Status");
+    // private static final ShuffleboardLayout elevatorLayout = robotStatustab.getLayout("Elevator", BuiltInLayouts.kList);
+    // private final NetworkTableEntry elevatorStateWidget = elevatorLayout
+        // .add("Elevator state", this.getElevatorState()).getEntry();
+    // private final NetworkTableEntry lowLimitSwitchWidget = elevatorLayout
+        // .add("Lower limit switch", false).getEntry();
+    // private final NetworkTableEntry highLimitSwitchWidget = elevatorLayout
+        // .add("Upper limit switch", false).getEntry();
 
     /**
      * Creates an elevator instance that can be moved up or down.
@@ -95,9 +95,9 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        elevatorStateWidget.setString(getElevatorState());
-        lowLimitSwitchWidget.setBoolean(getLowerSwitchPressed());
-        highLimitSwitchWidget.setBoolean(getUpperSwitchPressed());
+        // elevatorStateWidget.setString(getElevatorState());
+        // lowLimitSwitchWidget.setBoolean(getLowerSwitchPressed());
+        // highLimitSwitchWidget.setBoolean(getUpperSwitchPressed());
     }
 
 }

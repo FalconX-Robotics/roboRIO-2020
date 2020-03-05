@@ -117,12 +117,20 @@ public class MoveIntakeArm extends CommandBase {
     public void execute() {
         switch (m_targetPosition) {
         case TOP:
+            if (m_intake.getTopSwitchPressed()) {
+                m_intake.stopArmMotor();
+                break;
+            }
             m_intake.setArmMotorForward();
             break;
         case MIDDLE:
             moveToMiddle();
             break;
         case BOTTOM:
+            if (m_intake.getBottomSwitchPressed()) {
+                m_intake.stopArmMotor();
+                break;
+            }
             m_intake.setArmMotorReverse();
             break;
         }
@@ -133,22 +141,23 @@ public class MoveIntakeArm extends CommandBase {
     public void end(final boolean interrupted) {
         m_intake.stopArmMotor();
         m_intake.setArmCurrentPosition(m_targetPosition);
-
     }
 
     @Override
     public boolean isFinished() {
-        switch(m_targetPosition) {
-            case TOP:
-                return m_intake.getTopSwitchPressed();
-            case MIDDLE:
-                return false;
-                // return m_intake.getBottomSwitchPressed();
-            case BOTTOM:
-                return m_intake.getBottomSwitchPressed();
-            default: 
-                return true;
-        }
+        return false;
+
+        // switch(m_targetPosition) {
+        //     case TOP:
+        //         return m_intake.getTopSwitchPressed();
+        //     case MIDDLE:
+        //         return false;
+        //         // return m_intake.getBottomSwitchPressed();
+        //     case BOTTOM:
+        //         return m_intake.getBottomSwitchPressed();
+        //     default: 
+        //         return true;
+        // }
     }
     
 }
