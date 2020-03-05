@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.Ports;
@@ -57,7 +56,7 @@ public class RobotContainer {
 	private final Climber m_climber = new Climber();
 	private final Elevator m_elevator = new Elevator();
 
-	private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
+	// private static final ShuffleboardTab m_sensorInfoTab = Shuffleboard.getTab("Sensor Info");
 
 	private final DriveMode m_driveMode = DriveMode.ARCADE;
 
@@ -98,7 +97,7 @@ public class RobotContainer {
 
 		InstantCommand resetGyroCommand = new InstantCommand(m_drivetrain::resetGyro, m_drivetrain);
 		resetGyroCommand.setName("Reset gyro");
-		Shuffleboard.getTab("Sensor Info").getLayout("Gyro").add("Resets gyro yaw", resetGyroCommand);
+		// Shuffleboard.getTab("Sensor Info").getLayout("Gyro").add("Resets gyro yaw", resetGyroCommand);
 
 		InstantCommand resetEncoderCommand = new InstantCommand(() -> {
 			m_drivetrain.resetEncoders(EncoderBrand.NEO);
@@ -106,7 +105,7 @@ public class RobotContainer {
 		}, m_drivetrain);
 		resetEncoderCommand.setName("Reset Encoder");
 
-		m_sensorInfoTab.getLayout("Encoder").add("Reset encoder", resetEncoderCommand);
+		// m_sensorInfoTab.getLayout("Encoder").add("Reset encoder", resetEncoderCommand);
 
 		RunCommand autoDriveCommand = new RunCommand(() -> new AutoDrive(m_drivetrain, 0).schedule(), m_drivetrain);
 		autoDriveCommand.setName("Auto Drive Command");

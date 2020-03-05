@@ -342,11 +342,11 @@ public class Drivetrain extends SubsystemBase {
      * @param rotationSpeed the speed in which to turn the drivetrain left or right based on a curve
      */
     public void curvatureDrive(final double forwardSpeed, final double rotationSpeed) {
-        arcadeDrive(forwardSpeed, rotationSpeed, getQuickTurn());
+        m_drivetrain.curvatureDrive(forwardSpeed, rotationSpeed, getQuickTurn());
     }
 
-    public void setQuickTurn(boolean quickTurn) {
-        m_quickTurn = quickTurn;
+    public void toggleQuickTurn() {
+        m_quickTurn = !m_quickTurn;
     }
 
     public boolean getQuickTurn() {
