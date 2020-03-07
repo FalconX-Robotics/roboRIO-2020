@@ -108,14 +108,14 @@ public class RobotContainer {
 		// m_sensorInfoTab.getLayout("Encoder").add("Reset encoder",
 		// resetEncoderCommand);
 
-		final RunCommand autoDriveCommand = new RunCommand(() -> new AutoDrive(m_drivetrain, 0).schedule(),
+		AutoDrive autoDrive = new AutoDrive(m_drivetrain, 0);
+		final RunCommand autoDriveCommand = new RunCommand(() -> autoDrive.schedule(),
 				m_drivetrain);
 		autoDriveCommand.setName("Auto Drive Command");
-		Shuffleboard.getTab("Auto Drive").add("Auto drive", autoDriveCommand).withPosition(2, 3).withSize(2, 1);
 
-		final RunCommand autoTurnCommand = new RunCommand(() -> new AutoTurn(m_drivetrain, 0).schedule(), m_drivetrain);
+		AutoTurn autoTurn = new AutoTurn(m_drivetrain, 0);
+		final RunCommand autoTurnCommand = new RunCommand(() -> autoTurn.schedule(), m_drivetrain);
 		autoTurnCommand.setName("Auto Turn Command");
-		Shuffleboard.getTab("Auto Turn").add("Auto turn", autoTurnCommand).withPosition(2, 3).withSize(2, 1);
 
 		configureDriveCommand(m_consumerType, m_controllerType, m_driveMod);
 
