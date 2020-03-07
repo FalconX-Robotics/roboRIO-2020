@@ -171,12 +171,5 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // System.out.println("Top Limit switch: " + isTopTachPressed());
-        // System.out.println("Bottom Limit switch: " + isBottomTachPressed()); 
-        System.out.println("ang: " + getArmAngleInPercentage());
-
-        // intakePositionWidget.setString(getIntakePos());
-        // lowSwitchWidget.setBoolean(getBottomSwitchPressed());
-        // toprSwitchWidget.setBoolean(getTopSwitchPressed());
     }
 }

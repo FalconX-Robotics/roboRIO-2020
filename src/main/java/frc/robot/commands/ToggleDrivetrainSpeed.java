@@ -23,6 +23,7 @@ public class ToggleDrivetrainSpeed extends InstantCommand {
 
     @Override
     public void initialize() {
+        System.out.println("toggled");
         m_drivetrain.setMaxOutput(isOnInitMaxOutput ? m_initMaxOutput : m_endMaxOutput);
         isOnInitMaxOutput = !isOnInitMaxOutput;
     }
