@@ -227,7 +227,7 @@ public class RobotContainer {
 			drive.setMods((x, y) -> Math.sin(Math.PI * 2 * x) / 2, (x, y) -> Math.sin(Math.PI * 2 * y) / 2);
 			break;
 		case kSineSSS:
-			drive.setMods((x, y) -> Math.sin(Math.PI * 2 * continuous("sineSSSLeft", x)), (x, y) -> Math.sin(Math.PI * 2 * continuous("sineSSSRight", y)));
+			drive.setMods((x, y) -> Math.sin(Math.PI * 2 * continuous("sineSSSLeft", x)) / 2, (x, y) -> Math.sin(Math.PI * 2 * continuous("sineSSSRight", y)) / 2);
 			break;
 		case kCsc:
 			drive.setMods((x, y) -> 1/(5*Math.sin(x)), (x, y) -> 1/(5*Math.sin(y)));

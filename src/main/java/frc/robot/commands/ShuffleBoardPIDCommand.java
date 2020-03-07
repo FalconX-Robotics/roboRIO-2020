@@ -6,6 +6,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
@@ -29,6 +30,7 @@ public class ShuffleBoardPIDCommand extends PIDCommand {
 
     private final NetworkTableEntry m_measurementGraphEntry; // displayed as a graph
     private final NetworkTableEntry m_measurementEntry; // displayed as the exact value
+    private final ComplexWidget m_startButton;
 
     private final NetworkTableEntry m_targetInputEntry;
 
@@ -44,14 +46,15 @@ public class ShuffleBoardPIDCommand extends PIDCommand {
         m_iEntry = m_tab.add("I", 0.).withSize(2, 1).withPosition(0, 1).getEntry();
         m_dEntry = m_tab.add("D", 0.).withSize(2, 1).withPosition(0, 2).getEntry();
 
-        m_targetInputEntry = m_tab.add("Target Input", 0.)
-                .withSize(2, 1).withPosition(2, 2).getEntry();
+        m_targetInputEntry = m_tab.add("Target Input", 0.).withSize(2, 1).withPosition(2, 2).getEntry();
 
         m_finishedEntry = m_tab.add("Finished", false).withSize(2, 2).withPosition(2, 0).getEntry();
 
-        m_measurementGraphEntry = m_tab.add("Current Measurement Graph", 0.).withWidget(BuiltInWidgets.kGraph).withSize(6, 4)
-                .withPosition(4, 0).getEntry();
+        m_measurementGraphEntry = m_tab.add("Current Measurement Graph", 0.).withWidget(BuiltInWidgets.kGraph)
+                .withSize(6, 4).withPosition(4, 0).getEntry();
         m_measurementEntry = m_tab.add("Current Measurement", 0.).withSize(2, 1).withPosition(4, 4).getEntry();
+
+        m_startButton = m_tab.add("Start", this).withSize(2, 1).withPosition(4, 5);
     }
 
     public ShuffleBoardPIDCommand(String tabName, PIDController controller, DoubleSupplier measurementSource,
@@ -158,5 +161,9 @@ public class ShuffleBoardPIDCommand extends PIDCommand {
 
     public NetworkTableEntry getMeasurementEntry() {
         return m_measurementEntry;
+    }
+
+    public ComplexWidget getStartButton() {
+        return m_startButton;
     }
 }
