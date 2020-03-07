@@ -54,7 +54,7 @@ public class ShuffleBoardPIDCommand extends PIDCommand {
                 .withSize(6, 4).withPosition(4, 0).getEntry();
         m_measurementEntry = m_tab.add("Current Measurement", 0.).withSize(2, 1).withPosition(4, 4).getEntry();
 
-        m_startButton = m_tab.add("Start", this).withSize(2, 1).withPosition(4, 5);
+        m_startButton = m_tab.add("Start", this).withSize(2, 1).withPosition(0, 3);
     }
 
     public ShuffleBoardPIDCommand(String tabName, PIDController controller, DoubleSupplier measurementSource,
