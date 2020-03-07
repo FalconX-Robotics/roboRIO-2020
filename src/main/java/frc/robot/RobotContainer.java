@@ -239,7 +239,7 @@ public class RobotContainer {
 			drive.setMods((x, y) -> 0., (x, y) -> 0.);
 			break;
 		case kRandom:
-			drive.setMods((x, y) -> Math.signum(x) * Math.random() / 5, (x, y) -> Math.signum(y) * Math.random() / 5);
+			drive.setMods((x, y) -> Math.signum(x) * Math.random() / 3, (x, y) -> Math.signum(y) * Math.random() / 3);
 			break;
 		case kError:
 			throw new RuntimeException("Error");
