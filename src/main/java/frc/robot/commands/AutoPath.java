@@ -52,7 +52,7 @@ public class AutoPath {
     public static final double[] E1 = {234, 146};
 
     //Pathweaver trajectories
-    public static final String S0B0 = "paths/S0B0.wpilib.json";
+    public static final String S0B0 = "paths/MoveTest.wpilib.json";
 
     private final Drivetrain m_drivetrain;
     private final Intake m_intake;
@@ -191,8 +191,12 @@ public class AutoPath {
                                     DriveConstants.kaVoltSecondsSquaredPerMeter),
             DriveConstants.kDriveKinematics,
             this.m_drivetrain::getWheelSpeeds,
-            new PIDController(AutoConstants.L_RAM_kP, AutoConstants.L_RAM_kI, AutoConstants.L_RAM_kD),
-            new PIDController(AutoConstants.R_RAM_kP, AutoConstants.R_RAM_kI, AutoConstants.R_RAM_kD),
+            new PIDController(m_drivetrain.pLeftEntry.getDouble(0), 
+                              m_drivetrain.iLeftEntry.getDouble(0), 
+                              m_drivetrain.pLeftEntry.getDouble(0)),
+            new PIDController(m_drivetrain.pRightEntry.getDouble(0), 
+                              m_drivetrain.iRightEntry.getDouble(0), 
+                              m_drivetrain.pRightEntry.getDouble(0)),
             // RamseteCommand passes volts to the callback
             this.m_drivetrain::setTankDriveVolt,
             this.m_drivetrain

@@ -64,7 +64,9 @@ public class Drivetrain extends SubsystemBase {
     private final ShuffleboardTab robotStatusTab = Shuffleboard.getTab("Robot Status");
     private final ShuffleboardLayout m_encoderLayout = robotStatusTab.getLayout("Drivetrain Encoders", BuiltInLayouts.kList);
     private final ShuffleboardLayout m_gyroLayout = robotStatusTab.getLayout("Drivetrain Gyro", BuiltInLayouts.kList);
+    public final ShuffleboardLayout weaverTuningTab = robotStatusTab.getLayout("Drivetrain Voltage", BuiltInLayouts.kList);
 
+        
     private final NetworkTableEntry m_rawLeftNeoPosWidget = m_encoderLayout
             .add("RAW left NEO pos", m_leftSRXEncoderMotor.getSelectedSensorPosition()).getEntry();
     private final NetworkTableEntry m_leftNeoPosWidget = m_encoderLayout
@@ -75,6 +77,19 @@ public class Drivetrain extends SubsystemBase {
             .add("left SRX pos", getLeftEncoderPos(EncoderBrand.SRX)).getEntry();
     private final NetworkTableEntry m_rawGyroWidget = m_gyroLayout
             .add("raw gyro vals", Arrays.toString(getYawPitchRoll())).getEntry();
+    private final NetworkTableEntry m_drivetrainObservedLeftVoltageWidget = weaverTuningTab 
+            .add("left Motor Voltage", 0).getEntry();
+    private final NetworkTableEntry m_drivetrainObservedRightVoltageWidget = weaverTuningTab 
+            .add("Right Motor Voltage", 0).getEntry();
+    private final NetworkTableEntry m_drivetrainExpectedLeftVoltageWidget = weaverTuningTab.add("Expected Left Voltage Value", 0).getEntry();
+    private final NetworkTableEntry m_drivetrainExpectedRightVoltageWidget = weaverTuningTab.add("Expected Right Voltage Value", 0).getEntry();
+    public final NetworkTableEntry pLeftEntry = weaverTuningTab.add("LP", 0.).withSize(2, 1).withPosition(0, 0).getEntry();
+    public final NetworkTableEntry iLeftEntry = weaverTuningTab.add("LI", 0.).withSize(2, 1).withPosition(0, 1).getEntry();
+    public final NetworkTableEntry dLeftEntry = weaverTuningTab.add("LD", 0.).withSize(2, 1).withPosition(0, 2).getEntry();
+    public final NetworkTableEntry pRightEntry = weaverTuningTab.add("RP", 0.).withSize(2, 1).withPosition(0, 0).getEntry();
+    public final NetworkTableEntry iRightEntry = weaverTuningTab.add("RI", 0.).withSize(2, 1).withPosition(0, 1).getEntry();
+    public final NetworkTableEntry dRightEntry = weaverTuningTab.add("RD", 0.).withSize(2, 1).withPosition(0, 2).getEntry();
+
     //private final NetworkTableEntry m_talonTachWidget = m_sensorInfoTab.add("Talon Tach", false).getEntry();
 
     private final DigitalInput m_talonTach = new DigitalInput(Constants.Ports.TALON_TACH_PORT);
@@ -125,7 +140,7 @@ public class Drivetrain extends SubsystemBase {
     /**
      * Sets what the drivetrain does when it is not moving (either braking or coasting).
      */
-    public void setIdleMode(IdleMode idleMode) {
+    public void setIdleMode(final IdleMode idleMode) {
         m_frontLeftMotor.setIdleMode(idleMode);
         m_frontRightMotor.setIdleMode(idleMode);
         m_rearLeftMotor.setIdleMode(idleMode);
@@ -137,7 +152,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @param ramp the number of seconds to accelerate from 0 to full throttle
      */
-    public void setRamp(double ramp) {
+    public void setRamp(final double ramp) {
         m_frontLeftMotor.setOpenLoopRampRate(ramp);
         m_frontRightMotor.setOpenLoopRampRate(ramp);
         m_rearLeftMotor.setOpenLoopRampRate(ramp);
@@ -162,7 +177,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     //sets the encoder positions back to 0
-    public void resetEncoders(EncoderBrand brand) {
+    public void resetEncoders(final EncoderBrand brand) {
         switch (brand) {
         case NEO:
             m_leftNeoEncoder.setPosition(0);
@@ -301,7 +316,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @param pose the pose to set as the new origin (0)
      */
-    public void resetOdometry(Pose2d pose) {
+    public void resetOdometry(final Pose2d pose) {
         resetEncoders();
         m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
     }
@@ -359,17 +374,15 @@ public class Drivetrain extends SubsystemBase {
      * @param vLeft  the commanded left output
      * @param vRight the commanded right output
      */
-    public void setTankDriveVolt(Double vLeft, Double vRight) {
+    public void setTankDriveVolt(final Double vLeft, final Double vRight) {
         m_frontLeftMotor.setVoltage(vLeft);
         m_frontRightMotor.setVoltage(vRight);
         m_rearLeftMotor.setVoltage(vLeft);
         m_rearRightMotor.setVoltage(vRight);
-        SmartDashboard.putNumber("Expected Left Voltage", vLeft);
-        SmartDashboard.putNumber("Expected Right Voltage", vRight);
-        SmartDashboard.putNumber("Observed Left Voltage", 
-            (m_frontLeftMotor.getBusVoltage() + m_rearLeftMotor.getBusVoltage())/2);
-        SmartDashboard.putNumber("Observed Left Voltage", 
-            (m_frontRightMotor.getBusVoltage() + m_rearRightMotor.getBusVoltage())/2);
+        m_drivetrainExpectedLeftVoltageWidget.setDouble(vLeft/100000);
+        m_drivetrainExpectedRightVoltageWidget.setDouble(vRight/100000);
+        m_drivetrainObservedLeftVoltageWidget.setDouble((m_frontRightMotor.getVoltageCompensationNominalVoltage() + m_rearRightMotor.getVoltageCompensationNominalVoltage())/2);
+        m_drivetrainObservedRightVoltageWidget.setDouble((m_frontLeftMotor.getVoltageCompensationNominalVoltage() + m_rearLeftMotor.getVoltageCompensationNominalVoltage())/2);
     }
 
     //sets the maximum output, whic is "multiplied with the output percentage computed by the drive functions"
@@ -396,6 +409,9 @@ public class Drivetrain extends SubsystemBase {
         m_leftSrxPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.SRX));
 
         m_rawGyroWidget.setString(Arrays.toString(getYawPitchRoll()));
+
+        m_drivetrainObservedLeftVoltageWidget.setDouble((m_frontLeftMotor.getVoltageCompensationNominalVoltage() + m_rearLeftMotor.getVoltageCompensationNominalVoltage())/2);
+        m_drivetrainObservedRightVoltageWidget.setDouble((m_frontRightMotor.getVoltageCompensationNominalVoltage() + m_rearRightMotor.getVoltageCompensationNominalVoltage())/2);
 
         //m_talonTachWidget.setBoolean(getTalonTachPressed());
 

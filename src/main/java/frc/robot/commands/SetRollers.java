@@ -41,19 +41,7 @@ public class SetRollers extends CommandBase {
                 break;
             case OUTTAKE:
                 m_intake.setRollerMotorForward();
-<<<<<<< HEAD
-                rollerStateWidget.setString("Outtaking");
-                break;
-            case AUTO_INTAKE:
-                m_intake.setRollerMotorReverse();
-                rollerStateWidget.setString("Intaking");
-            case AUTO_OUTTAKE:
-                m_intake.setRollerMotorForward();
-                rollerStateWidget.setString("Outtaking");
-            case STOP:
-=======
                 // rollerStateWidget.setString("Outtakeing");
->>>>>>> 8a294f909e4b64671466fdf41a576cbc465e68b9
                 break;
         }
     }

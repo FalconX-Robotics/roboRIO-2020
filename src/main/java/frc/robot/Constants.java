@@ -66,7 +66,7 @@ public final class Constants {
      */
     public static class DriveConstants {
         public static final double ROTATION_SPEED_FACTOR = 0.5;
-        public static final double RAMP = 0.15;
+        public static final double RAMP = 0.3;
         public static final double ksVolts = 0;
         public static final double kvVoltSecondsPerMeter = 0;
         public static final double kaVoltSecondsSquaredPerMeter = 0;
