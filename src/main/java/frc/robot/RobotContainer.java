@@ -177,12 +177,12 @@ public class RobotContainer {
 
 	HashMap<String, Double> continuousData = new HashMap<>();
 	private double continuous(String id, double input) {
-		if (input >= 1) {
-			continuousData.put(id, continuousData.getOrDefault(id, 1.)+(1/50));
-		} else if (input <= 1) {
-			continuousData.put(id, continuousData.getOrDefault(id, 1.)-(1/50));
+		if (input > 0) {
+			continuousData.put(id, continuousData.getOrDefault(id, 0.)+(1/50));
+		} else if (input < 0) {
+			continuousData.put(id, continuousData.getOrDefault(id, 0.)-(1/50));
 		} else {
-			continuousData.put(id, 0.);
+			return 0;
 		}
 		return continuousData.get(id);
 	}
@@ -224,7 +224,7 @@ public class RobotContainer {
 			drive.setMods((x, y) -> Math.floor(3*x)/3, (x, y) -> Math.floor(3*y)/3);
 			break;
 		case kSine:
-			drive.setMods((x, y) -> Math.sin(Math.PI * 2 * x) / 3, (x, y) -> Math.sin(Math.PI * 2 * y) / 3);
+			drive.setMods((x, y) -> Math.sin(Math.PI * 2 * x) / 2, (x, y) -> Math.sin(Math.PI * 2 * y) / 2);
 			break;
 		case kSineSSS:
 			drive.setMods((x, y) -> Math.sin(Math.PI * 2 * continuous("sineSSSLeft", x)), (x, y) -> Math.sin(Math.PI * 2 * continuous("sineSSSRight", y)));
