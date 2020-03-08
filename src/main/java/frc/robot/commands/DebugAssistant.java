@@ -85,6 +85,10 @@ public class DebugAssistant {
         addTrackCount(name, -countMap.getOrDefault(name, 0));
     }
 
+    public void clearAllTrackCounts() {
+        countMap.clear();
+    }
+
     public void checkTrackCountLimit(String name) {
         if (countMap.getOrDefault(name, 0) > countLimitMap.getOrDefault(name, Integer.MAX_VALUE)) {
             failAssert("track_limit", name, countMap.getOrDefault(name, 0));
