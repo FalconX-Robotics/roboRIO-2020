@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 public class DebugAssistant {
     protected PrintWriter writer;
+    protected String outputFileName;
     protected int initCount = 0;
     protected int executeCount = 0;
     protected int isFinished = 0;
@@ -25,13 +26,11 @@ public class DebugAssistant {
         }
 
         writer.println("command instanced");
-        writer.println("command name: " + getName());
+        writer.println("command name: " + outputFileName);
         writer.println(br);
         writer.flush();
-    }
 
-    private String getName() {
-        return "stupid idiot";
+        this.outputFileName = outputFileName;
     }
 
     public void trackInitialize() {
