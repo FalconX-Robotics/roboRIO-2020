@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -14,12 +15,14 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyScheduleCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -71,6 +74,8 @@ public class RobotContainer {
 	private final Joystick m_joystickDriverLeft = new Joystick(Ports.CONTROLLER_PORT);
 	private final Joystick m_joystickDriverRight = new Joystick(Ports.CONTROLLERTWO_PORT);
 
+	private static SendableChooser<AutoPaths> autoChooser;
+
 	public enum DriveConsumerType {
 		kTank, kArcade, kCurve;
 	}
@@ -91,6 +96,14 @@ public class RobotContainer {
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
+		autoChooser = new SendableChooser<>();
+		for (AutoPaths path : AutoPaths.values()) {
+			if (path != AutoPaths.TEST && path != AutoPaths.QUICKSCORE) // QUICKSCORE as default
+				autoChooser.addOption(path.name().toUpperCase(), path);
+		}
+		autoChooser.setDefaultOption("TEST", AutoPaths.QUICKSCORE);
+		Shuffleboard.getTab("Auto Path").add("Chooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
+
 		final InstantCommand resetGyroCommand = new InstantCommand(m_drivetrain::resetGyro, m_drivetrain);
 		resetGyroCommand.setName("Reset gyro");
 		// Shuffleboard.getTab("Sensor Info").getLayout("Gyro").add("Resets gyro yaw",
@@ -126,6 +139,7 @@ public class RobotContainer {
 		for (DriveControllerType controller : DriveControllerType.values()) {
 			Shuffleboard.getTab("Drive").add(controller.name(), new InstantCommand(() -> {
 				configureDriveCommand(m_consumerType, controller, m_driveMod);
+				configureButtonBindings(controller);
 				m_controllerType = controller;
 			}, m_drivetrain));
 		}
@@ -154,7 +168,7 @@ public class RobotContainer {
 		.add("Move forward, and turn", new ProxyScheduleCommand(new SequentialCommandGroup(new AutoDrive(m_drivetrain, 36), new AutoTurn(m_drivetrain, 180))));
 
 		// Configure the button bindings
-		configureButtonBindings();
+		configureButtonBindings(m_controllerType);
 	}
 
 	// private final XboxController m_driverTwo = new
@@ -167,9 +181,19 @@ public class RobotContainer {
 	 * and then passing it to a
 	 * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton JoystickButton}.
 	 */
-	private void configureButtonBindings() {
+	private void configureButtonBindings(DriveControllerType controllerType) {
 		// new JoystickButton(joystickDriver, 5).toggleWhenPressed(resetGyroCommand);
+		switch (controllerType) {
+			case kDualJoyStick:
+				configureJoystickBindings();
+				break;
+			default:
+				configureXboxBindings();
+		}
+		
+	}
 
+	private void configureXboxBindings() {
 		new JoystickButton(m_driver, Button.kA.value).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.BOTTOM));
 		new JoystickButton(m_driver, Button.kB.value).whenPressed(new ToggleDrivetrainSpeed(m_drivetrain, 0.05, 1.));
 		new JoystickButton(m_driver, Button.kX.value).whenPressed(new ConditionalCommand(
@@ -188,14 +212,33 @@ public class RobotContainer {
 		new JoystickButton(m_driver, Button.kBack.value).whenPressed(new ToggleQuickTurn(m_drivetrain));
 	}
 
+	private void configureJoystickBindings() {
+		new JoystickButton(m_joystickDriverLeft, 3).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.BOTTOM));
+		new JoystickButton(m_joystickDriverLeft, 2).whenPressed(new ToggleDrivetrainSpeed(m_drivetrain, 0.05, 1.));
+		new JoystickButton(m_joystickDriverLeft, 4).whenPressed(new ConditionalCommand(
+				new MoveIntakeArm(m_intake, ArmPosition.TOP), new MoveIntakeArm(m_intake, ArmPosition.BOTTOM),
+				() -> m_intake.getArmCurrentPosition() == Intake.ArmPosition.BOTTOM));
+		new JoystickButton(m_joystickDriverLeft, 5).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.TOP));
+
+		new JoystickButton(m_joystickDriverRight, 3).whenPressed(new ToggleElevator(m_elevator));
+		new JoystickButton(m_joystickDriverRight, 6).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.UP), true);
+		new JoystickButton(m_joystickDriverRight, 4).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.DOWN), true);
+		new JoystickButton(m_joystickDriverRight, 1).whenHeld(new SetRollers(m_intake, RollerState.OUTTAKE));
+		new JoystickButton(m_joystickDriverLeft, 1).whenHeld(new SetRollers(m_intake, RollerState.INTAKE));
+		new JoystickButton(m_joystickDriverLeft, 6).whenHeld(new MoveGondola(m_climber, .75));
+		new JoystickButton(m_joystickDriverRight, 5).whenHeld(new MoveGondola(m_climber, -.75));
+
+		new JoystickButton(m_joystickDriverRight, 2).whenPressed(new ToggleQuickTurn(m_drivetrain));
+	}
+
 	HashMap<String, Double> continuousData = new HashMap<>();
 	private double continuous(String id, double input) {
 		if (input > .05) {
 			continuousData.put(id, continuousData.getOrDefault(id, 0.)+(1./50.));
-		} else if (input < 0.05) {
+		} else if (input < .05) {
 			continuousData.put(id, continuousData.getOrDefault(id, 0.)-(1./50.));
 		} else {
-			return 0;
+			return 0.;
 		}
 		return continuousData.get(id);
 	}
@@ -238,7 +281,7 @@ public class RobotContainer {
 			drive.setMods((x, y) -> Math.pow(x, 3)/4, (x, y) -> Math.pow(y, 3)/4);
 			break;
 		case kSlowAndNotSmooth:
-			drive.setMods((x, y) -> Math.floor(3*continuous("slowAndNotSmoothX", x))/3, (x, y) -> Math.floor(3*continuous("slowAndNotSmoothY", y))/3);
+			drive.setMods((x, y) -> Math.floor(3.*continuous("slowAndNotSmoothX", x))/3., (x, y) -> Math.floor(3.*continuous("slowAndNotSmoothY", y))/3.);
 			break;
 		case kSine:
 			drive.setMods((x, y) -> Math.sin(Math.PI * 2 * x) / 2, (x, y) -> Math.sin(Math.PI * 2 * y) / 2);
@@ -273,8 +316,7 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
-		// TODO add Networktable to change the auto command from shuffleboard
-		return m_autoPaths.getPath(AutoPaths.TRENCHSCORE, false);
+		return m_autoPaths.getPath(autoChooser.getSelected(), false);
 		// return m_autoDrive;
 	}
 

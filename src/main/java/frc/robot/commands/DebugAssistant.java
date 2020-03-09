@@ -25,8 +25,8 @@ public class DebugAssistant {
             e.printStackTrace();
         }
 
-        writer.println("command instanced");
-        writer.println("command name: " + outputFileName);
+        writer.println("debug assistant instanced");
+        writer.println("file name: " + outputFileName);
         writer.println(br);
         writer.flush();
 
@@ -63,9 +63,23 @@ public class DebugAssistant {
         return false;
     }
 
+    public void print(String message) {
+        writer.print(message);
+        writer.flush();
+    }
+
+    public void println(String message) {
+        writer.println(message);
+        writer.flush();
+    } 
+
     public void printVar(String name, Object value) {
         writer.println(name + ": " + value.toString());
         writer.flush();
+    }
+
+    public void printBr() {
+        writer.println(br);
     }
 
     public void addTrackCount(String name, int increment) {

@@ -128,11 +128,11 @@ public class AutoPath {
         double delX = pointB[0]-pointA[0];
         double delY = pointB[1]-pointA[1];
 
-        double angle = Math.atan2(delY, delX)*180/3.14159265358979 - 90;
-        if(angle < 1-80) {
+        double angle = Math.atan2(delY, delX)*180/3.14159265358979 - 90 - currentAngle;
+        if(angle < -180) {
             angle += 360;
         }
-        return angle - currentAngle;
+        return angle;
     }
 
     /**

@@ -3,7 +3,6 @@ package frc.robot.commands;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.Drivetrain;
 
@@ -15,6 +14,8 @@ public class AutoTurn extends PIDCommand {
     private double m_timeStopped = 0;
     private double lastMeasure = 0;
     private double tolerance = 1;
+
+    private static DebugAssistant debug = new DebugAssistant("AutoTurn");
     
     /**
      * Turns the robot in place to a certain angle.
@@ -36,10 +37,13 @@ public class AutoTurn extends PIDCommand {
         
         getController().setTolerance(tolerance);
         addRequirements(drivetrain);
+
+        debug.printVar("setpoint", getController().getSetpoint());
     }
 
     @Override
     public void initialize() {
+        debug.trackInitialize();
         super.initialize();
         m_drivetrain.setMaxOutput(0.5);
         m_drivetrain.setIdleMode(IdleMode.kBrake);
@@ -57,8 +61,8 @@ public class AutoTurn extends PIDCommand {
 
     private boolean notMovingMuch() {
         double measure = m_measurement.getAsDouble();
-        System.out.println("m_timeStopped: " + m_timeStopped);
-        System.out.println(isAround(measure, lastMeasure));
+        // System.out.println("m_timeStopped: " + m_timeStopped);
+        // System.out.println(isAround(measure, lastMeasure));
         if (m_timeStopped >= 2) {
             return true;
         } else if (isAround(measure, lastMeasure)) {
@@ -82,6 +86,7 @@ public class AutoTurn extends PIDCommand {
 
     @Override
     public void end(boolean isInterrupted) {
+        debug.trackEnd(isInterrupted);
         super.end(isInterrupted);
         m_drivetrain.setIdleMode(IdleMode.kBrake);
     }

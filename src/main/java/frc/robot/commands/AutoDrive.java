@@ -54,8 +54,8 @@ public class AutoDrive extends PIDCommand {
 
     private boolean notMovingMuch() {
         double measure = m_measurement.getAsDouble();
-        System.out.println("m_timeStopped: " + m_timeStopped);
-        System.out.println(isAround(measure, lastMeasure));
+        // System.out.println("m_timeStopped: " + m_timeStopped);
+        // System.out.println(isAround(measure, lastMeasure));
         if (m_timeStopped >= 2) {
             return true;
         } else if (isAround(measure, lastMeasure)) {
