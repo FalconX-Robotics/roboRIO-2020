@@ -18,7 +18,9 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ProxyScheduleCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.Ports;
@@ -103,14 +105,14 @@ public class RobotContainer {
 		// m_sensorInfoTab.getLayout("Encoder").add("Reset encoder",
 		// resetEncoderCommand);
 
-		AutoDrive autoDrive = new AutoDrive(m_drivetrain, 0);
-		final RunCommand autoDriveCommand = new RunCommand(() -> autoDrive.schedule(),
-				m_drivetrain);
-		autoDriveCommand.setName("Auto Drive Command");
+		// AutoDrive autoDrive = new AutoDrive(m_drivetrain, 0);
+		// final RunCommand autoDriveCommand = new RunCommand(() -> autoDrive.schedule(),
+		// 		m_drivetrain);
+		// autoDriveCommand.setName("Auto Drive Command");
 
-		AutoTurn autoTurn = new AutoTurn(m_drivetrain, 0);
-		final RunCommand autoTurnCommand = new RunCommand(() -> autoTurn.schedule(), m_drivetrain);
-		autoTurnCommand.setName("Auto Turn Command");
+		// AutoTurn autoTurn = new AutoTurn(m_drivetrain, 0);
+		// final RunCommand autoTurnCommand = new RunCommand(() -> autoTurn.schedule(), m_drivetrain);
+		// autoTurnCommand.setName("Auto Turn Command");
 
 		configureDriveCommand(m_consumerType, m_controllerType, m_driveMod);
 
@@ -134,6 +136,22 @@ public class RobotContainer {
 				m_driveMod = mod;
 			}, m_drivetrain));
 		}
+
+		for (AutoPaths path : AutoPaths.values()) {
+			Command command = m_autoPaths.getPath(path, false);
+			if (command == null) {
+				System.out.println(path.name() + " is null.");
+				continue;
+			}
+			Shuffleboard.getTab("Auto Path").add(path.name(), new ProxyScheduleCommand(command));
+		}
+
+		Shuffleboard.getTab("Auto Path"
+		).add("Auto Drive", new AutoDrive(m_drivetrain, 12));
+		Shuffleboard.getTab("Auto Path"
+		).add("Auto Turn", new AutoTurn(m_drivetrain, 45));
+		Shuffleboard.getTab("Auto Path")
+		.add("Move forward, and turn", new ProxyScheduleCommand(new SequentialCommandGroup(new AutoDrive(m_drivetrain, 36), new AutoTurn(m_drivetrain, 180))));
 
 		// Configure the button bindings
 		configureButtonBindings();

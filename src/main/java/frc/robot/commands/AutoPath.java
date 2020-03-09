@@ -56,7 +56,7 @@ public class AutoPath {
     private boolean ferry;
 
     //Auto path options
-    public static enum AutoPaths {
+    public enum AutoPaths {
         //Basic routes for tuning, testing trajectories, etc.
         TEST,
 
@@ -205,7 +205,7 @@ public class AutoPath {
     private SequentialCommandGroup quickScore(boolean ferry) {
         return new SequentialCommandGroup(
             turnAndMove(S0, E0)
-        );        
+        );
     }
     private SequentialCommandGroup trenchScore(boolean ferry) {
         return new SequentialCommandGroup(

@@ -54,13 +54,13 @@ public class Drive extends CommandBase {
         if (leftHID != null && rightHID != null) {
             switch (m_mode) {
             case kTank:
-                m_leftSupplier = () -> leftHID.getY(kLeft);
-                m_rightSupplier = () -> rightHID.getY(kRight);
+                m_leftSupplier = () -> -leftHID.getY(kLeft);
+                m_rightSupplier = () -> -rightHID.getY(kRight);
                 break;
             case kArcade:
             case kCurve:
-                m_leftSupplier = () -> leftHID.getY(kLeft);
-                if (m_rightSupplier.getClass().equals(Joystick.class)) { // TODO: test work?
+                m_leftSupplier = () -> -leftHID.getY(kLeft);
+                if (m_rightSupplier.getClass().equals(Joystick.class)) {
                     m_rightSupplier = () -> -((Joystick) rightHID).getZ();
                 } else {
                     m_rightSupplier = () -> -rightHID.getX(kRight);
@@ -109,7 +109,7 @@ public class Drive extends CommandBase {
 
     @Override
     public void execute() {
-        System.out.println(m_leftSupplier.getAsDouble());
+        // System.out.println(m_leftSupplier.getAsDouble());
         m_biConsumer.accept(m_leftSupplier.getAsDouble(), m_rightSupplier.getAsDouble());
     }
 
