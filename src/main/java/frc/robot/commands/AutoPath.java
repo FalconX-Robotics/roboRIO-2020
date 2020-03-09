@@ -19,6 +19,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.ArmPosition;
 import frc.robot.subsystems.Intake.RollerState;
 
 public class AutoPath {
@@ -43,7 +44,7 @@ public class AutoPath {
     public static final double[] B5 = {145, 107.8};
     public static final double[] B6 = {160.3, 114.2};
     public static final double[] B7 = {175.6, 120.5};
-    public static final double[] B8 = {286.2, 130.4};
+    public static final double[] B8 = {286.2 - 32.31/2, 130.4};//-32.31/2 makes us stop in front of ball
     public static final double[] B9 = {304.7, 130.4};
 
     //Robot ending positions
@@ -239,11 +240,13 @@ public class AutoPath {
 
     private SequentialCommandGroup trenchScore(final boolean ferry) {
         return new SequentialCommandGroup(
+            new MoveIntakeArm(m_intake, ArmPosition.BOTTOM),
             turnAndMove(S0, B0),
             new ParallelDeadlineGroup(
                 turnAndMove(B0, B2),
                 new SetRollers(m_intake, RollerState.AUTO_INTAKE),
             turnAndMove(B2, preE0),
+            new MoveIntakeArm(m_intake, ArmPosition.TOP),
             new SetRollers(m_intake, RollerState.AUTO_OUTTAKE),
             new WaitCommand(5),
             new SetRollers(m_intake, RollerState.STOP)
@@ -268,10 +271,17 @@ public class AutoPath {
 
     private SequentialCommandGroup trenchSteal(final boolean ferry) {
         return new SequentialCommandGroup(
-            turnAndMove(S3, B9),
-            turnAndMove(B9, B8),
+            new MoveIntakeArm(m_intake, ArmPosition.BOTTOM),
+            turnAndMove(S3, B8),
+            new ParallelDeadlineGroup(
+                turnAndMove(B8, B9), 
+                new SetRollers(m_intake, RollerState.AUTO_INTAKE)),
             turnAndMove(B8, preE0),
-            turnAndMove(preE0, E0)
+            turnAndMove(preE0, E0),
+            new MoveIntakeArm(m_intake, ArmPosition.TOP),
+            new SetRollers(m_intake, RollerState.AUTO_OUTTAKE),
+            new WaitCommand(5),
+            new SetRollers(m_intake, RollerState.STOP)
         );
     }
 }
