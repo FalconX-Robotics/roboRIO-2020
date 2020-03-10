@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -16,7 +15,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -67,8 +65,8 @@ public class RobotContainer {
 	// Shuffleboard.getTab("Sensor Info");
 
 	private final XboxController m_driver = new XboxController(Ports.CONTROLLER_PORT);
-	private DriveConsumerType m_consumerType = DriveConsumerType.kArcade;
-	private DriveControllerType m_controllerType = DriveControllerType.kXbox;
+	private DriveConsumerType m_consumerType = DriveConsumerType.kCurve;
+	private DriveControllerType m_controllerType = DriveControllerType.kDualJoyStick;
 	private DriveMod m_driveMod = DriveMod.kNormal;
 
 	private final Joystick m_joystickDriverLeft = new Joystick(Ports.CONTROLLER_PORT);
@@ -101,7 +99,7 @@ public class RobotContainer {
 			if (path != AutoPaths.TEST && path != AutoPaths.QUICKSCORE) // QUICKSCORE as default
 				autoChooser.addOption(path.name().toUpperCase(), path);
 		}
-		autoChooser.setDefaultOption("TEST", AutoPaths.QUICKSCORE);
+		autoChooser.setDefaultOption("QUICKSCORE", AutoPaths.QUICKSCORE);
 		Shuffleboard.getTab("Auto Path").add("Chooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
 		final InstantCommand resetGyroCommand = new InstantCommand(m_drivetrain::resetGyro, m_drivetrain);
@@ -317,7 +315,6 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		return m_autoPaths.getPath(autoChooser.getSelected(), false);
-		// return m_autoDrive;
 	}
 
 	/**

@@ -12,6 +12,8 @@ public class AutoDrive extends PIDCommand {
     private double lastMeasure = 0;
     private double tolerance = 1;
     // private final double m_distance;
+
+    // private static DebugAssistant debug = new DebugAssistant("AutoDrive");
     
     /**
      * Constructor. Moves the robot forward a set distance.
@@ -33,10 +35,13 @@ public class AutoDrive extends PIDCommand {
         getController().setTolerance(tolerance);
 
         addRequirements(m_drivetrain);
+
+        // debug.printVar("setpoint", getController().getSetpoint());
     }
 
     @Override
     public void initialize() {
+        // debug.trackInitialize();
         super.initialize();
         m_drivetrain.setIdleMode(IdleMode.kBrake);
         double m_initialMeasurement = m_drivetrain.getLeftEncoderPos();
@@ -60,7 +65,7 @@ public class AutoDrive extends PIDCommand {
             return true;
         } else if (isAround(measure, lastMeasure)) {
             m_timeStopped = m_timeStopped + (1./50.);
-            System.out.println("set:"+ m_timeStopped);
+            // System.out.println("set:"+ m_timeStopped);
         } else {
             m_timeStopped = 0;
         }
@@ -75,6 +80,7 @@ public class AutoDrive extends PIDCommand {
 
     @Override
     public void end(boolean isInterrupted) {
+        // debug.trackEnd(isInterrupted);
         super.end(isInterrupted);
         m_drivetrain.setIdleMode(IdleMode.kBrake);
     }

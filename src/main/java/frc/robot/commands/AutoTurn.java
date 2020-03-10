@@ -10,12 +10,13 @@ import frc.robot.subsystems.Drivetrain;
 public class AutoTurn extends PIDCommand {
     private final Drivetrain m_drivetrain;
     private final double m_angle;
+    
 
     private double m_timeStopped = 0;
     private double lastMeasure = 0;
     private double tolerance = 1;
 
-    private static DebugAssistant debug = new DebugAssistant("AutoTurn");
+    // private static DebugAssistant debug = new DebugAssistant("AutoTurn");
     
     /**
      * Turns the robot in place to a certain angle.
@@ -38,12 +39,12 @@ public class AutoTurn extends PIDCommand {
         getController().setTolerance(tolerance);
         addRequirements(drivetrain);
 
-        debug.printVar("setpoint", getController().getSetpoint());
+        // debug.printVar("setpoint", getController().getSetpoint());
     }
 
     @Override
     public void initialize() {
-        debug.trackInitialize();
+        // debug.trackInitialize();
         super.initialize();
         m_drivetrain.setMaxOutput(0.5);
         m_drivetrain.setIdleMode(IdleMode.kBrake);
@@ -86,7 +87,7 @@ public class AutoTurn extends PIDCommand {
 
     @Override
     public void end(boolean isInterrupted) {
-        debug.trackEnd(isInterrupted);
+        // debug.trackEnd(isInterrupted);
         super.end(isInterrupted);
         m_drivetrain.setIdleMode(IdleMode.kBrake);
     }
