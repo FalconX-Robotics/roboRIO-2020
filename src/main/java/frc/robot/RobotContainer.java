@@ -314,13 +314,7 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
-<<<<<<< HEAD
-		// TODO add Networktable to change the auto command from shuffleboard
-		return m_autoPaths.getPath(AutoPaths.PATHWEAVE, false);
-		// return m_autoDrive;
-=======
 		return m_autoPaths.getPath(autoChooser.getSelected(), false);
->>>>>>> c0a57ebb73416a47aed76a24ca9d1c448bcfbef3
 	}
 
 	/**
