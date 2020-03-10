@@ -62,7 +62,7 @@ public class AutoPath {
     private boolean ferry;
 
     //Auto path options
-    public static enum AutoPaths {
+    public enum AutoPaths {
         //Basic routes for tuning, testing trajectories, etc.
         TEST,
 
@@ -139,18 +139,9 @@ public class AutoPath {
         final double delX = pointB[0]-pointA[0];
         final double delY = pointB[1]-pointA[1];
 
-        double angle;
-        if(delY > 0) {
-            angle = 90 - Math.atan(delY/delX)*180/Math.PI - currentAngle;
-        }
-        else {
-            angle = 0-90 - Math.atan(delY/delX)*180/Math.PI - currentAngle;
-        }
-        if(angle > 180) {
-            return angle - 360;
-        }
-        else if(angle < 180) {
-            return angle + 360;
+        double angle = Math.atan2(delY, delX)*180/3.14159265358979 - 90 - currentAngle;
+        if(angle < -180) {
+            angle += 360;
         }
         return angle;
     }
@@ -245,8 +236,8 @@ public class AutoPath {
             new ParallelDeadlineGroup(
                 turnAndMove(B0, B2),
                 new SetRollers(m_intake, RollerState.AUTO_INTAKE),
-            turnAndMove(B2, preE0),
             new MoveIntakeArm(m_intake, ArmPosition.TOP),
+            turnAndMove(B2, preE0),
             new SetRollers(m_intake, RollerState.AUTO_OUTTAKE),
             new WaitCommand(5),
             new SetRollers(m_intake, RollerState.STOP)
@@ -277,8 +268,8 @@ public class AutoPath {
                 turnAndMove(B8, B9), 
                 new SetRollers(m_intake, RollerState.AUTO_INTAKE)),
             turnAndMove(B8, preE0),
-            turnAndMove(preE0, E0),
             new MoveIntakeArm(m_intake, ArmPosition.TOP),
+            turnAndMove(preE0, E0),
             new SetRollers(m_intake, RollerState.AUTO_OUTTAKE),
             new WaitCommand(5),
             new SetRollers(m_intake, RollerState.STOP)

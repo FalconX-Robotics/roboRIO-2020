@@ -7,12 +7,7 @@
 
 package frc.robot;
 
-import static edu.wpi.first.wpilibj.GenericHID.Hand.kLeft;
-import static edu.wpi.first.wpilibj.GenericHID.Hand.kRight;
-
 import java.util.HashMap;
-
-import javax.management.RuntimeErrorException;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -23,7 +18,9 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ProxyScheduleCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.Ports;
@@ -86,7 +83,7 @@ public class RobotContainer {
 	private enum DriveMod {
 		kNormal, kStraight, kNoGoingBackwards, kNoGoingForwards,
 		kCupcake, kCupcakeSSS, kReallyFast, kSlowAndSmooth, kSlowAndNotSmooth,
-		kSine, kSineSSS, kTan, kTanSSS, kCsc , kSqrt, kImaginary,
+		kSine, kSineSSS, kCsc , kSqrt, kImaginary,
 		kRandom, kNothing, kError;
 	}
 
@@ -108,14 +105,14 @@ public class RobotContainer {
 		// m_sensorInfoTab.getLayout("Encoder").add("Reset encoder",
 		// resetEncoderCommand);
 
-		AutoDrive autoDrive = new AutoDrive(m_drivetrain, 0);
-		final RunCommand autoDriveCommand = new RunCommand(() -> autoDrive.schedule(),
-				m_drivetrain);
-		autoDriveCommand.setName("Auto Drive Command");
+		// AutoDrive autoDrive = new AutoDrive(m_drivetrain, 0);
+		// final RunCommand autoDriveCommand = new RunCommand(() -> autoDrive.schedule(),
+		// 		m_drivetrain);
+		// autoDriveCommand.setName("Auto Drive Command");
 
-		AutoTurn autoTurn = new AutoTurn(m_drivetrain, 0);
-		final RunCommand autoTurnCommand = new RunCommand(() -> autoTurn.schedule(), m_drivetrain);
-		autoTurnCommand.setName("Auto Turn Command");
+		// AutoTurn autoTurn = new AutoTurn(m_drivetrain, 0);
+		// final RunCommand autoTurnCommand = new RunCommand(() -> autoTurn.schedule(), m_drivetrain);
+		// autoTurnCommand.setName("Auto Turn Command");
 
 		configureDriveCommand(m_consumerType, m_controllerType, m_driveMod);
 
@@ -139,6 +136,22 @@ public class RobotContainer {
 				m_driveMod = mod;
 			}, m_drivetrain));
 		}
+
+		for (AutoPaths path : AutoPaths.values()) {
+			Command command = m_autoPaths.getPath(path, false);
+			if (command == null) {
+				System.out.println(path.name() + " is null.");
+				continue;
+			}
+			Shuffleboard.getTab("Auto Path").add(path.name(), new ProxyScheduleCommand(command));
+		}
+
+		Shuffleboard.getTab("Auto Path"
+		).add("Auto Drive", new AutoDrive(m_drivetrain, 12));
+		Shuffleboard.getTab("Auto Path"
+		).add("Auto Turn", new AutoTurn(m_drivetrain, 45));
+		Shuffleboard.getTab("Auto Path")
+		.add("Move forward, and turn", new ProxyScheduleCommand(new SequentialCommandGroup(new AutoDrive(m_drivetrain, 36), new AutoTurn(m_drivetrain, 180))));
 
 		// Configure the button bindings
 		configureButtonBindings();
@@ -177,14 +190,18 @@ public class RobotContainer {
 
 	HashMap<String, Double> continuousData = new HashMap<>();
 	private double continuous(String id, double input) {
-		if (input > 0) {
-			continuousData.put(id, continuousData.getOrDefault(id, 0.)+(1/50));
-		} else if (input < 0) {
-			continuousData.put(id, continuousData.getOrDefault(id, 0.)-(1/50));
+		if (input > .05) {
+			continuousData.put(id, continuousData.getOrDefault(id, 0.)+(1./50.));
+		} else if (input < 0.05) {
+			continuousData.put(id, continuousData.getOrDefault(id, 0.)-(1./50.));
 		} else {
 			return 0;
 		}
 		return continuousData.get(id);
+	}
+
+	private double threshold(double input) {
+		return input <= .1 || input >= .1 ? input : 0;
 	}
 
 	private void configureDriveCommand(final DriveConsumerType driveMode, final DriveControllerType controllerType, final DriveMod driveMod) {
@@ -209,37 +226,37 @@ public class RobotContainer {
 			drive.setMods((x, y) -> -Math.abs(x), (x, y) -> -Math.abs(y));
 			break;
 		case kCupcake:
-			drive.setMods((x, y) -> 0., (x, y) -> x);
+			drive.setMods((x, y) -> x, (x, y) -> 0.);
 			break;
 		case kCupcakeSSS:
-			drive.setMods((x, y) -> -x, (x, y) -> x);
+			drive.setMods((x, y) -> x, (x, y) -> -x);
 			break;
 		case kReallyFast:
-			drive.setMods((x, y) -> Math.signum(x), (x, y) -> Math.signum(y));
+			drive.setMods((x, y) -> Math.signum(threshold(x)), (x, y) -> Math.signum(threshold(y)));
 			break;
 		case kSlowAndSmooth:
-			drive.setMods((x, y) -> Math.pow(x, 3)/3, (x, y) -> Math.pow(y, 3)/3);
+			drive.setMods((x, y) -> Math.pow(x, 3)/4, (x, y) -> Math.pow(y, 3)/4);
 			break;
 		case kSlowAndNotSmooth:
-			drive.setMods((x, y) -> Math.floor(3*x)/3, (x, y) -> Math.floor(3*y)/3);
+			drive.setMods((x, y) -> Math.floor(3*continuous("slowAndNotSmoothX", x))/3, (x, y) -> Math.floor(3*continuous("slowAndNotSmoothY", y))/3);
 			break;
 		case kSine:
 			drive.setMods((x, y) -> Math.sin(Math.PI * 2 * x) / 2, (x, y) -> Math.sin(Math.PI * 2 * y) / 2);
 			break;
 		case kSineSSS:
-			drive.setMods((x, y) -> Math.sin(Math.PI * 2 * continuous("sineSSSLeft", x)) / 2, (x, y) -> Math.sin(Math.PI * 2 * continuous("sineSSSRight", y)) / 2);
+			drive.setMods((x, y) -> Math.sin(Math.PI * continuous("sineSSSX", x)) / 2, (x, y) -> Math.sin(Math.PI * continuous("sineSSSY", y)) / 2);
 			break;
 		case kCsc:
 			drive.setMods((x, y) -> 1/(5*Math.sin(x)), (x, y) -> 1/(5*Math.sin(y)));
 			break;
 		case kSqrt:
-			drive.setMods((x, y) -> Math.sqrt(x), (x, y) -> Math.sqrt(y));
+			drive.setMods((x, y) -> Math.sqrt(Math.abs(x))*Math.signum(x), (x, y) -> Math.sqrt(Math.abs(y))*Math.signum(y));
 			break;
 		case kImaginary:
 			drive.setMods((x, y) -> 0., (x, y) -> 0.);
 			break;
 		case kRandom:
-			drive.setMods((x, y) -> Math.signum(x) * Math.random() / 3, (x, y) -> Math.signum(y) * Math.random() / 3);
+			drive.setMods((x, y) -> Math.signum(threshold(x)) * Math.random() / 3, (x, y) -> Math.signum(threshold(y)) * Math.random() / 3);
 			break;
 		case kError:
 			throw new RuntimeException("Error");
@@ -247,7 +264,6 @@ public class RobotContainer {
 		}
 		if (m_drivetrain.getDefaultCommand() != null)
 			m_drivetrain.getDefaultCommand().end(true);
-		System.out.println("hi");
 		m_drivetrain.setDefaultCommand(drive);
 	}
 

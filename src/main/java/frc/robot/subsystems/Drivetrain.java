@@ -113,8 +113,8 @@ public class Drivetrain extends SubsystemBase {
         m_leftSRXEncoderMotor.configFactoryDefault();
         m_rightSRXEncoderMotor.configFactoryDefault();
 
-        m_leftSide.setInverted(true);
-        m_rightSide.setInverted(true);
+        // m_leftSide.setInverted(true);
+        // m_rightSide.setInverted(true);
 
         // config encoders
         setCurrentEncoderBrand(encoderBrand);

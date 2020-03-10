@@ -9,7 +9,6 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer.DriveConsumerType;
 import frc.robot.subsystems.Drivetrain;
@@ -55,12 +54,12 @@ public class Drive extends CommandBase {
         if (leftHID != null && rightHID != null) {
             switch (m_mode) {
             case kTank:
-                m_leftSupplier = () -> leftHID.getY(kLeft);
-                m_rightSupplier = () -> rightHID.getY(kRight);
+                m_leftSupplier = () -> -leftHID.getY(kLeft);
+                m_rightSupplier = () -> -rightHID.getY(kRight);
                 break;
             case kArcade:
             case kCurve:
-                m_leftSupplier = () -> leftHID.getY(kLeft);
+                m_leftSupplier = () -> -leftHID.getY(kLeft);
                 if (m_rightSupplier.getClass().equals(Joystick.class)) {
                     m_rightSupplier = () -> -((Joystick) rightHID).getZ();
                 } else {
@@ -110,7 +109,7 @@ public class Drive extends CommandBase {
 
     @Override
     public void execute() {
-        System.out.println(m_leftSupplier.getAsDouble());
+        // System.out.println(m_leftSupplier.getAsDouble());
         m_biConsumer.accept(m_leftSupplier.getAsDouble(), m_rightSupplier.getAsDouble());
     }
 
