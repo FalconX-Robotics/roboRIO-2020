@@ -37,8 +37,6 @@ public final class Constants {
         public static final int CONTROLLER_PORT = 0;
         public static final int CONTROLLERTWO_PORT = 1;
 
-
-
         public static final int LEFT_ENCODER_MOTOR = 5;
         public static final int RIGHT_ENCODER_MOTOR = 6;
         public static final int RIGHT_ENCODER_A = 2;

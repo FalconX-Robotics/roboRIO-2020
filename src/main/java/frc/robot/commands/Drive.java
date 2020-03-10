@@ -61,9 +61,9 @@ public class Drive extends CommandBase {
             case kCurve:
                 m_leftSupplier = () -> -leftHID.getY(kLeft);
                 if (m_rightSupplier.getClass().equals(Joystick.class)) {
-                    m_rightSupplier = () -> -((Joystick) rightHID).getZ();
+                    m_rightSupplier = () -> ((Joystick) rightHID).getZ();
                 } else {
-                    m_rightSupplier = () -> -rightHID.getX(kRight);
+                    m_rightSupplier = () -> rightHID.getX(kRight);
 
                 }
                 break;

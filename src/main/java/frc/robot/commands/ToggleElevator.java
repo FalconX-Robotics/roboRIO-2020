@@ -57,7 +57,7 @@ public class ToggleElevator extends CommandBase {
 
     @Override
     public void end(boolean iterrupted) {
-        System.out.println("end");
+        // System.out.println("end");
         m_elevator.stopMotor();
     }
 }
