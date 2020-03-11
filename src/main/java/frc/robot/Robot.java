@@ -10,7 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.LedControl;
+import frc.robot.subsystems.LedControl;
+import frc.robot.subsystems.LedControl.Pattern;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -35,7 +36,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_ledControl = new LedControl();
-    m_ledControl.setLed("Breath, Blue");
+    m_ledControl.setLed(Pattern.kBreathBlue);
   }
 
   /**
@@ -59,7 +60,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    m_ledControl.setLed("Red");
+    m_ledControl.setLed(Pattern.kRed);
   }
 
   @Override
@@ -71,7 +72,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_ledControl.setLed("Rainbow, Rainbow Palette");
+    m_ledControl.setLed(Pattern.kRainbow);
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     
@@ -96,8 +97,8 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
 
-    m_ledControl.setLed("Violet");
-    
+    m_ledControl.setLed(Pattern.kViolet);
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
