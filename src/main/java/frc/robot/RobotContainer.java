@@ -193,7 +193,7 @@ public class RobotContainer {
 
 	private void configureXboxBindings() {
 		new JoystickButton(m_driver, Button.kA.value).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.BOTTOM));
-		new JoystickButton(m_driver, Button.kB.value).whenPressed(new ToggleDrivetrainSpeed(m_drivetrain, 0.05, 1.));
+		new JoystickButton(m_driver, Button.kB.value).whenPressed(new ToggleDrivetrainSpeed(m_drivetrain, 0.08, 1.));
 		new JoystickButton(m_driver, Button.kX.value).whenPressed(new ConditionalCommand(
 				new MoveIntakeArm(m_intake, ArmPosition.TOP), new MoveIntakeArm(m_intake, ArmPosition.BOTTOM),
 				() -> m_intake.getArmCurrentPosition() == Intake.ArmPosition.BOTTOM));
@@ -212,7 +212,7 @@ public class RobotContainer {
 
 	private void configureJoystickBindings() {
 		new JoystickButton(m_joystickDriverLeft, 3).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.BOTTOM));
-		new JoystickButton(m_joystickDriverLeft, 2).whenPressed(new ToggleDrivetrainSpeed(m_drivetrain, 0.05, 1.));
+		new JoystickButton(m_joystickDriverLeft, 2).whenPressed(new ToggleDrivetrainSpeed(m_drivetrain, 0.08, 1.));
 		new JoystickButton(m_joystickDriverLeft, 4).whenPressed(new ConditionalCommand(
 				new MoveIntakeArm(m_intake, ArmPosition.TOP), new MoveIntakeArm(m_intake, ArmPosition.BOTTOM),
 				() -> m_intake.getArmCurrentPosition() == Intake.ArmPosition.BOTTOM));
