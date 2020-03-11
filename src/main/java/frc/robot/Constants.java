@@ -59,6 +59,8 @@ public final class Constants {
         public static final int ELEVATOR_MOTOR_BACK_PORT = 2; 
       
         public static final int GONDOLA_MOTOR_PORT = 11;
+
+        public static final int LED_CONTROLLER_PORT = 12;
     }
 
     /**

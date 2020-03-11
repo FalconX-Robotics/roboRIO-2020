@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.LedControl;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,6 +23,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private LedControl m_ledControl;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -31,6 +34,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_ledControl = new LedControl();
+    m_ledControl.setLed("Breath, Blue");
   }
 
   /**
@@ -54,7 +59,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-
+    m_ledControl.setLed("Red");
   }
 
   @Override
@@ -66,6 +71,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_ledControl.setLed("Rainbow, Rainbow Palette");
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     
     m_robotContainer.resetSensors();
@@ -88,6 +95,9 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+
+    m_ledControl.setLed("Violet");
+    
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
