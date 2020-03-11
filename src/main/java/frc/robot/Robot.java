@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.LedControl;
@@ -25,6 +26,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private LedControl m_ledControl;
+
+  private DriverStation m_driverStation;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -60,7 +63,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    m_ledControl.setLed(Pattern.kRed);
+    m_ledControl.setLed(Pattern.kViolet);
   }
 
   @Override
@@ -97,7 +100,15 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
 
-    m_ledControl.setLed(Pattern.kViolet);
+    if(m_driverStation.getAlliance() == DriverStation.Alliance.Blue) {
+      m_ledControl.setLed(Pattern.kBlue);
+    }
+    else if(m_driverStation.getAlliance() == DriverStation.Alliance.Red) {
+      m_ledControl.setLed(Pattern.kRed);
+    }
+    else {
+      m_ledControl.setLed(Pattern.kViolet);
+    }
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

@@ -60,7 +60,7 @@ public final class Constants {
       
         public static final int GONDOLA_MOTOR_PORT = 11;
 
-        public static final int LED_CONTROLLER_PORT = 12;
+        public static final int LED_CONTROLLER_PORT = 0;
     }
 
     /**

@@ -12,7 +12,7 @@ public class LedControl extends SubsystemBase {
     private PWMSparkMax ledController = new PWMSparkMax(Constants.Ports.LED_CONTROLLER_PORT);
 
     public enum Pattern {
-        kNone(0.0), kViolet(0.91), kRed(0.61), kBreathBlue(-0.15), kRainbow(-0.99);
+        kNone(0.0), kViolet(0.91), kRed(0.61), kBreathBlue(-0.15), kRainbow(-0.99), kBlue(0.87);
 
         private Double speed;
 
