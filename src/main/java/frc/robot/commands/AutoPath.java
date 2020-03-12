@@ -80,7 +80,10 @@ public class AutoPath {
 
         //Steal balls 8-9 from the opponents control panel and score to the lower port
         //Points: 15
-        TRENCHSTEAL;
+        TRENCHSTEAL,
+        
+        //Drives straight for 10 ft
+        DRIVE_STRAIGHT_FOR_10_FT;
     }
     /**
      * Constructor.
@@ -99,7 +102,7 @@ public class AutoPath {
      */
     public Command getPath(AutoPaths path, boolean ferry) {
         this.ferry = ferry;
-        SequentialCommandGroup command;
+        Command command;
         switch (path) {
             case QUICKSCORE:
                 command = quickScore(ferry);
@@ -116,6 +119,8 @@ public class AutoPath {
             case TRENCHSTEAL:
                 command = trenchSteal(ferry);
                 break;
+            case DRIVE_STRAIGHT_FOR_10_FT:
+                command = new AutoDrive(m_drivetrain, 10*12);
             default:
                 return null;
         }
