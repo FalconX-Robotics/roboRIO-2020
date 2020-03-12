@@ -236,18 +236,18 @@ public class RobotContainer {
 	}
 
 	private void configureJoystickBindings() {
-		new JoystickButton(m_joystickDriverLeft, 3).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.BOTTOM));
+		new JoystickButton(m_joystickDriverLeft, 3).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.BOTTOM), true);
 		new JoystickButton(m_joystickDriverLeft, 2).whenPressed(new ToggleDrivetrainSpeed(m_drivetrain, 0.08, 1.));
 		new JoystickButton(m_joystickDriverLeft, 4).whenPressed(new ConditionalCommand(
 				new MoveIntakeArm(m_intake, ArmPosition.TOP), new MoveIntakeArm(m_intake, ArmPosition.BOTTOM),
-				() -> m_intake.getArmCurrentPosition() == Intake.ArmPosition.BOTTOM));
-		new JoystickButton(m_joystickDriverLeft, 5).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.TOP));
+				() -> m_intake.getArmCurrentPosition() == Intake.ArmPosition.BOTTOM), true);
+		new JoystickButton(m_joystickDriverLeft, 5).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.TOP), true);
 
 		new JoystickButton(m_joystickDriverRight, 3).whenPressed(new ToggleElevator(m_elevator));
 		new JoystickButton(m_joystickDriverRight, 6).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.UP), true);
 		new JoystickButton(m_joystickDriverRight, 4).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.DOWN), true);
-		new JoystickButton(m_joystickDriverRight, 1).whenHeld(new SetRollers(m_intake, RollerState.OUTTAKE));
-		new JoystickButton(m_joystickDriverLeft, 1).whenHeld(new SetRollers(m_intake, RollerState.INTAKE));
+		new JoystickButton(m_joystickDriverRight, 1).toggleWhenPressed(new SetRollers(m_intake, RollerState.OUTTAKE), false);
+		new JoystickButton(m_joystickDriverLeft, 1).toggleWhenPressed(new SetRollers(m_intake, RollerState.INTAKE), false);
 		new JoystickButton(m_joystickDriverLeft, 6).whenHeld(new MoveGondola(m_climber, .75));
 		new JoystickButton(m_joystickDriverRight, 5).whenHeld(new MoveGondola(m_climber, -.75));
 

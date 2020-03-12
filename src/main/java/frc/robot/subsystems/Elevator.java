@@ -20,7 +20,7 @@ public class Elevator extends SubsystemBase {
     private final DigitalInput m_switchBottom = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_BOTTOM_PORT);
     private final DigitalInput m_switchTop = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_TOP_PORT);
 
-    private final double defaultElevatorSpeed = .9;
+    private final double defaultElevatorSpeed = 1;
 
     // private static final ShuffleboardTab robotStatustab =
     // Shuffleboard.getTab("Robot Status");

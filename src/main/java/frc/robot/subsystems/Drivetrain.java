@@ -63,6 +63,8 @@ public class Drivetrain extends SubsystemBase {
 
     private final DifferentialDriveOdometry m_odometry;
 
+    private double m_motorDeadband = 0.05;
+
     // private final ShuffleboardTab robotStatusTab = Shuffleboard.getTab("Robot Status");
     // private final ShuffleboardLayout m_encoderLayout = robotStatusTab.getLayout("Drivetrain Encoders",
             // BuiltInLayouts.kList);
@@ -95,7 +97,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public Drivetrain(final EncoderBrand encoderBrand) {
         // config motors
-        // m_drivetrain.setDeadband(m_motor_deadband);
+        m_drivetrain.setDeadband(m_motorDeadband);
         m_drivetrain.setSafetyEnabled(true);
 
         m_frontLeftMotor.restoreFactoryDefaults();

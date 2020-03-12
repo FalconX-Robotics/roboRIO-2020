@@ -42,12 +42,14 @@ public class MoveElevator extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        switch (m_elevatorDirection) {
-        case DOWN:
-            return m_elevator.getLowerSwitchPressed();
-        default:
-            return false;
-        }
+        // switch (m_elevatorDirection) {
+        // case DOWN:
+        //     return m_elevator.getLowerSwitchPressed();
+        // default:
+        //     return false;
+        // }
+
+        return false;
     }
 
     @Override
