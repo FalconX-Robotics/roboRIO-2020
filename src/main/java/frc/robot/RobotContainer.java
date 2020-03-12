@@ -217,18 +217,18 @@ public class RobotContainer {
 	}
 
 	private void configureXboxBindings() {
-		new JoystickButton(m_driver, Button.kA.value).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.BOTTOM));
+		new JoystickButton(m_driver, Button.kA.value).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.BOTTOM), true);
 		new JoystickButton(m_driver, Button.kB.value).whenPressed(new ToggleDrivetrainSpeed(m_drivetrain, 0.08, 1.));
 		new JoystickButton(m_driver, Button.kX.value).whenPressed(new ConditionalCommand(
 				new MoveIntakeArm(m_intake, ArmPosition.TOP), new MoveIntakeArm(m_intake, ArmPosition.BOTTOM),
-				() -> m_intake.getArmCurrentPosition() == Intake.ArmPosition.BOTTOM));
-		new JoystickButton(m_driver, Button.kY.value).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.TOP));
+				() -> m_intake.getArmCurrentPosition() == Intake.ArmPosition.BOTTOM), true);
+		new JoystickButton(m_driver, Button.kY.value).whenPressed(new MoveIntakeArm(m_intake, ArmPosition.TOP), true);
 
 		new JoystickButton(m_driver, Button.kStart.value).whenPressed(new ToggleElevator(m_elevator));
 		new POVButton(m_driver, 0).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.UP), true);
 		new POVButton(m_driver, 180).whenHeld(new MoveElevator(m_elevator, ElevatorDirection.DOWN), true);
-		new JoystickButton(m_driver, Button.kBumperLeft.value).whenHeld(new SetRollers(m_intake, RollerState.OUTTAKE));
-		new JoystickButton(m_driver, Button.kBumperRight.value).whenHeld(new SetRollers(m_intake, RollerState.INTAKE));
+		new JoystickButton(m_driver, Button.kBumperLeft.value).toggleWhenPressed(new SetRollers(m_intake, RollerState.OUTTAKE), false);
+		new JoystickButton(m_driver, Button.kBumperRight.value).toggleWhenPressed(new SetRollers(m_intake, RollerState.INTAKE), false);
 		new TriggerButton(m_driver, Hand.kLeft, 0.5).whenHeld(new MoveGondola(m_climber, .75));
 		new TriggerButton(m_driver, Hand.kRight, 0.5).whenHeld(new MoveGondola(m_climber, -.75));
 
