@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static frc.robot.RobotContainer.teleopElevatorLayout;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;

@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import static com.ctre.phoenix.motorcontrol.FeedbackDevice.CTRE_MagEncoder_Relative;
-import static frc.robot.RobotContainer.teleopIntakeLayout;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
