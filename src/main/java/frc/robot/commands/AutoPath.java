@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -97,22 +99,30 @@ public class AutoPath {
      */
     public Command getPath(AutoPaths path, boolean ferry) {
         this.ferry = ferry;
+        SequentialCommandGroup command;
         switch (path) {
-            case TEST:
-                // return testScore(ferry);
-                break;
             case QUICKSCORE:
-                return quickScore(ferry);
+                command = quickScore(ferry);
+                break;
             case TRENCHSCORE:
-                return trenchScore(ferry);
+                command = trenchScore(ferry);
+                break;
             case GENERATORSCORE:
-                return generatorScore(ferry);
+                command = generatorScore(ferry);
+                break;
             case YEET:
-                return yeet(ferry);
+                command = yeet(ferry);
+                break;
             case TRENCHSTEAL:
-                return trenchSteal(ferry);
+                command = trenchSteal(ferry);
+                break;
+            default:
+                return null;
         }
-        return null;
+        return new SequentialCommandGroup(
+            new UpdateShuffleboardCommand(true),
+            command,
+            new UpdateShuffleboardCommand(false));
     }
 
     /**
@@ -196,6 +206,19 @@ public class AutoPath {
                 new AutoTurn(this.m_drivetrain, getAngle(this.m_drivetrain.getYaw(), pointA, pointB)),
                 new AutoDrive(this.m_drivetrain, getDistance(pointA, pointB))
             );
+        }
+    }
+
+    private class UpdateShuffleboardCommand extends InstantCommand {
+        private boolean m_start;
+        
+        public UpdateShuffleboardCommand(boolean start) {
+            m_start = start;
+        }
+
+        @Override
+        public void initialize() {
+            RobotContainer.isRunningEntry.setBoolean(m_start);
         }
     }
 

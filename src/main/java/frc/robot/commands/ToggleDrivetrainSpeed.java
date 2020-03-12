@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 
 public class ToggleDrivetrainSpeed extends InstantCommand {
@@ -23,7 +24,7 @@ public class ToggleDrivetrainSpeed extends InstantCommand {
 
     @Override
     public void initialize() {
-        System.out.println("toggled");
+        RobotContainer.slowModeEntry.setBoolean(isOnInitMaxOutput);
         m_drivetrain.setMaxOutput(isOnInitMaxOutput ? m_initMaxOutput : m_endMaxOutput);
         isOnInitMaxOutput = !isOnInitMaxOutput;
     }

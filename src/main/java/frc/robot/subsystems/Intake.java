@@ -1,12 +1,14 @@
 package frc.robot.subsystems;
 
 import static com.ctre.phoenix.motorcontrol.FeedbackDevice.CTRE_MagEncoder_Relative;
+import static frc.robot.RobotContainer.teleopIntakeLayout;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.Ports;
 
 public class Intake extends SubsystemBase {
@@ -20,20 +22,21 @@ public class Intake extends SubsystemBase {
 
     private double m_defaultArmMotorSpeed = 0.5;
     private double m_defaultRollerMotorSpeed = 0.7;
-    private ArmPosition armCurrentPosition = ArmPosition.BOTTOM;
+    private ArmPosition armCurrentPosition = ArmPosition.TOP;
 
     private double m_armMaxOutput = 1;
-    
-    // private static final ShuffleboardTab robotStatustab = Shuffleboard.getTab("Robot Status");
-    // private static final ShuffleboardLayout intakeLayout = robotStatustab.getLayout("Intake", BuiltInLayouts.kList);
-    // private final NetworkTableEntry intakePositionWidget = intakeLayout
-    //     .add("Intake Position", getIntakePos()).getEntry();
-    // private final NetworkTableEntry lowSwitchWidget = intakeLayout
-    //     .add("Lower Limit Switch", getBottomSwitchPressed()).getEntry();
-    // private final NetworkTableEntry toprSwitchWidget = intakeLayout
-    //     .add("Top Limit Switch", getTopSwitchPressed()).getEntry();
 
-    
+    // private static final ShuffleboardTab robotStatustab =
+    // Shuffleboard.getTab("Robot Status");
+    // private static final ShuffleboardLayout intakeLayout =
+    // robotStatustab.getLayout("Intake", BuiltInLayouts.kList);
+    // private final NetworkTableEntry intakePositionWidget = intakeLayout
+    // .add("Intake Position", getIntakePos()).getEntry();
+    // private final NetworkTableEntry lowSwitchWidget = intakeLayout
+    // .add("Lower Limit Switch", getBottomSwitchPressed()).getEntry();
+    // private final NetworkTableEntry toprSwitchWidget = intakeLayout
+    // .add("Top Limit Switch", getTopSwitchPressed()).getEntry();
+
     public Intake() {
         m_armMotor.configFactoryDefault();
         m_armMotor.configSelectedFeedbackSensor(CTRE_MagEncoder_Relative);
@@ -43,13 +46,11 @@ public class Intake extends SubsystemBase {
 
         resetEncoders();
         setArmMotorMaxOutput(.7);
-
-        // m_gyro.configFactoryDefault();
     }
 
     /**
-     * If return value is 1 then the intake is up fully.
-     * if return value is 0 then the intake is leveled.
+     * If return value is 1 then the intake is up fully. if return value is 0 then
+     * the intake is leveled.
      * 
      * @return a number from 1 to 0
      */
@@ -87,6 +88,7 @@ public class Intake extends SubsystemBase {
         if (position == null || position == armCurrentPosition)
             return;
         armCurrentPosition = position;
+        RobotContainer.armPositionEntry.setString(position.name());
     }
 
     public void setArmMotorForward() {
@@ -101,7 +103,7 @@ public class Intake extends SubsystemBase {
         if (getTopSwitchPressed() && speed > 0 || getBottomSwitchPressed() && speed < 0) {
             speed = 0;
         }
-        System.out.println(limit(speed, m_armMaxOutput, -m_armMaxOutput));
+        // System.out.println(limit(speed, m_armMaxOutput, -m_armMaxOutput));
         m_armMotor.set(limit(speed, m_armMaxOutput, -m_armMaxOutput));
     }
 
@@ -166,5 +168,7 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // System.out.println("getTopSwitchPressed: " + getTopSwitchPressed());
+        // System.out.println("getBottomSwitchPressed: " + getBottomSwitchPressed());
     }
 }

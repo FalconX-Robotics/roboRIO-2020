@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static frc.robot.RobotContainer.teleopElevatorLayout;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -12,22 +14,24 @@ import frc.robot.Constants.Ports;
 public class Elevator extends SubsystemBase {
     private final CANSparkMax m_motorFront = new CANSparkMax(Ports.ELEVATOR_MOTOR_FRONT_PORT, MotorType.kBrushless);
     private final CANSparkMax m_motorBack = new CANSparkMax(Ports.ELEVATOR_MOTOR_BACK_PORT, MotorType.kBrushless);
-    
+
     private final SpeedControllerGroup m_motorGroup = new SpeedControllerGroup(m_motorFront, m_motorBack);
-    
+
     private final DigitalInput m_switchBottom = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_BOTTOM_PORT);
     private final DigitalInput m_switchTop = new DigitalInput(Ports.ELEVATOR_LIMIT_SWITCH_TOP_PORT);
 
     private final double defaultElevatorSpeed = .9;
 
-    // private static final ShuffleboardTab robotStatustab = Shuffleboard.getTab("Robot Status");
-    // private static final ShuffleboardLayout elevatorLayout = robotStatustab.getLayout("Elevator", BuiltInLayouts.kList);
+    // private static final ShuffleboardTab robotStatustab =
+    // Shuffleboard.getTab("Robot Status");
+    // private static final ShuffleboardLayout elevatorLayout =
+    // robotStatustab.getLayout("Elevator", BuiltInLayouts.kList);
     // private final NetworkTableEntry elevatorStateWidget = elevatorLayout
-        // .add("Elevator state", this.getElevatorState()).getEntry();
+    // .add("Elevator state", this.getElevatorState()).getEntry();
     // private final NetworkTableEntry lowLimitSwitchWidget = elevatorLayout
-        // .add("Lower limit switch", false).getEntry();
+    // .add("Lower limit switch", false).getEntry();
     // private final NetworkTableEntry highLimitSwitchWidget = elevatorLayout
-        // .add("Upper limit switch", false).getEntry();
+    // .add("Upper limit switch", false).getEntry();
 
     /**
      * Creates an elevator instance that can be moved up or down.

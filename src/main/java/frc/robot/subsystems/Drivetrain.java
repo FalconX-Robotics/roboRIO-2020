@@ -1,6 +1,8 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.RobotContainer.teleopDrivetrainLayout;
+
 import java.util.Arrays;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -25,6 +27,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.DriveConstants;
 
@@ -60,32 +63,35 @@ public class Drivetrain extends SubsystemBase {
 
     private final DifferentialDriveOdometry m_odometry;
 
-    private final ShuffleboardTab robotStatusTab = Shuffleboard.getTab("Robot Status");
-    private final ShuffleboardLayout m_encoderLayout = robotStatusTab.getLayout("Drivetrain Encoders", BuiltInLayouts.kList);
-    private final ShuffleboardLayout m_gyroLayout = robotStatusTab.getLayout("Drivetrain Gyro", BuiltInLayouts.kList);
+    // private final ShuffleboardTab robotStatusTab = Shuffleboard.getTab("Robot Status");
+    // private final ShuffleboardLayout m_encoderLayout = robotStatusTab.getLayout("Drivetrain Encoders",
+            // BuiltInLayouts.kList);
+    // private final ShuffleboardLayout m_gyroLayout = robotStatusTab.getLayout("Drivetrain Gyro", BuiltInLayouts.kList);
 
-    private final NetworkTableEntry m_rawLeftNeoPosWidget = m_encoderLayout
-            .add("RAW left NEO pos", m_leftSRXEncoderMotor.getSelectedSensorPosition()).getEntry();
-    private final NetworkTableEntry m_leftNeoPosWidget = m_encoderLayout
-            .add("left NEO pos", getLeftEncoderPos(EncoderBrand.NEO)).getEntry();
-    private final NetworkTableEntry rawLeftSrxPosWidget = m_encoderLayout
-            .add("RAW left SRX pos", m_leftSRXEncoderMotor.getSelectedSensorPosition()).getEntry();
-    private final NetworkTableEntry m_leftSrxPosWidget = m_encoderLayout
-            .add("left SRX pos", getLeftEncoderPos(EncoderBrand.SRX)).getEntry();
-    private final NetworkTableEntry m_rawGyroWidget = m_gyroLayout
-            .add("raw gyro vals", Arrays.toString(getYawPitchRoll())).getEntry();
-    //private final NetworkTableEntry m_talonTachWidget = m_sensorInfoTab.add("Talon Tach", false).getEntry();
+    // private final NetworkTableEntry m_rawLeftNeoPosWidget = m_encoderLayout
+    //         .add("RAW left NEO pos", m_leftSRXEncoderMotor.getSelectedSensorPosition()).getEntry();
+    // private final NetworkTableEntry m_leftNeoPosWidget = m_encoderLayout
+    //         .add("left NEO pos", getLeftEncoderPos(EncoderBrand.NEO)).getEntry();
+    // private final NetworkTableEntry rawLeftSrxPosWidget = m_encoderLayout
+    //         .add("RAW left SRX pos", m_leftSRXEncoderMotor.getSelectedSensorPosition()).getEntry();
+    // private final NetworkTableEntry m_leftSrxPosWidget = m_encoderLayout
+    //         .add("left SRX pos", getLeftEncoderPos(EncoderBrand.SRX)).getEntry();
+    // private final NetworkTableEntry m_rawGyroWidget = m_gyroLayout
+    //         .add("raw gyro vals", Arrays.toString(getYawPitchRoll())).getEntry();
+    // private final NetworkTableEntry m_talonTachWidget =
+    // m_sensorInfoTab.add("Talon Tach", false).getEntry();
 
     private final DigitalInput m_talonTach = new DigitalInput(Constants.Ports.TALON_TACH_PORT);
 
     private boolean m_quickTurn = false;
 
     /**
-     * Creates a drivetrain instance which can be controlled to move the robot. This also
-     * contains and outputs all drivetrain measurements (position, speed, angle, etc.) used
-     * by other commands and subsystems during autonomous.
+     * Creates a drivetrain instance which can be controlled to move the robot. This
+     * also contains and outputs all drivetrain measurements (position, speed,
+     * angle, etc.) used by other commands and subsystems during autonomous.
      * 
-     * @param encoderBrand the brand of encoder being used to record drivetrain measurements
+     * @param encoderBrand the brand of encoder being used to record drivetrain
+     *                     measurements
      */
     public Drivetrain(final EncoderBrand encoderBrand) {
         // config motors
@@ -122,10 +128,12 @@ public class Drivetrain extends SubsystemBase {
 
         setIdleMode(IdleMode.kBrake);
         setRamp(DriveConstants.RAMP);
+
     }
 
     /**
-     * Sets what the drivetrain does when it is not moving (either braking or coasting).
+     * Sets what the drivetrain does when it is not moving (either braking or
+     * coasting).
      */
     public void setIdleMode(IdleMode idleMode) {
         m_frontLeftMotor.setIdleMode(idleMode);
@@ -146,24 +154,24 @@ public class Drivetrain extends SubsystemBase {
         m_rearRightMotor.setOpenLoopRampRate(ramp);
     }
 
-    //enum for the brand of encoder being used to measure with the drivetrain
+    // enum for the brand of encoder being used to measure with the drivetrain
     public enum EncoderBrand {
         NEO, SRX;
     }
 
-    //returns the brand of encoder being used
+    // returns the brand of encoder being used
     public EncoderBrand getCurrentEncoderBrand() {
         return currentEncoderBrand;
     }
 
-    //changes the brand of encoder being used
+    // changes the brand of encoder being used
     public void setCurrentEncoderBrand(final EncoderBrand brand) {
         if (brand == null || brand == currentEncoderBrand)
             return;
         currentEncoderBrand = brand;
     }
 
-    //sets the encoder positions back to 0
+    // sets the encoder positions back to 0
     public void resetEncoders(EncoderBrand brand) {
         switch (brand) {
         case NEO:
@@ -176,11 +184,12 @@ public class Drivetrain extends SubsystemBase {
             break;
         }
     }
+
     public void resetEncoders() {
         resetEncoders(getCurrentEncoderBrand());
     }
 
-    //returns the current position of the left encoder
+    // returns the current position of the left encoder
     public double getLeftEncoderPos(final EncoderBrand brand) {
         switch (brand) {
         case NEO:
@@ -191,11 +200,12 @@ public class Drivetrain extends SubsystemBase {
             return 0;
         }
     }
+
     public double getLeftEncoderPos() {
         return getLeftEncoderPos(getCurrentEncoderBrand());
     }
 
-    //returns the current position of the right encoder
+    // returns the current position of the right encoder
     public double getRightEncoderPos(final EncoderBrand encoderBrand) {
         switch (encoderBrand) {
         case NEO:
@@ -206,19 +216,21 @@ public class Drivetrain extends SubsystemBase {
             return 0;
         }
     }
+
     public double getRightEncoderPos() {
         return getRightEncoderPos(getCurrentEncoderBrand());
     }
 
-    //returns the average position of the left and right encoders
+    // returns the average position of the left and right encoders
     public double getAvgEncoderPos(final EncoderBrand encoderBrand) {
         return (getLeftEncoderPos(encoderBrand) + getRightEncoderPos(encoderBrand)) / 2;
     }
+
     public double getAvgEncoderPos() {
         return getAvgEncoderPos(currentEncoderBrand);
     }
 
-    //returns the current speed of the left encoder
+    // returns the current speed of the left encoder
     public double getLeftEncoderSpeed(final EncoderBrand brand) {
         switch (brand) {
         case NEO:
@@ -229,11 +241,12 @@ public class Drivetrain extends SubsystemBase {
             return 0;
         }
     }
+
     public double getLeftEncoderSpeed() {
         return getLeftEncoderSpeed(getCurrentEncoderBrand());
     }
 
-    //returns the current speed of the right encoder
+    // returns the current speed of the right encoder
     public double getRightEncoderSpeed(final EncoderBrand encoderBrand) {
         switch (encoderBrand) {
         case NEO:
@@ -249,7 +262,7 @@ public class Drivetrain extends SubsystemBase {
         return getRightEncoderSpeed(getCurrentEncoderBrand());
     }
 
-    //returns the average speed of the left and right encoders
+    // returns the average speed of the left and right encoders
     public double getAvgEncoderSpeed(final EncoderBrand encoderBrand) {
         return (getLeftEncoderSpeed(encoderBrand) + getRightEncoderSpeed(encoderBrand)) / 2;
     }
@@ -258,44 +271,46 @@ public class Drivetrain extends SubsystemBase {
         return (getLeftEncoderSpeed() + getRightEncoderSpeed()) / 2;
     }
 
-    //returns the speed of both the left and right encoders (convenient for ramsete)
+    // returns the speed of both the left and right encoders (convenient for
+    // ramsete)
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(getLeftEncoderSpeed(), getRightEncoderSpeed());
     }
 
-    //sets the gyroscope yaw (rotation) back to 0
+    // sets the gyroscope yaw (rotation) back to 0
     public void resetGyro() {
         m_gyro.setYaw(0);
     }
 
-    //returns all 3 gyro measurements as a double[]
+    // returns all 3 gyro measurements as a double[]
     public double[] getYawPitchRoll() {
         final double data[] = new double[3];
         m_gyro.getYawPitchRoll(data);
         return data;
     }
 
-    //returns the gyro yaw
+    // returns the gyro yaw
     public double getYaw() {
         return getYawPitchRoll()[0];
     }
 
-    //reutrns the gyro pitch
+    // reutrns the gyro pitch
     public double getPitch() {
         return getYawPitchRoll()[1];
     }
 
-    //returns the gyro roll
+    // returns the gyro roll
     public double getRoll() {
         return getYawPitchRoll()[2];
     }
 
-    //returns the yaw as a direction between 0 and 360
+    // returns the yaw as a direction between 0 and 360
     public double getHeading() {
         return Math.IEEEremainder(getYaw(), 360);
     }
 
-    //returns position as a vector of translation and rotation (convenient for ramsete)
+    // returns position as a vector of translation and rotation (convenient for
+    // ramsete)
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
     }
@@ -313,8 +328,8 @@ public class Drivetrain extends SubsystemBase {
     /**
      * Moves the drivetrain with tank drive using the given speeds.
      * 
-     * @param leftSpeed the speed of the left side of the drivetrain
-     * @param rightSpeed the speed of the right side of the drivetrain
+     * @param leftSpeed   the speed of the left side of the drivetrain
+     * @param rightSpeed  the speed of the right side of the drivetrain
      * @param squareInput whether or not to drive using squared inputs
      */
     public void tankDrive(final double leftSpeed, final double rightSpeed, final boolean squareInput) {
@@ -328,9 +343,10 @@ public class Drivetrain extends SubsystemBase {
     /**
      * Moves the drivetrain with arcade drive using the given speeds.
      * 
-     * @param forwardSpeed the speed in which to move the drivetrain forward or backward
+     * @param forwardSpeed  the speed in which to move the drivetrain forward or
+     *                      backward
      * @param rotationSpeed the speed in which to turn the drivetrain left or right
-     * @param squareInput whether or not to drive using squared inputs
+     * @param squareInput   whether or not to drive using squared inputs
      */
     public void arcadeDrive(final double forwardSpeed, final double rotationSpeed, final boolean squareInput) {
         m_drivetrain.arcadeDrive(forwardSpeed, rotationSpeed, squareInput);
@@ -343,8 +359,10 @@ public class Drivetrain extends SubsystemBase {
     /**
      * Moves the drivetrain with curvature drive using the given speeds.
      * 
-     * @param forwardSpeed the speed in which to move the drivetrain forward or backward
-     * @param rotationSpeed the speed in which to turn the drivetrain left or right based on a curve
+     * @param forwardSpeed  the speed in which to move the drivetrain forward or
+     *                      backward
+     * @param rotationSpeed the speed in which to turn the drivetrain left or right
+     *                      based on a curve
      */
     public void curvatureDrive(final double forwardSpeed, final double rotationSpeed) {
         m_drivetrain.curvatureDrive(forwardSpeed, rotationSpeed, getQuickTurn());
@@ -352,6 +370,7 @@ public class Drivetrain extends SubsystemBase {
 
     public void toggleQuickTurn() {
         m_quickTurn = !m_quickTurn;
+        RobotContainer.quickTurnEntry.setBoolean(m_quickTurn);
     }
 
     public boolean getQuickTurn() {
@@ -388,17 +407,12 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_rawLeftNeoPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.NEO) / kNeoEncoderConversionFactor);
-        m_leftNeoPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.NEO));
+        // m_rawLeftNeoPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.NEO) / kNeoEncoderConversionFactor);
+        // m_leftNeoPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.NEO));
 
-        rawLeftSrxPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.SRX) / kSRXEncoderConversionFactor);
-        m_leftSrxPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.SRX));
+        // rawLeftSrxPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.SRX) / kSRXEncoderConversionFactor);
+        // m_leftSrxPosWidget.setDouble(getLeftEncoderPos(EncoderBrand.SRX));
 
-        m_rawGyroWidget.setString(Arrays.toString(getYawPitchRoll()));
-
-        //m_talonTachWidget.setBoolean(getTalonTachPressed());
-
-        // System.out.println("left enc: " + getLeftEncoderPos());
-        // System.out.println("right enc: " + getRightEncoderPos());
+        // m_rawGyroWidget.setString(Arrays.toString(getYawPitchRoll()));
     }
 }

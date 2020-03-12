@@ -8,14 +8,19 @@
 package frc.robot;
 
 import java.util.HashMap;
+import java.util.Map;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -61,9 +66,6 @@ public class RobotContainer {
 	private final Intake m_intake = new Intake();
 	private final Elevator m_elevator = new Elevator();
 
-	// private static final ShuffleboardTab m_sensorInfoTab =
-	// Shuffleboard.getTab("Sensor Info");
-
 	private final XboxController m_driver = new XboxController(Ports.CONTROLLER_PORT);
 	private DriveConsumerType m_consumerType = DriveConsumerType.kCurve;
 	private DriveControllerType m_controllerType = DriveControllerType.kDualJoyStick;
@@ -73,6 +75,27 @@ public class RobotContainer {
 	private final Joystick m_joystickDriverRight = new Joystick(Ports.CONTROLLERTWO_PORT);
 
 	private static SendableChooser<AutoPaths> autoChooser;
+
+	public static final ShuffleboardTab teleopTab = Shuffleboard.getTab("Teleoperated Tab");
+	public static final ShuffleboardLayout teleopDrivetrainLayout = teleopTab.getLayout("Drivetrain", BuiltInLayouts.kGrid)
+		.withPosition(0, 0).withSize(3, 2);
+	public static final ShuffleboardLayout teleopIntakeLayout = teleopTab.getLayout("Intake", BuiltInLayouts.kGrid)
+		.withPosition(3, 0).withSize(3, 2);
+	public static final ShuffleboardLayout teleopElevatorLayout = teleopTab.getLayout("Elevator", BuiltInLayouts.kGrid)
+		.withPosition(6, 0).withSize(2, 2);
+	public static final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous Tab");
+
+	public static final NetworkTableEntry slowModeEntry = teleopDrivetrainLayout.add("Slow Mode", false).getEntry();
+	public static final NetworkTableEntry quickTurnEntry = teleopDrivetrainLayout.add("Quick Turn", false).getEntry();
+
+	public static final NetworkTableEntry armPositionEntry = teleopIntakeLayout.add("Arm Position", "INIT").getEntry();
+	public static final NetworkTableEntry rollerStateEntry = teleopIntakeLayout.add("Roller State", "NONE").getEntry();
+
+	public static final NetworkTableEntry elevatorDirectionEntry = teleopElevatorLayout.add("Elevator Direction", "DOWN").getEntry();
+	public static final NetworkTableEntry isRunningEntry = autoTab.add("Is Running", false)
+		.withPosition(2, 0)
+		.withSize(2, 2)
+		.getEntry();
 
 	public enum DriveConsumerType {
 		kTank, kArcade, kCurve;
@@ -84,7 +107,7 @@ public class RobotContainer {
 	}
 
 	private enum DriveMod {
-		kNormal, kStraight, kNoGoingBackwards, kNoGoingForwards,
+		kNormal, kStraight, kSmooth, kNoGoingBackwards, kNoGoingForwards,
 		kCupcake, kCupcakeSSS, kReallyFast, kSlowAndSmooth, kSlowAndNotSmooth,
 		kSine, kSineSSS, kCsc , kSqrt, kImaginary,
 		kRandom, kNothing, kError;
@@ -100,7 +123,8 @@ public class RobotContainer {
 				autoChooser.addOption(path.name().toUpperCase(), path);
 		}
 		autoChooser.setDefaultOption("QUICKSCORE", AutoPaths.QUICKSCORE);
-		Shuffleboard.getTab("Auto Path").add("Chooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
+		autoTab.add("Chooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser)
+			.withPosition(0, 0).withSize(2, 2);
 
 		final InstantCommand resetGyroCommand = new InstantCommand(m_drivetrain::resetGyro, m_drivetrain);
 		resetGyroCommand.setName("Reset gyro");
@@ -113,41 +137,45 @@ public class RobotContainer {
 		}, m_drivetrain);
 		resetEncoderCommand.setName("Reset Encoder");
 
-		// m_sensorInfoTab.getLayout("Encoder").add("Reset encoder",
-		// resetEncoderCommand);
-
-		// AutoDrive autoDrive = new AutoDrive(m_drivetrain, 0);
-		// final RunCommand autoDriveCommand = new RunCommand(() -> autoDrive.schedule(),
-		// 		m_drivetrain);
-		// autoDriveCommand.setName("Auto Drive Command");
-
-		// AutoTurn autoTurn = new AutoTurn(m_drivetrain, 0);
-		// final RunCommand autoTurnCommand = new RunCommand(() -> autoTurn.schedule(), m_drivetrain);
-		// autoTurnCommand.setName("Auto Turn Command");
-
 		configureDriveCommand(m_consumerType, m_controllerType, m_driveMod);
 
+		ShuffleboardTab driveTab = Shuffleboard.getTab("Drive Configuration");
+		ShuffleboardLayout controllerTypeLayout = driveTab.getLayout("Drive Controller Type", BuiltInLayouts.kGrid)
+			.withPosition(0, 0).withSize(3, 2).withProperties(Map.of("Label position", "LEFT"));
+		ShuffleboardLayout consumerTypeLayout = driveTab.getLayout("Consumer Type", BuiltInLayouts.kGrid)
+			.withPosition(3, 0).withSize(3, 2).withProperties(Map.of("Label position", "LEFT"));
+		ShuffleboardLayout modLayout = driveTab.getLayout("Mod Type", BuiltInLayouts.kGrid)
+			.withPosition(0, 2).withSize(9, 3).withProperties(Map.of("Label position", "LEFT"));
+
 		for (DriveConsumerType consumer : DriveConsumerType.values()) {
-			Shuffleboard.getTab("Drive").add(consumer.name(), new InstantCommand(() -> {
+			InstantCommand command = new InstantCommand(() -> {
 				configureDriveCommand(consumer, m_controllerType, m_driveMod);
 				m_consumerType = consumer;
-			}, m_drivetrain));
+			}, m_drivetrain);
+			command.setName("Set");
+			controllerTypeLayout.add(consumer.name(), command);
 		}
 
 		for (DriveControllerType controller : DriveControllerType.values()) {
-			Shuffleboard.getTab("Drive").add(controller.name(), new InstantCommand(() -> {
+			InstantCommand command = new InstantCommand(() -> {
 				configureDriveCommand(m_consumerType, controller, m_driveMod);
 				configureButtonBindings(controller);
 				m_controllerType = controller;
-			}, m_drivetrain));
+			}, m_drivetrain);
+			command.setName("Set");
+			consumerTypeLayout.add(controller.name(), command);
 		}
 
 		for (DriveMod mod : DriveMod.values()) {
-			Shuffleboard.getTab("Drive").add(mod.name(), new InstantCommand(() -> {
+			InstantCommand command = new InstantCommand(() -> {
 				configureDriveCommand(m_consumerType, m_controllerType, mod);
 				m_driveMod = mod;
-			}, m_drivetrain));
+			}, m_drivetrain);
+			command.setName("Set");
+			modLayout.add(mod.name(), command);
 		}
+
+		ShuffleboardTab autoPathSelectorLayout = Shuffleboard.getTab("_Auto Path Test");
 
 		for (AutoPaths path : AutoPaths.values()) {
 			Command command = m_autoPaths.getPath(path, false);
@@ -155,15 +183,12 @@ public class RobotContainer {
 				System.out.println(path.name() + " is null.");
 				continue;
 			}
-			Shuffleboard.getTab("Auto Path").add(path.name(), new ProxyScheduleCommand(command));
+			autoPathSelectorLayout.add(path.name(), new ProxyScheduleCommand(command));
 		}
-
-		Shuffleboard.getTab("Auto Path"
-		).add("Auto Drive", new AutoDrive(m_drivetrain, 12));
-		Shuffleboard.getTab("Auto Path"
-		).add("Auto Turn", new AutoTurn(m_drivetrain, 45));
-		Shuffleboard.getTab("Auto Path")
-		.add("Move forward, and turn", new ProxyScheduleCommand(new SequentialCommandGroup(new AutoDrive(m_drivetrain, 36), new AutoTurn(m_drivetrain, 180))));
+		
+		autoPathSelectorLayout.add("Auto Drive (test)", new AutoDrive(m_drivetrain, 12));
+		autoPathSelectorLayout.add("Auto Turn (test)", new AutoTurn(m_drivetrain, 45));
+		autoPathSelectorLayout.add("Move forward, and turn (test)", new ProxyScheduleCommand(new SequentialCommandGroup(new AutoDrive(m_drivetrain, 36), new AutoTurn(m_drivetrain, 180))));
 
 		// Configure the button bindings
 		configureButtonBindings(m_controllerType);
@@ -259,6 +284,9 @@ public class RobotContainer {
 		switch (driveMod) {
 		case kStraight:
 			drive.setMods((x, y) -> x, (x, y) -> x);
+			break;
+		case kSmooth:
+			drive.setMods((x, y) -> Math.sin(.5*Math.PI*x)/2, (x, y) -> Math.sin(.5*Math.PI*y)/2);
 			break;
 		case kNoGoingBackwards:
 			drive.setMods((x, y) -> Math.abs(x), (x, y) -> Math.abs(y));

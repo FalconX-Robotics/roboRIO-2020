@@ -1,12 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.RollerState;
 
 public class SetRollers extends CommandBase {
     private final Intake m_intake;
-    private RollerState m_rollerState;
+    private final RollerState m_rollerState;
 
     /**
      * Sets the direction in which the intake subsystem motors are turning. Forward
@@ -15,7 +16,7 @@ public class SetRollers extends CommandBase {
      * @param intake the intake subsystem used by the command
      * @param rollerState the direction enum in which to move the rollers
      */
-    public SetRollers(Intake intake, RollerState rollerState) {
+    public SetRollers(final Intake intake, final RollerState rollerState) {
         m_intake = intake;
         m_rollerState = rollerState;
         addRequirements(m_intake);
@@ -26,6 +27,11 @@ public class SetRollers extends CommandBase {
     // private final NetworkTableEntry rollerStateWidget = intakeLayout
         // .add("Roller State", "Stopped").getEntry();
 
+
+    @Override
+    public void initialize() {
+        RobotContainer.rollerStateEntry.setString(m_rollerState.name());
+    }
 
     @Override
     public void execute() {
@@ -42,9 +48,9 @@ public class SetRollers extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
+    public void end(final boolean interrupted) {
         m_intake.stopRollerMotor();
-        // rollerStateWidget.setString("Stopped");
+        RobotContainer.rollerStateEntry.setString("NONE");
     }
     
 }
